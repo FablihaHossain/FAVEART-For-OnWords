@@ -1,0 +1,6 @@
+# Files to Ignore
+venv/
+config.*
+*.pyc
+*.env
+.flaskenv
