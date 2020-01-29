@@ -5,14 +5,21 @@
 		{% block styles %}
 			<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-			<link rel = "stylesheet" href="{{url_for('static', filename = 'stylesheet.css')}}">
+			<link rel= "stylesheet" href="{{url_for('static', filename = 'stylesheet.css')}}">
 		{% endblock styles %}
-
+	 <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
 </head>
 {% endblock head %}
 {% block body %}
 <body>
 	<p> Connection Set Up </p>
+	<hr>
+	Video: <br>
+	<video id="video" autoplay></video>
+	<hr>
+	AR Content: <br>
+	<canvas id="canvas" width="400" height="400"></canvas>
+<hr>
 </body>
 {% endblock body %}
 </html>
