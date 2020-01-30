@@ -13,6 +13,14 @@
 {% block body %}
 <body>
 	<p> Connection Set Up </p>
+
+	{# Testing Database Connection by Displaying User Table #}
+	{% for user in users %}
+	<p> Id: {{user.id}}</p>
+	<p> First Name: {{user.firstname}}</p>
+	<p> Last Name: {{user.lastname}}</p>
+	<p> Username: {{user.username}}</p>
+	{% endfor %}
 </body>
 {% endblock body %}
 </html>
