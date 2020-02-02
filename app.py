@@ -1,6 +1,7 @@
 from application import app, db
 from flask import render_template, request, url_for
 from models import Users, Paths, Checkpoints, Interactions
+from database import Database
 
 # Defining basic route
 @app.route("/")
@@ -16,4 +17,7 @@ def index():
 
 	# Getting all the interactions in the database
 	interaction_list = Interactions.query.all()
+
+	check_exists = Database.check_duplicate("Users", "firstname", "Leune")
+	print(check_exists)
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
