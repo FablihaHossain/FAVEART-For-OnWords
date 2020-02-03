@@ -15,13 +15,13 @@
 	<p> Connection Set Up </p>
 
 	{# Testing Database Connection by Displaying User Table #}
-<!-- 	{% for user in users %}
-	<p> Id: {{user.id}}</p>
+	{% for user in users %}
+	<p> Id: {{user.user_id}}</p>
 	<p> First Name: {{user.firstname}}</p>
 	<p> Last Name: {{user.lastname}}</p>
 	<p> Username: {{user.username}}</p>
-	{% endfor %} -->
-
+	{% endfor %}
+	<br>
 	{% for path in paths %}
 	<p> Path ID: {{path.path_id}}</p>
 	<p> Name: {{path.name}}</p>
