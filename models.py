@@ -40,8 +40,8 @@ class Checkpoints(db.Model):
 class Interactions(db.Model):
 	__table_args__ = {'extend_existing': True}
 	interaction_id = db.Column(db.Integer, primary_key = True, unique = True)
-	path_id = db.Column(db.Integer, db.ForeignKey('path.path_id'), nullable = False)
-	checkpoint_id = db.Column(db.Integer, db.ForeignKey('checkpoint.checkpoint_id'), nullable = False)
+	path_id = db.Column(db.Integer, db.ForeignKey('paths.path_id'), nullable = False)
+	checkpoint_id = db.Column(db.Integer, db.ForeignKey('checkpoints.checkpoint_id'), nullable = False)
 	# Array of user ids of those explorers that made the interaction
 	user_id = db.Column(db.ARRAY(db.Integer))
 	datetime = db.Column(db.DateTime)
