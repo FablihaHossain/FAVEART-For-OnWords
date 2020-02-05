@@ -1,11 +1,17 @@
 import sqlalchemy
 import psycopg2
+from sqlalchemy.inspection import inspect
 from application import db
 from models import Users, Paths, Checkpoints, Interactions
 from config import Config
 from sqlalchemy import text
 
 class Database():
+	# Checking if the primary correct primary key was given for a table
+	# def pkey_check(tablename, pkcolumn):
+	# 	pkey = inspect(tablename).primary_key[0].name
+
+
 	# Checking for duplicate values
 	def check_duplicate(tablename, columnName, value):
 		# Developing the query to get from the table 
@@ -112,11 +118,31 @@ class Database():
 		# Committing the change to the database
 		db.session.commit()
 
-	# Delete From Table in Database 
-
 	# Select From Table in Database
+	def select_where(tablename, pkcolumn, pk):
+		# Developing the query
+		query = text("SELECT * FROM {} WHERE {} = {}".format(tablename, pkcolumn, pk))
+
+		# Executing the query
+		result = db.session.execute(query).fetchone()
+
+		# Reformating the result statement
+		result = str(result).strip("(',')")
+
+		# Returning result
+		if result != "None":
+			return result 
+		else:
+			return "Sorry, cannot find value from table {}".format(tablename)
 
 	# Update Table in Database
+	def update_table(tablename, pkcolumn, pk, columnName, newValue):
+		# Developing the query
+		query = text("UPDATE {} SET {} = '{}' WHERE {} = {}".format(tablename, columnName, newValue, pkcolumn, pk))
+
+		# Executing the query
+		db.engine.execute(query)
+	# Delete From Table in Database 
 
 	# Validate Login
 
