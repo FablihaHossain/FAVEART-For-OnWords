@@ -119,9 +119,9 @@ class Database():
 		db.session.commit()
 
 	# Select From Table in Database
-	def select_where(tablename, pkcolumn, pk):
+	def select_where(tablename, pkcolumn, pk, columnName):
 		# Developing the query
-		query = text("SELECT * FROM {} WHERE {} = {}".format(tablename, pkcolumn, pk))
+		query = text("SELECT {} FROM {} WHERE {} = '{}'".format(columnName, tablename, pkcolumn, pk))
 
 		# Executing the query
 		result = db.session.execute(query).fetchone()
@@ -142,10 +142,35 @@ class Database():
 
 		# Executing the query
 		db.engine.execute(query)
+
 	# Delete From Table in Database 
+	# Really needs some work, especially with different types of input
+	def delete_from(tablename, pkcolumn, pk, columnName, columnValue):
+		# Developing the query
+		query = text("DELETE FROM {} WHERE {} = '{}'".format(tablename, columnName, columnValue))
+
+		# Executing the query
+		db.engine.execute(query)
 
 	# Validate Login
+	def validate_login(username, password):
+		# Initially the validation will be false
+		validated = False
 
+		# Checks if the username given exists in the database
+		exists = db.session.query(Users.username).filter_by(username = username).scalar() is not None
+
+		# If it exists, it checks if the password given is correct
+		if exists:
+			# Getting the password from the database
+			user_password = Database.select_where("users", "username", username, "password")
+
+			# Comparing the two passwords to see if they are a match
+			if user_password == password:
+				validated = True
+
+		# Returning the result
+		return validated
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
