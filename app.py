@@ -6,6 +6,8 @@ from datetime import *
 # Defining basic route
 @app.route("/")
 def index():
+	# Testing the delete function
+	Database.delete_from("checkpoints", "checkpoint_id", 3, "color", "pink")
 	# Adding a new user to the database
 	Database.insert_user("Shoshanah", "Tarkow", "tarkow@gmail.com", "starkow", "onwords", "admin")
 
@@ -41,13 +43,16 @@ def index():
 	# print(check_exists)
 
 	# Testing the select_where function
-	user1 = Database.select_where("users", "user_id", 100)
+	user1 = Database.select_where("users", "user_id", 100, "email")
 	print(user1)
 
-	path1 = Database.select_where("paths", "path_id", 1)
+	path1 = Database.select_where("paths", "path_id", 1, "description")
 	print(path1)
 
 	# Testing the update function
 	Database.update_table("paths", "path_id", 4, "description", "this is testing update")
+
+	# Testing the validate login function
+	result = Database.validate_login("starkow", "onwords")
 
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
