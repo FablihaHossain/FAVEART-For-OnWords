@@ -3,6 +3,8 @@
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <script src="js/aframe.min.js"></script>
 <script src="js/aframe-ar.js"></script>
+<script src="anime.min.js"></script>
+
 
 <!-- support 3D text -->
 <script src="js/aframe-text-geometry-component.min.js"></script>
@@ -23,10 +25,17 @@ AFRAME.registerComponent("animate-text", {
 	{
 		if (this.animationStyle == "bounce")
 		{
-			let x = -5;
+			let x = -2;
 			let y = Math.sin(time / 1000);
 			let z = -5;
 			this.el.object3D.position.set(x, y, z);
+
+			anime({
+  				targets: '.dir-alternate',
+  				translateY: 250,
+  				direction: 'alternate',
+  				easing: 'easeInOutSine'
+			});
 		}
 	}
 	
