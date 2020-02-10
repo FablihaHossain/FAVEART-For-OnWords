@@ -14,7 +14,8 @@ def index():
 	# Adding a new path to the database
 	cList = [10, 20, 30]
 	iList = [20, 30, 40]
-	Database.insert_path("Blah", "Blah blah", cList, iList, "Vickie")
+	codes = [8, 2, -7]
+	Database.insert_path("Roses", "Are Red", cList, iList, "Patrick Star", "public", codes)
 
 	# # Adding a new checkpoint to the database
 	# text = ['Will', 'This', 'Work?']
