@@ -4,3 +4,7 @@ config.*
 *.pyc
 *.env
 .flaskenv
+
+# Re-Creating Database Tables (if necessary)
+tables.txt
+initial_values.txt
