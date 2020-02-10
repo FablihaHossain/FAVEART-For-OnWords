@@ -73,7 +73,7 @@ class Database():
 
 	# Insert Path into Database
 	# Pathmaker cannot have two paths with the same name AND description
-	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker):
+	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, codes):
 		# Checking if the path already exists in the system (for the specified pathmaker)
 		query = text("SELECT * FROM paths WHERE name = '{}' AND description = '{}' AND pathmaker = '{}'".format(pathname, path_description, pathmaker))
 		exists = db.engine.execute(query).fetchone() is not None
@@ -84,7 +84,7 @@ class Database():
 			nextID = Database.next_id("Paths")
 
 			# Creating a new path
-			newPath = Paths(path_id = nextID, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker)
+			newPath = Paths(path_id = nextID, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
 
 			# Adding the new path to the database
 			db.session.add(newPath)
