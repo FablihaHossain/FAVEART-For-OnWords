@@ -23,6 +23,9 @@ class Paths(db.Model):
 	# Array of interaction id values within Path
 	interactions = db.Column(db.ARRAY(db.Integer))
 	pathmaker = db.Column(db.String(100), nullable = False)
+	status = db.Column(db.String(50), nullable = False)
+	access_codes = db.Column(db.ARRAY(db.Integer))
+	
 
 # Checkpoint Table 
 class Checkpoints(db.Model):
@@ -37,6 +40,7 @@ class Checkpoints(db.Model):
 	# Latitude and Longitude
 	geolocation = db.Column(db.ARRAY(db.Float))
 
+# Interactions Table
 class Interactions(db.Model):
 	__table_args__ = {'extend_existing': True}
 	interaction_id = db.Column(db.Integer, primary_key = True, unique = True)
