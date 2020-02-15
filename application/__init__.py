@@ -16,4 +16,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation w
 # Database Object
 db = SQLAlchemy(app)
 
+# Database Connection
+try:
+	conn = psycopg2.connect(user=Config.user, password=Config.password, host = "localhost", database=Config.db, port = 5432)
+	print("Successully Connected to Database")
+except:
+	print("Unable to Connect to Database")
+
 # Credit to https://flask.palletsprojects.com/en/1.1.x/quickstart/
