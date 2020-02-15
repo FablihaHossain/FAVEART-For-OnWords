@@ -1,10 +1,13 @@
 import sqlalchemy
 import psycopg2
 from sqlalchemy.inspection import inspect
-from application import db
+from application import db, conn
 from models import Users, Paths, Checkpoints, Interactions
 from config import Config
 from sqlalchemy import text
+
+# Getting a cursor object from database connection
+cursor = conn.cursor()
 
 class Database():
 	# Checking if the primary correct primary key was given for a table
@@ -15,13 +18,19 @@ class Database():
 	# Checking for duplicate values
 	def check_duplicate(tablename, columnName, value):
 		# Developing the query to get from the table 
-		query = text("SELECT * FROM {} WHERE {} = '{}'".format(tablename, columnName, value))
+		query = "SELECT * FROM %s WHERE %s = '%s'" % (tablename, columnName, value)
 
-		# Finding out if it exists in the table
-		exists = db.engine.execute(query).fetchone() is not None
+		try:
+			# Executing the query
+			cursor.execute(query)
 
-		# Returning if the entry exists or not
-		return exists
+			# Finding out if it exists in the table
+			exists = cursor.fetchone() is not None
+
+			# Returning if the entry exists or not
+			return exists
+		except:
+			print("Error! Invalid Entry")
 
 	# Get Next ID
 	def next_id(tablename):
@@ -174,3 +183,5 @@ class Database():
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
+
+	# Credit to https://github.com/nycdb/nycdb/blob/master/src/nycdb/database.py
