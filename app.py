@@ -63,7 +63,7 @@ def index():
 	# Database.update_table("dfsdfsf", "dsfsfds", 9, "username", "jsmith")
 
 	# Testing the validate login function
-	result = Database.validate_login("vgrinthal", "chocolate")
+	result = Database.validate_login("fhossain", "password")
 	print("Password check")
 	print(result)
 
