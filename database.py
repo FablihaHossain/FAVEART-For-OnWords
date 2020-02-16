@@ -31,6 +31,36 @@ class Database():
 		except:
 			print("Error! Invalid Entry")
 
+	# Function to count the number of rows at a given table
+	def row_count(tablename):
+		# Developing the query
+		query = "SELECT * FROM %s" % (tablename)
+
+		# Executing the query
+		cursor.execute(query)
+
+		# Getting the row count
+		count = cursor.rowcount
+
+		# # Getting all the rows
+		count = cursor.rowcount
+		# # print("number of rows %d" % count)
+		# rows = cursor.fetchall()
+		# print("CHECK")
+		# print(rows[count-1][1])
+
+		# # # Printing
+		# for r in rows:
+		# 	print("ROWS")
+		# 	print(r)
+		# 	#print(f"{r[0]}, {r[1]}, {r[2]}")
+		# 	# if [10, 20, 30] in r:
+		# 	# 	print(r)
+
+		# Returning the number of rows
+		return count
+
+
 	# Get Next ID
 	def next_id(tablename):
 		# The last id will be found, depending on the table
@@ -149,17 +179,14 @@ class Database():
 			# Getting the result
 			result = cursor.fetchone()
 
-			# Reformating the result statement
-			result = str(result).strip("(',')")
-
-			# Returning result
-			if result != "None":
-				return result 
+			# Returning the result if not none
+			if result is not None:
+				return result[0]
 			else:
 				return "Sorry, cannot find value from table {}".format(tablename)
 		except:
 				return "Error! Invalid Entry. Please try again"
-
+				
 	# Update Table in Database
 	def update_table(tablename, pkcolumn, pk, columnName, newValue):
 		try:
@@ -203,14 +230,10 @@ class Database():
 				# Getting the user id of the user
 				query = "SELECT user_id FROM users WHERE username = '%s'" % username
 				cursor.execute(query)
-				current_id = cursor.fetchone()
-
-				# Reformating the result and turning it into an int value
-				current_id = str(current_id).strip("(',')")
-				current_id = int(current_id)
+				current_id = cursor.fetchone()[0]
 
 				# Getting the password from the database
-				user_password = Database.select_where("users", "user_id", int(current_id), "password")
+				user_password = Database.select_where("users", "user_id", current_id, "password")
 
 				# Comparing the two passwords to see if they are a match
 				if user_password == password:
@@ -225,3 +248,5 @@ class Database():
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
 
 	# Credit to https://github.com/nycdb/nycdb/blob/master/src/nycdb/database.py
+	# Credit to http://zetcode.com/python/psycopg2/
+	# Credit to https://wiki.postgresql.org/wiki/Psycopg2_Tutorial
