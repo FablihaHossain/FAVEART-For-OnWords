@@ -7,15 +7,15 @@ from datetime import *
 @app.route("/")
 def index():
 	# Testing the delete function
-	# Database.delete_from("checkpoints", "checkpoint_id", 3, "color", "pink")
+	Database.delete_from("users", "user_id", 8, "firstname", "Shoshanah")
 	# Adding a new user to the database
-	# Database.insert_user("Shoshanah", "Tarkow", "tarkow@gmail.com", "starkow", "onwords", "admin")
+	# Database.insert_user("Test", "test@gmail.com", "test", "testing", "guest")
 
 	# Adding a new path to the database
 	# cList = [10, 20, 30]
 	# iList = [20, 30, 40]
 	# codes = [8, 2, -7]
-	# Database.insert_path("Roses", "Are Red", cList, iList, "Patrick Star", "public", codes)
+	# Database.insert_path("Roses", 1, cList, iList, "Patrick Star", "public", codes)
 
 	# # Adding a new checkpoint to the database
 	# text = ['Will', 'This', 'Work?']
@@ -41,21 +41,30 @@ def index():
 	interaction_list = Interactions.query.all()
 
 	# Check duplicate function (with psycopg2)
-	check_exists = Database.check_duplicate("paths", "path_id", "1")
-	print("Check Duplicate:")
-	print(check_exists)
+	# check_exists = Database.check_duplicate("paths", "path_id", "1")
+	# print("Check Duplicate:")
+	# print(check_exists)
 
-	# # Testing the select_where function
-	# user1 = Database.select_where("users", "user_id", 100, "email")
+	# Testing the next Id function
+	# i = Database.next_id("Interactions")
+	# print("Next ID")
+	# print(i)
+
+	# Testing the select_where function
+	# user1 = Database.select_where("users", "user_id", 2, "email")
 	# print(user1)
 
 	# path1 = Database.select_where("paths", "path_id", 1, "description")
 	# print(path1)
 
 	# Testing the update function
-	# Database.update_table("paths", "path_id", 4, "description", "this is testing update")
+	# Database.update_table("dfsfsdf", "udsfsdfs", "wfref", "firstname", "Jacob")
+	# Database.update_table("dsfsfds", "akdfsadkjf", 9, "lastname", "Smith")
+	# Database.update_table("dfsdfsf", "dsfsfds", 9, "username", "jsmith")
 
 	# Testing the validate login function
-	# result = Database.validate_login("starkow", "onwords")
+	result = Database.validate_login("vgrinthal", "chocolate")
+	print("Password check")
+	print(result)
 
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
