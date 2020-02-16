@@ -141,24 +141,16 @@ class Database():
 	def select_where(tablename, pkcolumn, pk, columnName):
 		try:
 			# Developing the query
-			print(tablename)
-			print(columnName)
-			print(pk)
-			print(pkcolumn)
 			query = "SELECT %s FROM %s WHERE %s = %d" % (columnName, tablename, pkcolumn, pk)
-			print("two")
 
 			# Executing the query
 			cursor.execute(query)
-			print("one")
 
 			# Getting the result
 			result = cursor.fetchone()
 
 			# Reformating the result statement
 			result = str(result).strip("(',')")
-			print("Getting result in the selet funcion")
-			print(result)
 
 			# Returning result
 			if result != "None":
@@ -206,26 +198,28 @@ class Database():
 		exists = db.session.query(Users.username).filter_by(username = username).scalar() is not None
 
 		# If it exists, it checks if the password given is correct
-		if exists:
-			# Getting the user id of the user
-			query = "SELECT user_id FROM users WHERE username = '%s'" % username
-			cursor.execute(query)
-			current_id = cursor.fetchone()
-			current_id = str(current_id).strip("(',')")
-			print("after getting id")
-			print(current_id)
+		try:
+			if exists:
+				# Getting the user id of the user
+				query = "SELECT user_id FROM users WHERE username = '%s'" % username
+				cursor.execute(query)
+				current_id = cursor.fetchone()
 
-			# Getting the password from the database
-			user_password = Database.select_where("users", "user_id", current_id, "password")
-			print("getting pass in the validate function")
-			print(user_password)
+				# Reformating the result and turning it into an int value
+				current_id = str(current_id).strip("(',')")
+				current_id = int(current_id)
 
-			# Comparing the two passwords to see if they are a match
-			if user_password == password:
-				validated = True
+				# Getting the password from the database
+				user_password = Database.select_where("users", "user_id", int(current_id), "password")
 
-		# Returning the result
-		return validated
+				# Comparing the two passwords to see if they are a match
+				if user_password == password:
+					validated = True
+
+			# Returning the result
+			return validated
+		except:
+			return "Error with validate_login"
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
