@@ -7,7 +7,7 @@ from datetime import *
 @app.route("/")
 def index():
 	# Testing the delete function
-	Database.delete_from("users", "user_id", 8, "firstname", "Shoshanah")
+	Database.delete_from("users", "user_id", 5, "firstname", "Shoshanah")
 	# Adding a new user to the database
 	# Database.insert_user("Test", "test@gmail.com", "test", "testing", "guest")
 
@@ -51,8 +51,8 @@ def index():
 	# print(i)
 
 	# Testing the select_where function
-	# user1 = Database.select_where("users", "user_id", 2, "email")
-	# print(user1)
+	user1 = Database.select_where("users", "user_id", 1, "username")
+	print(user1)
 
 	# path1 = Database.select_where("paths", "path_id", 1, "description")
 	# print(path1)
@@ -61,10 +61,13 @@ def index():
 	# Database.update_table("dfsfsdf", "udsfsdfs", "wfref", "firstname", "Jacob")
 	# Database.update_table("dsfsfds", "akdfsadkjf", 9, "lastname", "Smith")
 	# Database.update_table("dfsdfsf", "dsfsfds", 9, "username", "jsmith")
-
+	Database.update_table("users", "user_id", 10, "user_id", 5)
 	# Testing the validate login function
-	result = Database.validate_login("fhossain", "password")
-	print("Password check")
-	print(result)
+	# result = Database.validate_login("fhossain", "pjsdfksld")
+	# print("Password check")
+	# print(result)
 
+	# Testing the row functions
+	total_users = Database.row_count("users")
+	print("Total Users: %d" % total_users)
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
