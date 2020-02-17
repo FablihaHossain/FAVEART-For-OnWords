@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<script src="js/aframe.min.js"></script>
+<script src="js/aframe-ar.js"></script>
+<!-- support 3D text -->
+<script src="js/aframe-text-geometry-component.min.js"></script>
+
+</head>
+
+<body style="background: #888888; margin: 0px; overflow: hidden;">
+
+
+<script>
+
+AFRAME.registerComponent("registerevents", {
+    init: function () 
+    {
+
+        this.firstDetection = false;
+        this.markerVisible = false;
+        this.marker = this.el;
+        this.link = document.querySelector("#words");
+        
+        this.link.object3D.visible = false;
+
+        let self = this;
+
+        this.marker.addEventListener('markerFound', function() {
+            self.markerVisible = true;
+        });
+
+        this.marker.addEventListener('markerLost', function() {
+            self.markerVisible = false;
+        });
+          
+    });
+});
+</script>
+<script>
+AFRAME.registerComponent("animate-text", {
+    init: function()
+    {
+        //this.el = HTML TAG
+        this.el.setAttribute("material", "color", "yellow");
+        this.animationStyle = "float";
+    },
+
+    tick: function(time, deltaTime)
+    {
+        if (this.animationStyle == "float")
+        {
+            this.el.object3D.position.set(dur: "5000", easing: linear, dir: normal, from: "-1 0 0", to: "-1 0 -2", loop: false, autoplay: false);
+
+            this.el.object3D.material.set(color: violet, repeat: "0.5 0.5", rotation="0 0 0", dur: "4000", from: "1.0", to: "0.0", loop: false, autoplay: false; delay: "1000");
+        }
+    }
+});
+
+</script>
+
+
+<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;" clicky>
+
+    <a-assets>
+        <a-asset-item id="exoFont" src="fonts/Liu Jian Mao Cao_Regular.json"></a-asset-item>
+	</a-assets>
+
+    <a-marker type="pattern" url="data/PantherMarker.patt" id="baseMarker" registerevents>
+        <a-entity id="words" 
+            text-geometry="value: Hello, world!; font: #exoFont;"
+           animate-text>
+        </a-entity>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+    
+</a-scene>
+
+</body>
+</html>
