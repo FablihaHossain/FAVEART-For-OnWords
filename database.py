@@ -1,6 +1,5 @@
 import sqlalchemy
 import psycopg2
-from sqlalchemy.inspection import inspect
 from application import db, conn
 from models import Users, Paths, Checkpoints, Interactions
 from config import Config
@@ -23,8 +22,8 @@ class Database():
 
 			# Returning if the entry exists or not
 			return exists
-		except:
-			print("Error! Invalid Entry")
+		except Exception as error:
+			return "Error! %s" % error
 
 	# Function to count the number of rows at a given table
 	def row_count(tablename):
@@ -94,7 +93,7 @@ class Database():
 
 	# Insert Path into Database
 	# Pathmaker cannot have two paths with the same name AND description
-	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, codes):
+	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, codes=[0]):
 		try:
 			# Checking if the path already exists in the system (for the specified pathmaker)
 			query = "SELECT * FROM paths WHERE name = '%s' AND description = '%s' AND pathmaker = '%s'" % (pathname, path_description, pathmaker)
@@ -118,8 +117,8 @@ class Database():
 
 				# Commiting the change to the database
 				db.session.commit()
-		except psycopg2.DataError:
-			raise
+		except Exception as error:
+				print ("Error! %s" % error)
 
 	# Insert Checkpoint into Database
 	def insert_checkpoint(text_list, animation_list, color, geolocation):
@@ -150,7 +149,7 @@ class Database():
 		db.session.commit()
 
 	# Select From Table in Database
-	def select_where(tablename, pkcolumn, pk, columnName="*"):
+	def select_where(tablename, pkcolumn, pk, columnName='*'):
 		try:
 			# Developing the query
 			query = "SELECT %s FROM %s WHERE %s = %d" % (columnName, tablename, pkcolumn, pk)
@@ -166,8 +165,8 @@ class Database():
 				return result[0]
 			else:
 				return "Sorry, cannot find value from table {}".format(tablename)
-		except:
-				return "Error! Invalid Entry. Please try again"
+		except Exception as error:
+				print ("Error! %s" % error)
 				
 	# Update Table in Database
 	def update_table(tablename, pkcolumn, pk, columnName, newValue):
@@ -180,8 +179,8 @@ class Database():
 
 			# Commiting the change
 			conn.commit()
-		except:
-			return "Error! Something went wrong"
+		except Exception as error:
+			print("Error! %s" % error)
 
 	# Delete From Table in Database 
 	# Really needs some work, especially with different types of input
@@ -195,8 +194,8 @@ class Database():
 
 			# Commiting the change
 			conn.commit()
-		except:
-			return "Error! Something went wrong"
+		except Exception as error:
+			print("Error! %s" % error)
 
 	# Validate Login
 	def validate_login(username, password):
@@ -223,8 +222,8 @@ class Database():
 
 			# Returning the result
 			return validated
-		except:
-			return "Error with validate_login"
+		except Exception as error:
+			print("Error! %s" % error)
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
