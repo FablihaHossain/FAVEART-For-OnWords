@@ -9,11 +9,6 @@ from config import Config
 cursor = conn.cursor()
 
 class Database():
-	# Checking if the primary correct primary key was given for a table
-	# def pkey_check(tablename, pkcolumn):
-	# 	pkey = inspect(tablename).primary_key[0].name
-
-
 	# Checking for duplicate values
 	def check_duplicate(tablename, columnName, value):
 		# Developing the query to get from the table 
@@ -33,61 +28,48 @@ class Database():
 
 	# Function to count the number of rows at a given table
 	def row_count(tablename):
-		# Developing the query
-		query = "SELECT * FROM %s" % (tablename)
+		try:
+			# Developing the query
+			query = "SELECT * FROM %s" % (tablename)
 
-		# Executing the query
-		cursor.execute(query)
+			# Executing the query
+			cursor.execute(query)
 
-		# Getting the row count
-		count = cursor.rowcount
+			# Getting the row count
+			count = cursor.rowcount
 
-		# # Getting all the rows
-		count = cursor.rowcount
-		# # print("number of rows %d" % count)
-		# rows = cursor.fetchall()
-		# print("CHECK")
-		# print(rows[count-1][1])
-
-		# # # Printing
-		# for r in rows:
-		# 	print("ROWS")
-		# 	print(r)
-		# 	#print(f"{r[0]}, {r[1]}, {r[2]}")
-		# 	# if [10, 20, 30] in r:
-		# 	# 	print(r)
-
-		# Returning the number of rows
-		return count
+			# Returning the number of rows
+			return count
+		except:
+			print("Error! Wrong table name given")
 
 
 	# Get Next ID
 	def next_id(tablename):
-		# The last id will be found, depending on the table
-		last_id = None
+		try:
+			# The last id will be found, depending on the table
+			last_id = None
 
-		# Since the ID numbers are generated through increments, the very last object in the table is found
-		# From there, the last_id variable will be determined
-		if tablename.lower() == "users":
-			lastUser = Users.query.order_by(Users.user_id.desc()).first()
-			last_id = lastUser.user_id
-		elif tablename.lower() == "paths":
-			lastPath = Paths.query.order_by(Paths.path_id.desc()).first()
-			last_id = lastPath.path_id
-		elif tablename.lower() == "checkpoints":
-			lastCheckpoint = Checkpoints.query.order_by(Checkpoints.checkpoint_id.desc()).first()
-			last_id = lastCheckpoint.checkpoint_id
-		elif tablename.lower() == "interactions":
-			lastInteraction= Interactions.query.order_by(Interactions.interaction_id.desc()).first()
-			last_id = lastInteraction.interaction_id
-		else:
-			return "Error! Wrong Table Name Given"
+			# Developing a query to get all rows in the given table
+			query = "SELECT * FROM %s" % (tablename)
 
-		# Incrementing the ID
-		newId = last_id + 1
+			# Executing the query
+			cursor.execute(query)
 
-		# Returning the new ID
-		return newId
+			# Getting the number of rows
+			count = cursor.rowcount
+
+			# Getting all the rows from the table given
+			rows = cursor.fetchall()
+
+			# Getting the id of the last row
+			last_id = rows[count-1][0]
+
+			# Incremeting the id
+			newId = last_id + 1
+			return newId
+		except:
+			print("Error! Incorrect table name given")
 
 	# Insert User Into Database 
 	# Note: No two users can have the same username and/or the same email
@@ -168,7 +150,7 @@ class Database():
 		db.session.commit()
 
 	# Select From Table in Database
-	def select_where(tablename, pkcolumn, pk, columnName):
+	def select_where(tablename, pkcolumn, pk, columnName="*"):
 		try:
 			# Developing the query
 			query = "SELECT %s FROM %s WHERE %s = %d" % (columnName, tablename, pkcolumn, pk)
