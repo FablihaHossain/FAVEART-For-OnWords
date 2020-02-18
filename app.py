@@ -51,7 +51,7 @@ def index():
 	# print(i)
 
 	# Testing the select_where function
-	user1 = Database.select_where("users", "user_id", 1, "username")
+	user1 = Database.select_where("users", "user_id", 1, "email")
 	print(user1)
 
 	# path1 = Database.select_where("paths", "path_id", 1, "description")
@@ -70,4 +70,8 @@ def index():
 	# Testing the row functions
 	total_users = Database.row_count("users")
 	print("Total Users: %d" % total_users)
+
+	# Testing new get id function
+	new_id = Database.next_id("users")
+	print(new_id)
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
