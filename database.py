@@ -1,55 +1,74 @@
 import sqlalchemy
 import psycopg2
-from sqlalchemy.inspection import inspect
-from application import db
+from application import db, conn
 from models import Users, Paths, Checkpoints, Interactions
 from config import Config
-from sqlalchemy import text
+
+# Getting a cursor object from database connection
+cursor = conn.cursor()
 
 class Database():
-	# Checking if the primary correct primary key was given for a table
-	# def pkey_check(tablename, pkcolumn):
-	# 	pkey = inspect(tablename).primary_key[0].name
-
-
 	# Checking for duplicate values
 	def check_duplicate(tablename, columnName, value):
 		# Developing the query to get from the table 
-		query = text("SELECT * FROM {} WHERE {} = '{}'".format(tablename, columnName, value))
+		query = "SELECT * FROM %s WHERE %s = '%s'" % (tablename, columnName, value)
 
-		# Finding out if it exists in the table
-		exists = db.engine.execute(query).fetchone() is not None
+		try:
+			# Executing the query
+			cursor.execute(query)
 
-		# Returning if the entry exists or not
-		return exists
+			# Finding out if it exists in the table
+			exists = cursor.fetchone() is not None
+
+			# Returning if the entry exists or not
+			return exists
+		except Exception as error:
+			return "Error! %s" % error
+
+	# Function to count the number of rows at a given table
+	def row_count(tablename):
+		try:
+			# Developing the query
+			query = "SELECT * FROM %s" % (tablename)
+
+			# Executing the query
+			cursor.execute(query)
+
+			# Getting the row count
+			count = cursor.rowcount
+
+			# Returning the number of rows
+			return count
+		except:
+			print("Error! Wrong table name given")
+
 
 	# Get Next ID
 	def next_id(tablename):
-		# The last id will be found, depending on the table
-		last_id = None
+		try:
+			# The last id will be found, depending on the table
+			last_id = None
 
-		# Since the ID numbers are generated through increments, the very last object in the table is found
-		# From there, the last_id variable will be determined
-		if tablename == "Users":
-			lastUser = Users.query.order_by(Users.user_id.desc()).first()
-			last_id = lastUser.user_id
-		elif tablename == "Paths":
-			lastPath = Paths.query.order_by(Paths.path_id.desc()).first()
-			last_id = lastPath.path_id
-		elif tablename == "Checkpoints":
-			lastCheckpoint = Checkpoints.query.order_by(Checkpoints.checkpoint_id.desc()).first()
-			last_id = lastCheckpoint.checkpoint_id
-		elif tablename == "Interactions":
-			lastInteraction= Interactions.query.order_by(Interactions.interaction_id.desc()).first()
-			last_id = lastInteraction.interaction_id
-		else:
-			return "Error! Wrong Table Name Given"
+			# Developing a query to get all rows in the given table
+			query = "SELECT * FROM %s" % (tablename)
 
-		# Incrementing the ID
-		newId = last_id + 1
+			# Executing the query
+			cursor.execute(query)
 
-		# Returning the new ID
-		return newId
+			# Getting the number of rows
+			count = cursor.rowcount
+
+			# Getting all the rows from the table given
+			rows = cursor.fetchall()
+
+			# Getting the id of the last row
+			last_id = rows[count-1][0]
+
+			# Incremeting the id
+			newId = last_id + 1
+			return newId
+		except:
+			print("Error! Incorrect table name given")
 
 	# Insert User Into Database 
 	# Note: No two users can have the same username and/or the same email
@@ -60,38 +79,48 @@ class Database():
 
 		# If the username and email doesn't already exist, the new user is added to the database
 		if not username_exists and not email_exists:
-			# Getting the next ID
-			nextId = Database.next_id("Users")
-			# Creating the new user
-			newUser = Users(user_id = nextId, firstname = firstname, lastname = lastname, email = email, username = username, password = password, role = role)
+				# Getting the next ID
+				nextId = Database.next_id("Users")
 
-			# Adding the new user to the database
-			db.session.add(newUser)
+				# Creating the new user
+				newUser = Users(user_id = nextId, firstname = firstname, lastname = lastname, email = email, username = username, password = password, role = role)
 
-			# Commiting the change
-			db.session.commit()
+				# Adding the new user to the database
+				db.session.add(newUser)
+
+				# Commiting the change
+				db.session.commit()
 
 	# Insert Path into Database
 	# Pathmaker cannot have two paths with the same name AND description
-	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, codes):
-		# Checking if the path already exists in the system (for the specified pathmaker)
-		query = text("SELECT * FROM paths WHERE name = '{}' AND description = '{}' AND pathmaker = '{}'".format(pathname, path_description, pathmaker))
-		exists = db.engine.execute(query).fetchone() is not None
+	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, codes=[0]):
+		try:
+			# Checking if the path already exists in the system (for the specified pathmaker)
+			query = "SELECT * FROM paths WHERE name = '%s' AND description = '%s' AND pathmaker = '%s'" % (pathname, path_description, pathmaker)
 
-		# If the path doesn't exist, it is then added to the database
-		if not exists:
-			# Getting the next path ID
-			nextID = Database.next_id("Paths")
+			# Executing the query
+			cursor.execute(query)
 
-			# Creating a new path
-			newPath = Paths(path_id = nextID, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
+			# Finding out if it exists in the table
+			exists = cursor.fetchone() is not None
+		
+			# If the path doesn't exist, it is then added to the database
+			if not exists:
+				# Getting the next path ID
+				nextID = Database.next_id("Paths")
 
-			# Adding the new path to the database
-			db.session.add(newPath)
+				# Creating a new path
+				newPath = Paths(path_id = nextID, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
 
-			# Commiting the change to the database
-			db.session.commit()
-	# # Insert Checkpoint into Database
+				# Adding the new path to the database
+				db.session.add(newPath)
+
+				# Commiting the change to the database
+				db.session.commit()
+		except Exception as error:
+				print ("Error! %s" % error)
+
+	# Insert Checkpoint into Database
 	def insert_checkpoint(text_list, animation_list, color, geolocation):
 		# Getting the next ID
 		nextId = Database.next_id("Checkpoints")
@@ -104,7 +133,8 @@ class Database():
 
 		# Commiting the change to the database
 		db.session.commit()
-	# # Insert Interaction into Database 
+	
+	# Insert Interaction into Database 
 	def insert_interaction(path_id, checkpoint_id, user_ids, currentDatetime):
 		# Getting the next ID
 		nextId = Database.next_id("Interactions")
@@ -119,38 +149,53 @@ class Database():
 		db.session.commit()
 
 	# Select From Table in Database
-	def select_where(tablename, pkcolumn, pk, columnName):
-		# Developing the query
-		query = text("SELECT {} FROM {} WHERE {} = '{}'".format(columnName, tablename, pkcolumn, pk))
+	def select_where(tablename, pkcolumn, pk, columnName='*'):
+		try:
+			# Developing the query
+			query = "SELECT %s FROM %s WHERE %s = %d" % (columnName, tablename, pkcolumn, pk)
 
-		# Executing the query
-		result = db.session.execute(query).fetchone()
+			# Executing the query
+			cursor.execute(query)
 
-		# Reformating the result statement
-		result = str(result).strip("(',')")
+			# Getting the result
+			result = cursor.fetchone()
 
-		# Returning result
-		if result != "None":
-			return result 
-		else:
-			return "Sorry, cannot find value from table {}".format(tablename)
-
+			# Returning the result if not none
+			if result is not None:
+				return result[0]
+			else:
+				return "Sorry, cannot find value from table {}".format(tablename)
+		except Exception as error:
+				print ("Error! %s" % error)
+				
 	# Update Table in Database
 	def update_table(tablename, pkcolumn, pk, columnName, newValue):
-		# Developing the query
-		query = text("UPDATE {} SET {} = '{}' WHERE {} = {}".format(tablename, columnName, newValue, pkcolumn, pk))
+		try:
+			# Developing the query
+			query = "UPDATE %s SET %s = '%s' WHERE %s = %d" % (tablename, columnName, newValue, pkcolumn, pk)
 
-		# Executing the query
-		db.engine.execute(query)
+			# Executing the query
+			cursor.execute(query)
+
+			# Commiting the change
+			conn.commit()
+		except Exception as error:
+			print("Error! %s" % error)
 
 	# Delete From Table in Database 
 	# Really needs some work, especially with different types of input
 	def delete_from(tablename, pkcolumn, pk, columnName, columnValue):
-		# Developing the query
-		query = text("DELETE FROM {} WHERE {} = '{}'".format(tablename, columnName, columnValue))
+		try:
+			# Developing the query
+			query = "DELETE FROM %s WHERE %s = '%s' AND %s = %d" % (tablename, columnName, columnValue, pkcolumn, pk)
 
-		# Executing the query
-		db.engine.execute(query)
+			# Executing the query
+			cursor.execute(query)
+
+			# Commiting the change
+			conn.commit()
+		except Exception as error:
+			print("Error! %s" % error)
 
 	# Validate Login
 	def validate_login(username, password):
@@ -161,16 +206,28 @@ class Database():
 		exists = db.session.query(Users.username).filter_by(username = username).scalar() is not None
 
 		# If it exists, it checks if the password given is correct
-		if exists:
-			# Getting the password from the database
-			user_password = Database.select_where("users", "username", username, "password")
+		try:
+			if exists:
+				# Getting the user id of the user
+				query = "SELECT user_id FROM users WHERE username = '%s'" % username
+				cursor.execute(query)
+				current_id = cursor.fetchone()[0]
 
-			# Comparing the two passwords to see if they are a match
-			if user_password == password:
-				validated = True
+				# Getting the password from the database
+				user_password = Database.select_where("users", "user_id", current_id, "password")
 
-		# Returning the result
-		return validated
+				# Comparing the two passwords to see if they are a match
+				if user_password == password:
+					validated = True
+
+			# Returning the result
+			return validated
+		except Exception as error:
+			print("Error! %s" % error)
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
+
+	# Credit to https://github.com/nycdb/nycdb/blob/master/src/nycdb/database.py
+	# Credit to http://zetcode.com/python/psycopg2/
+	# Credit to https://wiki.postgresql.org/wiki/Psycopg2_Tutorial

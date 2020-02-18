@@ -6,28 +6,6 @@ from datetime import *
 # Defining basic route
 @app.route("/")
 def index():
-	# Testing the delete function
-	Database.delete_from("checkpoints", "checkpoint_id", 3, "color", "pink")
-	# Adding a new user to the database
-	Database.insert_user("Shoshanah", "Tarkow", "tarkow@gmail.com", "starkow", "onwords", "admin")
-
-	# Adding a new path to the database
-	cList = [10, 20, 30]
-	iList = [20, 30, 40]
-	codes = [8, 2, -7]
-	Database.insert_path("Roses", "Are Red", cList, iList, "Patrick Star", "public", codes)
-
-	# # Adding a new checkpoint to the database
-	# text = ['Will', 'This', 'Work?']
-	# animations = ['Animation1', 'Animation2', 'Animation3']
-	# geolocation = [43.3232, -54.2323]
-	# Database.insert_checkpoint(text, animations, "pink", geolocation)
-
-	# # Adding a new interaction to the database
-	# ids = [3, 5, 2]
-	# today = datetime.today()
-	# Database.insert_interaction(1, 1, ids, today)
-
 	# Getting all users in the database
 	user_list = Users.query.all()
 
@@ -39,21 +17,5 @@ def index():
 
 	#Getting all the interactions in the database
 	interaction_list = Interactions.query.all()
-
-	# check_exists = Database.check_duplicate("Users", "firstname", "Leune")
-	# print(check_exists)
-
-	# Testing the select_where function
-	user1 = Database.select_where("users", "user_id", 100, "email")
-	print(user1)
-
-	path1 = Database.select_where("paths", "path_id", 1, "description")
-	print(path1)
-
-	# Testing the update function
-	Database.update_table("paths", "path_id", 4, "description", "this is testing update")
-
-	# Testing the validate login function
-	result = Database.validate_login("starkow", "onwords")
 
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
