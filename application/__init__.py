@@ -3,6 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import psycopg2
 from config import Config
+from flask_bcrypt import Bcrypt
 
 # Creating the Flask App
 app = Flask(__name__)
@@ -22,5 +23,8 @@ try:
 	print("Successully Connected to Database")
 except:
 	print("Unable to Connect to Database")
+
+# Bcrypt Connection (For password hashing)
+bcrypt = Bcrypt(app)
 
 # Credit to https://flask.palletsprojects.com/en/1.1.x/quickstart/
