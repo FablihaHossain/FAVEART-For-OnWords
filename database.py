@@ -1,6 +1,6 @@
 import sqlalchemy
 import psycopg2
-from application import db, conn
+from application import db, conn, bcrypt
 from models import Users, Paths, Checkpoints, Interactions
 from config import Config
 
@@ -224,6 +224,27 @@ class Database():
 			return validated
 		except Exception as error:
 			print("Error! %s" % error)
+
+	# Function to hash password (using bcrypt)
+	def hash_password(password):
+		# Generating the hashed password
+		hashed_password = bcrypt.generate_password_hash(password)
+
+		# Returning the hashed password
+		return hashed_password
+
+	# Checking password hashes to see if they are the same
+	def check_hashed_passwords(password_hash, password):
+		# Initial boolean, set to false
+		same_password = False
+
+		# Using the bcrypt function to check if passwords are similar
+		same_password = bcrypt.check_password_hash(password_hash, password)
+
+		# Returning it
+		return same_password
+
+
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
