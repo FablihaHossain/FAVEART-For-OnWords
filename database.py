@@ -82,8 +82,12 @@ class Database():
 				# Getting the next ID
 				nextId = Database.next_id("Users")
 
+				# Hashing the password
+				hashed_password = Database.hash_password(password)
+				hash_decoded = hashed_password.decode('UTF-8')
+
 				# Creating the new user
-				newUser = Users(user_id = nextId, firstname = firstname, lastname = lastname, email = email, username = username, password = password, role = role)
+				newUser = Users(user_id = nextId, firstname = firstname, lastname = lastname, email = email, username = username, password = hash_decoded, role = role)
 
 				# Adding the new user to the database
 				db.session.add(newUser)
@@ -213,12 +217,13 @@ class Database():
 				cursor.execute(query)
 				current_id = cursor.fetchone()[0]
 
-				# Getting the password from the database
-				user_password = Database.select_where("users", "user_id", current_id, "password")
+				# Getting the hashed password from the database
+				hash_password = Database.select_where("users", "user_id", current_id, "password")
 
 				# Comparing the two passwords to see if they are a match
-				if user_password == password:
-					validated = True
+				validated = Database.check_hashed_passwords(hash_password, password)
+				# if user_password == password:
+				# 	validated = True
 
 			# Returning the result
 			return validated
@@ -227,22 +232,28 @@ class Database():
 
 	# Function to hash password (using bcrypt)
 	def hash_password(password):
-		# Generating the hashed password
-		hashed_password = bcrypt.generate_password_hash(password)
+		try:
+			# Generating the hashed password
+			hashed_password = bcrypt.generate_password_hash(password)
 
-		# Returning the hashed password
-		return hashed_password
+			# Returning the hashed password
+			return hashed_password
+		except Exception as error:
+			print("Error! %s" % error)
 
 	# Checking password hashes to see if they are the same
 	def check_hashed_passwords(password_hash, password):
-		# Initial boolean, set to false
-		same_password = False
+		try:
+			# Initial boolean, set to false
+			same_password = False
 
-		# Using the bcrypt function to check if passwords are similar
-		same_password = bcrypt.check_password_hash(password_hash, password)
+			# Using the bcrypt function to check if passwords are similar
+			same_password = bcrypt.check_password_hash(password_hash, password)
 
-		# Returning it
-		return same_password
+			# Returning it
+			return same_password
+		except Exception as error:
+			print("Error! %s" % error)
 
 
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
@@ -252,3 +263,4 @@ class Database():
 	# Credit to https://github.com/nycdb/nycdb/blob/master/src/nycdb/database.py
 	# Credit to http://zetcode.com/python/psycopg2/
 	# Credit to https://wiki.postgresql.org/wiki/Psycopg2_Tutorial
+	# Credit to https://stackoverflow.com/questions/606191/convert-bytes-to-a-string
