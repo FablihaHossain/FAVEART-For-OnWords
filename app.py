@@ -18,16 +18,17 @@ def index():
 	#Getting all the interactions in the database
 	interaction_list = Interactions.query.all()
 
-	# Testing the password hash function
-	# pw = Database.hash_password("passSword")
-	# pw2 = Database.hash_password("awesome")
-	# print("Password 1: %s" % pw)
-	# print("Password 2: %s" % pw2)
+	# Hashing all the passwords in the database
+	for user in user_list:
+		# getting the current password
+		password = Database.select_where("users", "user_id", user.user_id, "password")
+		print(password)
+		
+		# Hashing the password
+		hashed_pw = Database.hash_password(password)
+		print(hashed_pw)
 
-	# # Testing the same password function
-	# password1 = Database.check_hashed_passwords(pw, 'passSword')
-	# password2 = Database.check_hashed_passwords(pw2, 'awesome')
-	# print("For password 1: %s" % password1)
-	# print("For password 2: %s" % password2)
+		# Updating the database
+		Database.update_table("users", "user_id", user.user_id, "password", str(hashed_pw))
 
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
