@@ -1,83 +1,64 @@
 <!DOCTYPE HTML>
 <html>
-
-<head>
-
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <head>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <script src="js/aframe.min.js"></script>
 <script src="js/aframe-ar.js"></script>
 <!-- support 3D text -->
 <script src="js/aframe-text-geometry-component.min.js"></script>
-
-</head>
-
-<body style="background: #888888; margin: 0px; overflow: hidden;">
-
-
-<script>
-
-AFRAME.registerComponent("registerevents", {
-    init: function () 
-    {
-
-        this.firstDetection = false;
-        this.markerVisible = false;
-        this.marker = this.el;
-        this.link = document.querySelector("#words");
+<script>src="animations.js"</script>
+    </head>
+<body>
+    <script>
+    AFRAME.registerComponent("inSight", {
+        init: function ()
+        {
+            this.firstDetection = false;
+            this.markerVisible - false;
+            this.marker = this.el;
+            this.link = document.querySelector("#words");
         
-        this.link.object3D.visible = false;
+            this.link.object3D.visible = false;
 
-        let self = this;
+            let self = this;
 
-        this.marker.addEventListener('markerFound', function() {
+            this.marker.addEventListener('markerFound', function() {
             self.markerVisible = true;
-        });
+            });
 
-        this.marker.addEventListener('markerLost', function() {
+            this.marker.addEventListener('markerLost', function() {
             self.markerVisible = false;
-        });
-          
+            });
+        }
     });
-});
-</script>
-<script>
-AFRAME.registerComponent("animate-text", {
-	init: function()
-	{
-		//this.el = HTML TAG
-		this.el.setAttribute("material", "color", "red");
-		this.animationStyle = "bounce";
-	},
 
-	tick: function(time, deltaTime)
-	{
-		if (this.animationStyle == "bounce")
-		{
-			let x = -2;
-			let y = Math.sin(time / 850);
-			let z = -5;
-			this.el.object3D.position.set(x, y, z);
-		}
-	}
-	
-});
+    AFRAME.registerComponent("customize", {
+            init:function()
+            {
+                console.log("running");
+                // this.el.animationStyle = "bounce";           
+            },
 
-</script>
-    <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
-    <a-assets>
-		<a-asset-item id="exoFont" src="fonts/Anton_Regular.json"></a-asset-item>
-	</a-assets>
-    <a-marker type = "pattern" url = "data/FAVEARTMarker.patt" id = "FAVEARTMarker">
-         <a-entity id="words" 
-            text-geometry="value: Hello, World!; font: #exoFont;"
-            scale="2 2 2;" rotation="0 0 0;" position="0 0 2;"light=" type: ambient; intensity: .5; castShadows: true" animate-text>
-        </a-entity>
-       <!--  <a-circle id="ground" color="purple" radius="3" shadow="receive: true;" position="4 -1 0"
-        rotation="-90 0 0"></a-circle> -->
-        </a-marker>
+            tick: function(time, deltaTime)
+            {
+                // console.log("tick");
+                let style = this.el.getAttribute("animationStyle");
+                // console.log(style);
+                if (style == "bounce" )
+                {
+                    let myText = this.el.getAttribute("value")
+                    myText.useBounce("#bb24ff");
+                }
+            }
 
-     <a-entity camera></a-entity>
-    </a-scene>
-
+        });
+    </script>
 </body>
-</html>
+    <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+
+       <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" inSight>
+            <a-entity position="0 0 0" id="words" text-geometry="value: hi;" material="color: red;" customize animationStyle="bounce"></a-entity>
+       </a-marker>
+
+       <a-entity camera></a-entity>
+    </a-scene>
