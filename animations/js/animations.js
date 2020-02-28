@@ -1,16 +1,19 @@
-function useBounce(myColor)
+function setBounce(words, myColor, time, font)
 	{
 			let color = myColor;
-			this.el.setAttribute("material", "color", color);
+			words.setAttribute("material", "color", color);
 
 			let x = 0;
 			let y = Math.sin(time / 850);
 			let z = 0;
 			let s = x + " " + y + " " + z;
-			this.el.setAttribute("position", s);
+			words.setAttribute("position", s);
+
+			words.setAttribute("text-geometry", "font", font);
+
 	};
 
-function setFloat(words, color)
+function setFloat(words, color, font)
 		{
 			words.setAttribute("animation__rise", "autoplay", "true");
 			words.setAttribute("animation__fade", "autoplay", "true");
@@ -40,4 +43,28 @@ function setFloat(words, color)
 				 "delay": 1000
 					});
 
-		};
+			words.setAttribute("text-geometry", "font", font);
+	};
+
+function setRotate(words, color, font)
+	{
+		let x = 0 + " " + 360 + " " + 0;
+		let y = 0 + " " + 2 + " " + 0;
+		let dur = 10000;
+
+		//rotation="0 0 0"
+		words.setAttribute("material", "color", color);
+
+
+		words.setAttribute("animation", {
+			"property": "rotation",
+			"to": x,
+			"loop": true,
+			"dur": dur
+		});
+
+		words.setAttribute("text-geometry", "font", font);
+
+	};
+
+console.log("animations.js");
