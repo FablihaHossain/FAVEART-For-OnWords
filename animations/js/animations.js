@@ -49,7 +49,6 @@ function setFloat(words, color, font)
 function setRotate(words, color, font)
 	{
 		let x = 0 + " " + 360 + " " + 0;
-		let y = 0 + " " + 2 + " " + 0;
 		let dur = 10000;
 
 		//rotation="0 0 0"
