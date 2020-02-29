@@ -44,8 +44,9 @@
                 if (  style == "float" )
                 {
                     let words = document.querySelector("#words");
+                    let font = document.querySelector("font");
 
-                    setFloat(words, "yellow");
+                    setFloat(words, "yellow", font);
                     // this.el.setAttribute("position", "dur", mySpeed);
                     // this.el.setAttribute("position", "easing", "linear");
                     // this.el.setAttribute("position", "dir", "normal");
@@ -59,9 +60,11 @@
     </script>
 </body>
     <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
-
+        <a-assets>
+        <a-asset-item id="font" src="fonts/Cinzel_Bold.json"></a-asset-item>
+    </a-assets>
        <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" insight>
-            <a-entity id="words" text-geometry="value: hi;" material="color: #000000" customize animationStyle="float"></a-entity>
+            <a-entity id="words" text-geometry="value: hi Stem; font: #font;" material="color: #000000" customize animationStyle="float"></a-entity>
        </a-marker>
 
        <a-entity camera></a-entity>

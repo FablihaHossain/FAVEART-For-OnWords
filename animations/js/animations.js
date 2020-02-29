@@ -3,11 +3,21 @@ function setBounce(words, myColor, time, font)
 			let color = myColor;
 			words.setAttribute("material", "color", color);
 
-			let x = 0;
-			let y = Math.sin(time / 850);
-			let z = 0;
-			let s = x + " " + y + " " + z;
-			words.setAttribute("position", s);
+			// let x = 0;
+			// let y = Math.sin(time / 850);
+			// let z = 0;
+			// let s = x + " " + y + " " + z;
+			// words.setAttribute("position", s);
+
+			let a = 0 + " " + 0 + " " + 0;
+			let b = 0 + " " + 30 + " " + 0;
+
+			words.setAttribute("animation", 
+				"property": "position",
+				"from": a,
+				"to": b,
+				"elasticity": 3000
+				);
 
 			words.setAttribute("text-geometry", "font", font);
 
@@ -63,6 +73,8 @@ function setRotate(words, color, font)
 		});
 
 		words.setAttribute("text-geometry", "font", font);
+		//words.setAttribute("text-geometry", "align", "center");
+		words.setAttribute("text-geometry", "xOffset", 100)
 
 	};
 

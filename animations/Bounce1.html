@@ -6,7 +6,7 @@
 		<script src="js/aframe-ar.js"></script>
 		<!-- support 3D text -->
 		<script src="js/aframe-text-geometry-component.min.js"></script>
-		<script src="js/animations.js"></script>
+        <script src="js/animations.js"></script>
 	</head>
 <body>
 	<script>
@@ -16,11 +16,7 @@
 			this.firstDetection = false;
 			this.markerVisible - false;
 			this.marker = this.el;
-			this.link = document.querySelector("#words");
-        
-        	this.link.object3D.visible = false;
-
-        	let self = this;
+			let self = this;
 
         	this.marker.addEventListener('markerFound', function() {
             self.markerVisible = true;
@@ -48,7 +44,7 @@
 				{
 				   let words = document.querySelector("#words");
 
-                   setBounce(words);
+                   setBounce(words, "yellow", time);
 				}
 			}
 
@@ -58,7 +54,7 @@
 	<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
 
 	   <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" insight>
-	   		<a-entity position="0 0 0" id="words" text-geometry="value: hi;" customize animationStyle="bounce"></a-entity>
+	   		<a-entity id="words" text-geometry="value: hi;" customize animationStyle="bounce"></a-entity>
 	   </a-marker>
 
 	   <a-entity camera></a-entity>
