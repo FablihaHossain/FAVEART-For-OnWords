@@ -106,4 +106,19 @@ function setTilt(words, color, font)
 
 	};
 
+function setFlash(words, color, font)
+	{
+		words.setAttribute("material", "color", color);
+
+		words.setAttribute("animation", {
+				 "property": "material.opacity",
+				 "dur": 4000,
+				 "from": 1.0,
+				 "to": 0.0,
+				 "loop": true
+					});
+
+		words.setAttribute("text-geometry", "font", font);
+	};
+
 console.log("animations.js");
