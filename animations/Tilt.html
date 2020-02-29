@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <script src="js/aframe.min.js"></script>
+        <script src="js/aframe-ar.js"></script>
+        <!-- support 3D text -->
+        <script src="js/aframe-text-geometry-component.min.js"></script>    
+        <script src="js/animations.js"></script>
+     </head>
+    <body>
+    <script>
+    AFRAME.registerComponent("insight", {
+        init: function ()
+        {
+            this.firstDetection = false;
+            this.markerVisible - false;
+            this.marker = this.el;            
+            let self = this;
+
+            this.marker.addEventListener('markerFound', function() {
+            self.markerVisible = true;
+            });
+
+            this.marker.addEventListener('markerLost', function() {
+            self.markerVisible = false;
+            });
+        }
+    });
+
+    AFRAME.registerComponent("customize", {
+            init:function()
+            {
+                console.log("running");
+                // this.el.animationStyle = "float";           
+            },            
+
+            tick: function(time, deltaTime)
+            {
+                // console.log("tick");
+                let style = this.el.getAttribute("animationStyle");
+                // console.log(style);
+
+                if (  style == "tilt" )
+                {
+                    let words = document.querySelector("#words");
+                    let font = document.querySelector("font");
+
+                    setTilt(words, "purple", font);
+                    // this.el.setAttribute("position", "dur", mySpeed);
+                    // this.el.setAttribute("position", "easing", "linear");
+                    // this.el.setAttribute("position", "dir", "normal");
+                     
+                  
+                    // this.el.setAttribute("position", "loop", true);
+                }
+          }
+
+    });
+    </script>
+</body>
+    <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+        <a-assets>
+        <a-asset-item id="font" src="fonts/Cinzel_Bold.json"></a-asset-item>
+    </a-assets>
+       <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" insight>
+            <a-entity id="words" text-geometry="value: Tilt Please; font: #font;" material="color: #000000" customize animationStyle="tilt"></a-entity>
+       </a-marker>
+
+       <a-entity camera></a-entity>
+    </a-scene>
+</html>

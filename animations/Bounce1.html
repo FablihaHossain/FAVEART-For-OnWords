@@ -44,7 +44,7 @@
 				{
 				   let words = document.querySelector("#words");
 
-                   setBounce(words, "yellow", time);
+                   setBounce(words, "yellow", time, font);
 				}
 			}
 
@@ -52,9 +52,11 @@
 	</script>
 </body>
 	<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
-
+ 		<a-assets>
+      	  <a-asset-item id="font" src="fonts/Cinzel_Bold.json"></a-asset-item>
+    </a-assets>
 	   <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" insight>
-	   		<a-entity id="words" text-geometry="value: hi;" customize animationStyle="bounce"></a-entity>
+	   		<a-entity id="words" text-geometry="value: hi; font: #font" customize animationStyle="bounce"></a-entity>
 	   </a-marker>
 
 	   <a-entity camera></a-entity>

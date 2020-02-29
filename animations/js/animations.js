@@ -1,23 +1,26 @@
-function setBounce(words, myColor, time, font)
+
+// DISCUSS: font.setAttribute("font", "src", "fonts/Cinzel_Bold.json")
+
+function setBounce(words, color, time, font)
 	{
-			let color = myColor;
 			words.setAttribute("material", "color", color);
 
-			// let x = 0;
-			// let y = Math.sin(time / 850);
-			// let z = 0;
-			// let s = x + " " + y + " " + z;
-			// words.setAttribute("position", s);
+			let x = 0;
+			let y = Math.sin(time / 850);
+			let z = 0;
+			let s = x + " " + y + " " + z;
 
-			let a = 0 + " " + 0 + " " + 0;
-			let b = 0 + " " + 30 + " " + 0;
+			//words.setAttribute("animation__bounce", "autoplay", "true");
+			words.setAttribute("position", s);
 
-			words.setAttribute("animation", 
-				"property": "position",
-				"from": a,
-				"to": b,
-				"elasticity": 3000
-				);
+			// let a = 0 + " " + 0 + " " + 0;
+			// let b = 0 + " " + 2 + " " + 0;			
+
+			// words.setAttribute("animation__bounce", {
+			// 	"position": s,
+			// 	"elasticity": 3000,
+			// 	"loop": true
+			// 	});
 
 			words.setAttribute("text-geometry", "font", font);
 
@@ -68,6 +71,31 @@ function setRotate(words, color, font)
 		words.setAttribute("animation", {
 			"property": "rotation",
 			"to": x,
+			"loop": true,
+			"dur": dur
+		});
+
+		words.setAttribute("text-geometry", "font", font);
+		//words.setAttribute("text-geometry", "align", "center");
+		words.setAttribute("text-geometry", "xOffset", 100)
+
+	};
+
+function setTilt(words, color, font)
+	{
+		let a = 0 + " " + 0 + " " + 45;
+		let b = 0 + " " + 0 + " " + -45;
+		let dur = 10000;
+
+		//rotation="0 0 0"
+		words.setAttribute("material", "color", color);
+
+		words.setAttribute("animation", "autoplay", "false");
+
+		words.setAttribute("animation", {
+			"property": "rotation",
+			"from": b,
+			"to": a,
 			"loop": true,
 			"dur": dur
 		});
