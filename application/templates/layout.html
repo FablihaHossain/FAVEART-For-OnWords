@@ -8,11 +8,26 @@
 			<link rel = "stylesheet" href="{{url_for('static', filename = 'stylesheet.css')}}">
 		{% endblock styles %}
 
+		{# Navigation Bar #}
+		<nav class = "navbar navbar-expand-lg">
+			<a class="navbar-brand nav-words navbar-text" href="{{url_for('index')}}"> FAVEART For OnWords </a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<li class = "nav-item" >
+					<a class = "nav-link nav-words navbar-text" href="{{url_for('login')}}"> Log In </a>
+				</li>
+				<li class = "nav-item" >
+					<a class = "nav-link nav-words navbar-text" href="{{url_for('register')}}"> Register </a>
+				</li>
+			</div>
+		</nav>
 </head>
 {% endblock head %}
 {% block body %}
-<body>
-	<p> Connection Set Up </p>
+<body class = "body-html">
+<!-- 	<p> Connection Set Up </p>
 
 	{# Testing Database Connection by Displaying User Table #}
 	{% for user in users %}
@@ -43,7 +58,7 @@
 	<p> Checkpoint Id: {{interaction.checkpoint_id}}</p>
 	<p> User Ids: {{interaction.user_id}}</p>
 	<p> Date: {{interaction.datetime}}</p>
-	{% endfor %}
+	{% endfor %} -->
 </body>
 {% endblock body %}
 </html>
