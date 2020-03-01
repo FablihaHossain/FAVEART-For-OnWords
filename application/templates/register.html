@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %} <title> Registration Page </title> {% endblock title %}
+
+{% block body %}
+
+	<body class = "body-html">
+		<div class = "jumbotron">
+			<div class = "container text-center"> Please Provide the Following Information</div>
+			<form method = "post">
+			<div class = "form-group">
+				<label for = "inputFirstname"> First Name </label>
+				<input type="firstname" class = "form-control" name="firstname" value = "{{request.form.firstname}}">
+			</div>
+			<div class = "form-group">
+				<label for = "inputLastname"> Last </label>
+				<input type="lastname" class = "form-control" name="lastname" value = "{{request.form.lastname}}">
+			</div>
+			<div class = "form-group">
+				<label for = "inputEmail"> Email </label>
+				<input type="email" class = "form-control" name="email" value = "{{request.form.email}}">
+			</div>
+			<div class = "form-group">
+				<label for = "inputUsername"> Username </label>
+				<input type="username" class = "form-control" name="username" value = "{{request.form.username}}">
+			</div>
+			<div class = "form-group">
+				<label for = "inputPassword"> Password </label>
+				<input type="password" class = "form-control" name="password" value = "{{request.form.password}}">
+			</div>
+			</form>
+		</div>
+	</body>
+{% endblock body %}
