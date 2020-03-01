@@ -19,3 +19,13 @@ def index():
 	interaction_list = Interactions.query.all()
 
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
+
+# Login Page
+@app.route("/login")
+def login():
+	return render_template("login.html")
+
+# Register Page
+@app.route("/register")
+def register():
+	return render_template("register.html")
