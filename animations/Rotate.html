@@ -44,15 +44,9 @@
                 if (  style == "rotate" )
                 {
                     let words = document.querySelector("#words");
-                    let font = document.querySelector("font");
 
-                    setRotate(words, "green", font);
-                    // this.el.setAttribute("position", "dur", mySpeed);
-                    // this.el.setAttribute("position", "easing", "linear");
-                    // this.el.setAttribute("position", "dir", "normal");
-                     
+                    setRotate(words, "green", "#font1");
                   
-                    // this.el.setAttribute("position", "loop", true);
                 }
           }
 
@@ -61,10 +55,10 @@
 </body>
     <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
         <a-assets>
-        <a-asset-item id="font" src="fonts/Cinzel_Bold.json"></a-asset-item>
+        <a-asset-item id="font1" src="fonts/Gloria Hallelujah_Regular.json"></a-asset-item>
     </a-assets>
        <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" insight>
-            <a-entity id="words" text-geometry="value: Rotate Please; font: #font;" material="color: #000000" customize animationStyle="rotate"></a-entity>
+            <a-entity id="words" text-geometry="value: Rotate Please; font: #font1;" material="color: #000000" customize animationStyle="rotate"></a-entity>
        </a-marker>
 
        <a-entity camera></a-entity>

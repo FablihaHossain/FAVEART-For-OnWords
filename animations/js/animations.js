@@ -1,32 +1,28 @@
 
 // DISCUSS: font.setAttribute("font", "src", "fonts/Cinzel_Bold.json")
 
-function setBounce(words, color, time, font)
+function setBounce(words, color, fontID)
 	{
 			words.setAttribute("material", "color", color);
 
-			let x = 0;
-			let y = Math.sin(time / 850);
-			let z = 0;
-			let s = x + " " + y + " " + z;
+			words.setAttribute("animation__bounce", "autoplay", "true");
 
-			//words.setAttribute("animation__bounce", "autoplay", "true");
-			words.setAttribute("position", s);
+			let a = 0 + " " + 0 + " " + 0;
+			let b = 0 + " " + 1 + " " + 0;			
 
-			// let a = 0 + " " + 0 + " " + 0;
-			// let b = 0 + " " + 2 + " " + 0;			
+			words.setAttribute("animation__bounce", {
+			"property": "position",
+			"from": b,
+			"to": a,
+			"loop": true,
+			"dur": 500,
+			"dir": "alternate"
+			});			
 
-			// words.setAttribute("animation__bounce", {
-			// 	"position": s,
-			// 	"elasticity": 3000,
-			// 	"loop": true
-			// 	});
-
-			words.setAttribute("text-geometry", "font", font);
-
+		words.setAttribute("text-geometry", "font", fontID);
 	};
 
-function setFloat(words, color, font)
+function setFloat(words, color, fontID)
 		{
 			words.setAttribute("animation__rise", "autoplay", "true");
 			words.setAttribute("animation__fade", "autoplay", "true");
@@ -56,13 +52,13 @@ function setFloat(words, color, font)
 				 "delay": 1000
 					});
 
-			words.setAttribute("text-geometry", "font", font);
+			words.setAttribute("text-geometry", "font", fontID);
 	};
 
-function setRotate(words, color, font)
+function setRotate(words, color, fontID)
 	{
 		let x = 0 + " " + 360 + " " + 0;
-		let dur = 10000;
+		let dur = 5000;
 
 		//rotation="0 0 0"
 		words.setAttribute("material", "color", color);
@@ -70,18 +66,26 @@ function setRotate(words, color, font)
 
 		words.setAttribute("animation", {
 			"property": "rotation",
+			"easing": "easeInOutQuint",
 			"to": x,
 			"loop": true,
-			"dur": dur
+			"dur": dur,
 		});
 
-		words.setAttribute("text-geometry", "font", font);
-		//words.setAttribute("text-geometry", "align", "center");
-		words.setAttribute("text-geometry", "xOffset", 100)
+		words.setAttribute("text-geometry", "font", fontID);
+		
+		if (words.getObject3D('mesh').position.x == 0) {
+			let obj = words.getObject3D('mesh');
+			let box = new THREE.Box3().setFromObject(obj);
+			let offset = ((box.min.x - box.max.x)/2);
+			obj.position.set(offset, 0, 0);
+		};
+
+		//Credit to: https://stackoverflow.com/questions/54892378/aframe-text-geometry-component-rotation-from-center
 
 	};
 
-function setTilt(words, color, font)
+function setTilt(words, color, fontID)
 	{
 		let a = 0 + " " + 0 + " " + 45;
 		let b = 0 + " " + 0 + " " + -45;
@@ -90,35 +94,45 @@ function setTilt(words, color, font)
 		//rotation="0 0 0"
 		words.setAttribute("material", "color", color);
 
-		words.setAttribute("animation", "autoplay", "false");
+		words.setAttribute("animation", "autoplay", "true");
 
 		words.setAttribute("animation", {
 			"property": "rotation",
 			"from": b,
 			"to": a,
 			"loop": true,
-			"dur": dur
+			"dur": dur,
+			"dir": "alternate"
 		});
 
-		words.setAttribute("text-geometry", "font", font);
+		words.setAttribute("text-geometry", "font", fontID);
 		//words.setAttribute("text-geometry", "align", "center");
-		words.setAttribute("text-geometry", "xOffset", 100)
+		//words.setAttribute("text-geometry", "xOffset", 100)
+
+
+		let obj = words.getObject3D('mesh');
+		let box = new THREE.Box3().setFromObject(obj);
+		let offset = ((box.min.x - box.max.x)/2);
+		obj.position.set(offset, 0, 0);
+
+		//Credit to: https://stackoverflow.com/questions/54892378/aframe-text-geometry-component-rotation-from-center
 
 	};
 
-function setFlash(words, color, font)
+function setFlash(words, color, fontID)
 	{
 		words.setAttribute("material", "color", color);
 
 		words.setAttribute("animation", {
 				 "property": "material.opacity",
-				 "dur": 4000,
+				 "dur": 500,
 				 "from": 1.0,
 				 "to": 0.0,
-				 "loop": true
+				 "loop": true,
+				 "dir": "alternate"
 					});
 
-		words.setAttribute("text-geometry", "font", font);
+		words.setAttribute("text-geometry", "font", fontID);
 	};
 
 console.log("animations.js");
