@@ -54,6 +54,17 @@ def login():
 # Register Page
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
+	# Getting the information from all the fields
+	if request.method == "POST":
+		firstname = request.form['firstname']
+		lastname = request.form['lastname']
+		email = request.form['email']
+		username = request.form['username']
+		password = request.form['password']
+		role = request.form['roles']
+
+		print("role is %s" % role)
+		# None of the fields can be empty 
 	return render_template("register.html")
 
 # Home Page
