@@ -60,3 +60,11 @@ def register():
 @app.route("/homepage")
 def homepage():
 	return render_template("homepage.html")
+
+# Logging Out redirects to login page
+@app.route("/logout")
+def logout():
+	session.pop('username', None)
+	session.pop('user_id', None)
+	flash("You have logged out sucessfully")
+	return redirect(url_for('login'))
