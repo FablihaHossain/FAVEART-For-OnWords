@@ -4,6 +4,19 @@
 
 {% block body %}
 
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class = flashes>
+			{% for message in messages %}
+				<div class = "alert-danger">
+					<p> {{message}}</p>
+				</div>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+
 	<body class = "body-html">
 		<div class = "jumbotron">
 			<div class = "container text-center"> Please Provide the Following Information</div>
@@ -36,12 +49,12 @@
 				<div class = "container text-center"> Choose a Role: </div>
 				<div class = "text-center">
 					<div class="form-check form-check-inline">
-		  				<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-		  				<label class="form-check-label" for="inlineRadio1">Pathmaker</label>
+		  				<input class="form-check-input" type="radio" name="roles" id="pathmaker" value="pathmaker">
+		  				<label class="form-check-label" for="roles">Pathmaker</label>
 					</div>
 					<div class="form-check form-check-inline">
-		  				<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-		  				<label class="form-check-label" for="inlineRadio2">Explorer</label>
+		  				<input class="form-check-input" type="radio" name="roles" id="explorer" value="explorer">
+		  				<label class="form-check-label" for="roles">Explorer</label>
 					</div>
 				</div>
 				
