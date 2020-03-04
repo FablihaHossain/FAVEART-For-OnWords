@@ -56,15 +56,36 @@ def login():
 def register():
 	# Getting the information from all the fields
 	if request.method == "POST":
-		firstname = request.form['firstname']
-		lastname = request.form['lastname']
-		email = request.form['email']
-		username = request.form['username']
-		password = request.form['password']
-		role = request.form['roles']
+		try:
+			firstname = request.form['firstname']
+			lastname = request.form['lastname']
+			email = request.form['email']
+			username = request.form['username']
+			password = request.form['password']
+			role = request.form['roles']
 
-		print("role is %s" % role)
-		# None of the fields can be empty 
+		# None of the fields can be empty
+			if "" in [firstname, lastname, email, username, password, role]:
+				flash("Error! Fields Cannot be Empty!")
+			else:
+				# Checking to see if username already exists in the database
+				user_check = Database.check_duplicate("users", "username", username)
+
+				# Checking to see if the email already exists in the database
+				email_check = Database.check_duplicate("users", "email", email)
+
+				# If username and/or email exists in the database, it'll flash an error message
+				if user_check:
+					flash("Error! Username already exists.... Try another one")
+				elif email_check:
+					flash("Error! Email already exists... Try another one")
+				else:
+					# Adding the user to the database
+					Database.insert_user(firstname, lastname, email, username, password, role)
+					flash("Congradulations! You've been registers to FAVEART For OnWords Successfully!")
+					return redirect(url_for('login'))
+		except Exception as error: # Exception Handling to avoid program crashing when a role is choosen 
+			flash("Please Choose a Role!")
 	return render_template("register.html")
 
 # Home Page
