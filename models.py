@@ -39,6 +39,7 @@ class Checkpoints(db.Model):
 	color = db.Column(db.String(100))
 	# Latitude and Longitude
 	geolocation = db.Column(db.ARRAY(db.Float))
+	font = db.column(db.String(200))
 
 # Interactions Table
 class Interactions(db.Model):
