@@ -20,6 +20,12 @@ function setBounce(words, color, fontID)
 			});			
 
 		words.setAttribute("text-geometry", "font", fontID);
+
+		let obj = words.getObject3D('mesh');
+		let box = new THREE.Box3().setFromObject(obj);
+		let offset = ((box.min.x - box.max.x)/2);
+		obj.position.set(offset, 0, 0);
+		
 	};
 
 function setFloat(words, color, fontID)
@@ -53,6 +59,12 @@ function setFloat(words, color, fontID)
 					});
 
 			words.setAttribute("text-geometry", "font", fontID);
+
+			let obj = words.getObject3D('mesh');
+			let box = new THREE.Box3().setFromObject(obj);
+			let offset = ((box.min.x - box.max.x)/2);
+			obj.position.set(offset, 0, 0);
+
 	};
 
 function setRotate(words, color, fontID)
@@ -133,6 +145,12 @@ function setFlash(words, color, fontID)
 					});
 
 		words.setAttribute("text-geometry", "font", fontID);
+
+		let obj = words.getObject3D('mesh');
+		let box = new THREE.Box3().setFromObject(obj);
+		let offset = ((box.min.x - box.max.x)/2);
+		obj.position.set(offset, 0, 0);
+
 	};
 
 console.log("animations.js");
