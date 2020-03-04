@@ -31,15 +31,11 @@ class Paths(db.Model):
 class Checkpoints(db.Model):
 	__table_args__ = {'extend_existing': True}
 	checkpoint_id = db.Column(db.Integer, primary_key = True, unique = True)
-	# Array of strings of text at that particular checkpoint
-	# Note: Must be maximun of 3
-	text = db.Column(db.ARRAY(db.String(100)), nullable = False)
-	# Array of animations to correspond with the text
-	animations = db.Column(db.ARRAY(db.String(200)), nullable = False)
+	text = db.Column(db.String(750), nullable = False)
+	animation = db.Column(db.String(100), nullable = False)
 	color = db.Column(db.String(100))
-	# Latitude and Longitude
-	geolocation = db.Column(db.ARRAY(db.Float))
-	font = db.column(db.String(200))
+	geolocation = db.Column(db.ARRAY(db.Float))  # Latitude and Longitude
+	font = db.Column(db.String(200))
 
 # Interactions Table
 class Interactions(db.Model):
