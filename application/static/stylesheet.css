@@ -1,6 +1,37 @@
-# Stylesheet for Web Page
-body {
+.body-html {
+	background-color: #C599C9;
+	font-color: #ffffff;
+	height: auto;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    align-content: center;
+}
 
-color: #0000000;
-font-color: #ffffff;
+.navbar{
+	background-color: #FDEE9A;
+	list-style: none;
+}
+
+.nav-words{
+	color: black;
+    text-decoration: none;
+}
+.navbar-text:hover{
+	color: #C7B63F;
+}
+
+.jumbotron{
+	background-color: transparent;
+	padding:4rem 33rem;
+	height:auto;
+}
+.btn-primary{
+	background-color:#FDEE9A;
+	width: 150px;
+	color:black;
+}
+
+.btn-primary-block:hover{
+	background-color:#C7B63F;
 }

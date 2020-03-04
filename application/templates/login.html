@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %} <title> Login Page </title> {% endblock title %}
+
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class = flashes>
+			{% for message in messages %}
+				<div class = "alert">
+					<p> {{message}}</p>
+				</div>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+<body class = "body-html">
+	<div class = "jumbotron">
+		<div class = "container text-center"> Please Log Into Your Account </div>
+		<form method = post>
+			<!-- Username Field-->
+			<div class = "form-group">
+				<label for = "inputUsername"> Username </label>
+				<input type="username" class = "form-control" name="username" value = "{{request.form.username}}">
+			</div>
+			<!-- Password Field -->
+			<div class = "form-group login-words">
+				<label for ="inputPassword"> Password </label>
+				<input type="password" class = "form-control" name="password" value = "{{request.form.password}}">
+			</div>
+			<!-- Submit Button -->
+			<div class ="text-center">
+				<button type = "submit" class = "btn btn-primary btn-primary-block"> Login </button>
+			</div>
+		</form>
+	</div>
+</body>
+{% endblock body %}

@@ -8,42 +8,43 @@
 			<link rel = "stylesheet" href="{{url_for('static', filename = 'stylesheet.css')}}">
 		{% endblock styles %}
 
+		{# Navigation Bar #}
+		<nav class = "navbar navbar-expand-lg">
+			<a class="navbar-brand nav-words navbar-text" href="{{url_for('index')}}"> FAVEART For OnWords </a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				{% if not session['username'] %}
+				<li class = "nav-item" >
+					<a class = "nav-link nav-words navbar-text" href="{{url_for('login')}}"> Log In </a>
+				</li>
+				{% endif %}
+
+				{% if not session['username'] %}
+				<li class = "nav-item" >
+					<a class = "nav-link nav-words navbar-text" href="{{url_for('register')}}"> Register </a>
+				</li>
+				{% endif %}
+
+				{% if session['username'] %}
+				<li class = "nav-item" >
+					<a class = "nav-link nav-words navbar-text" href="{{url_for('homepage')}}"> View Paths </a>
+				</li>
+				{% endif %}
+
+				{% if session['username'] %}
+				<li class = "nav-item">
+					<a class = "nav-link nav-words navbar-text" href="{{url_for('logout')}}"> Log Out</a>
+				</li>
+				{% endif %}
+			</div>
+		</nav>
 </head>
 {% endblock head %}
 {% block body %}
-<body>
-	<p> Connection Set Up </p>
+<body class = "body-html">
 
-	{# Testing Database Connection by Displaying User Table #}
-	{% for user in users %}
-	<p> Id: {{user.user_id}}</p>
-	<p> First Name: {{user.firstname}}</p>
-	<p> Last Name: {{user.lastname}}</p>
-	<p> Username: {{user.username}}</p>
-	{% endfor %}
-	<br>
-	{% for path in paths %}
-	<p> Path ID: {{path.path_id}}</p>
-	<p> Name: {{path.name}}</p>
-	<p> Description: {{path.description}}</p>
-	<p> Checkpoints: {{path.checkpoints}}</p>
-	<p> Pathmaker: {{path.pathmaker}}</p>
-	{% endfor %}
-	<br>
-	{% for checkpoint in checkpoints %}
-	<p> Checkpoint ID: {{checkpoint.checkpoint_id}}</p>
-	<p> Text: {{checkpoint.text}}</p>
-	<p> Animation: {{checkpoint.animations}}</p>
-	<p> Geolocation: {{checkpoint.geolocation}}</p>
-	{% endfor %}
-	<br>
-	{% for interaction in interactions %}
-	<p> Interaction Id: {{interaction.interaction_id}}</p>
-	<p> Path Id: {{interaction.path_id}}</p>
-	<p> Checkpoint Id: {{interaction.checkpoint_id}}</p>
-	<p> User Ids: {{interaction.user_id}}</p>
-	<p> Date: {{interaction.datetime}}</p>
-	{% endfor %}
 </body>
 {% endblock body %}
 </html>

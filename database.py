@@ -25,6 +25,23 @@ class Database():
 		except Exception as error:
 			return "Error! %s" % error
 
+	# Function to get id of a user
+	def get_userId(username):
+		try:
+			# Developing the query
+			query = "SELECT * FROM users WHERE username = '%s'" % (username)
+
+			# Executing the query
+			cursor.execute(query)
+
+			# Getting the user info from cursor, then user_id
+			user = cursor.fetchall()
+			user_id = user[0][0]
+
+			# Returning the user_id
+			return user_id
+		except Exception as error:
+			print ("Error! %s" % error)
 	# Function to count the number of rows at a given table
 	def row_count(tablename):
 		try:
