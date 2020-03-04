@@ -142,12 +142,12 @@ class Database():
 				print ("Error! %s" % error)
 
 	# Insert Checkpoint into Database
-	def insert_checkpoint(text_list, animation_list, color, geolocation):
+	def insert_checkpoint(text, animation, color, geolocation, font):
 		# Getting the next ID
 		nextId = Database.next_id("Checkpoints")
 
 		# Creating a new checkpoint
-		newCheckpoint = Checkpoints(checkpoint_id = nextId, text = text_list, animations = animation_list, color = color, geolocation = geolocation)
+		newCheckpoint = Checkpoints(checkpoint_id = nextId, text = text, animation = animation, color = color, geolocation = geolocation, font = font)
 		
 		# Adding the new checkpoint to the database
 		db.session.add(newCheckpoint)
