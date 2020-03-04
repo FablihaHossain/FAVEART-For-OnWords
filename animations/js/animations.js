@@ -1,6 +1,37 @@
 
 // DISCUSS: font.setAttribute("font", "src", "fonts/Cinzel_Bold.json")
 
+function choice(style, words, color, fontID)
+	{
+		if (style == "bounce")
+		{
+			setBounce(words, color, fontID);
+		};
+
+		if (style == "float")
+		{
+			setFloat(words, color, fontID);
+		};
+
+		if (style == "rotate")
+		{
+			setRotate(words, color, fontID);
+		};
+
+		if (style == "tilt")
+		{
+			setTilt(words, color, fontID);
+		};
+
+		if (style == "flash")
+		{
+			setFlash(words, color, fontID);
+		};
+	};
+
+
+
+
 function setBounce(words, color, fontID)
 	{
 			words.setAttribute("material", "color", color);
@@ -25,7 +56,7 @@ function setBounce(words, color, fontID)
 		let box = new THREE.Box3().setFromObject(obj);
 		let offset = ((box.min.x - box.max.x)/2);
 		obj.position.set(offset, 0, 0);
-		
+
 	};
 
 function setFloat(words, color, fontID)
@@ -34,7 +65,7 @@ function setFloat(words, color, fontID)
 			words.setAttribute("animation__fade", "autoplay", "true");
 			  
 			let x = 0 + " " + 0 + " " + 0;
-			let y = 0 + " " + 2 + " " + 0;
+			let y = 0 + " " + 1.5 + " " + 0;
 			let mySpeed = 5000;
 
 			words.setAttribute("material", "color", color);
@@ -51,11 +82,12 @@ function setFloat(words, color, fontID)
 
 			words.setAttribute("animation__fade", {
 				 "property": "material.opacity",
-				 "dur": 4000,
+				 "dur": mySpeed,
 				 "from": 1.0,
 				 "to": 0.0,
-				 "loop": true,
-				 "delay": 1000
+				 "easing": "linear",
+				 "dir": "normal",
+				 "loop": true
 					});
 
 			words.setAttribute("text-geometry", "font", fontID);
@@ -101,7 +133,7 @@ function setTilt(words, color, fontID)
 	{
 		let a = 0 + " " + 0 + " " + 45;
 		let b = 0 + " " + 0 + " " + -45;
-		let dur = 10000;
+		let dur = 1500;
 
 		//rotation="0 0 0"
 		words.setAttribute("material", "color", color);
@@ -145,6 +177,7 @@ function setFlash(words, color, fontID)
 					});
 
 		words.setAttribute("text-geometry", "font", fontID);
+		//console.log("setFlash");
 
 		let obj = words.getObject3D('mesh');
 		let box = new THREE.Box3().setFromObject(obj);

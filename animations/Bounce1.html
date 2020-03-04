@@ -29,23 +29,15 @@
 	});
 
 	AFRAME.registerComponent("customize", {
-			init:function()
+			tick: function()
 			{
-				console.log("running");
-				// this.el.animationStyle = "bounce";			
-			},
+				let words = document.querySelector("#words");
+                let style = words.getAttribute("animationStyle");
+                let myColor = words.getAttribute("material");
+                let myFont = words.getAttribute("text-geometry");
+                // console.log(style);
 
-			tick: function(time, deltaTime)
-			{
-				// console.log("tick");
-				let style = this.el.getAttribute("animationStyle");
-				// console.log(style);
-				if (  style == "bounce" )
-				{
-				   let words = document.querySelector("#words");
-
-                   setBounce(words, "yellow", font);
-				}
+                choice(style, words, myColor.color, myFont.font);
 			}
 
 		});
@@ -53,10 +45,10 @@
 </body>
 	<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
  		<a-assets>
-      	  <a-asset-item id="font" src="fonts/Cinzel_Bold.json"></a-asset-item>
+      	  <a-asset-item id="courgette" src="fonts/Courgette_Regular.json"></a-asset-item>
     </a-assets>
 	   <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" insight>
-	   		<a-entity id="words" text-geometry="value: hi; font: #font" customize animationStyle="bounce"></a-entity>
+	   		<a-entity id="words" text-geometry="value: Bouncing; font: #courgette" material="color: orange;" customize animationStyle="bounce"></a-entity>
 	   </a-marker>
 
 	   <a-entity camera></a-entity>

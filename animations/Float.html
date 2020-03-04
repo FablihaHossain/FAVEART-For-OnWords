@@ -29,26 +29,18 @@
     });
 
     AFRAME.registerComponent("customize", {
-            init:function()
-            {
-                console.log("running");
-                // this.el.animationStyle = "float";           
-            },            
-
-            tick: function(time, deltaTime)
+            tick:function()
             {
                 // console.log("tick");
-                let style = this.el.getAttribute("animationStyle");
                 // console.log(style);
 
-                if (  style == "float" )
-                {
-                    let words = document.querySelector("#words");
-                    let font = document.querySelector("font");
+                let words = document.querySelector("#words");
+                let style = words.getAttribute("animationStyle");
+                let myColor = words.getAttribute("material");
+                let myFont = words.getAttribute("text-geometry");
+                // console.log(style);
 
-                    setFloat(words, "yellow", font);
-
-                }
+                choice(style, words, myColor.color, myFont.font);
           }
 
     });
@@ -56,10 +48,10 @@
 </body>
     <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
         <a-assets>
-        <a-asset-item id="font" src="fonts/Cinzel_Bold.json"></a-asset-item>
+        <a-asset-item id="cinzelBold" src="fonts/Cinzel_Bold.json"></a-asset-item>
     </a-assets>
        <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" insight>
-            <a-entity id="words" text-geometry="value: hi Stem; font: #font;" material="color: #000000" customize animationStyle="float"></a-entity>
+            <a-entity id="words" text-geometry="value: Floating; font: #cinzelBold;" material="color: skyblue" customize animationStyle="float"></a-entity>
        </a-marker>
 
        <a-entity camera></a-entity>

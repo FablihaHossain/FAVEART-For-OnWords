@@ -29,31 +29,15 @@
     });
 
     AFRAME.registerComponent("customize", {
-            init:function()
+        tick: function()
             {
-                console.log("running");
-                // this.el.animationStyle = "float";           
-            },            
-
-            tick: function(time, deltaTime)
-            {
-                // console.log("tick");
-                let style = this.el.getAttribute("animationStyle");
+                let words = document.querySelector("#words");
+                let style = words.getAttribute("animationStyle");
+                let myColor = words.getAttribute("material");
+                let myFont = words.getAttribute("text-geometry");
                 // console.log(style);
 
-                if (  style == "tilt" )
-                {
-                    let words = document.querySelector("#words");
-                    let font = document.querySelector("font");
-
-                    setTilt(words, "purple", font);
-                    // this.el.setAttribute("position", "dur", mySpeed);
-                    // this.el.setAttribute("position", "easing", "linear");
-                    // this.el.setAttribute("position", "dir", "normal");
-                     
-                  
-                    // this.el.setAttribute("position", "loop", true);
-                }
+                choice(style, words, myColor.color, myFont.font);
           }
 
     });
@@ -61,10 +45,10 @@
 </body>
     <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
         <a-assets>
-        <a-asset-item id="font" src="fonts/Cinzel_Bold.json"></a-asset-item>
+        <a-asset-item id="inconsolata" src="fonts/Inconsolata_Bold.json"></a-asset-item>
     </a-assets>
        <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" insight>
-            <a-entity id="words" text-geometry="value: Tilt Please; font: #font;" material="color: #000000" customize animationStyle="tilt"></a-entity>
+            <a-entity id="words" text-geometry="value: Tilting; font: #inconsolata;" material="color: indigo;" customize animationStyle="tilt"></a-entity>
        </a-marker>
 
        <a-entity camera></a-entity>

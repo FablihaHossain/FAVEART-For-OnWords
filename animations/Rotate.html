@@ -29,25 +29,16 @@
     });
 
     AFRAME.registerComponent("customize", {
-            init:function()
-            {
-                console.log("running");
-                // this.el.animationStyle = "float";           
-            },            
-
-            tick: function(time, deltaTime)
+            tick: function()
             {
                 // console.log("tick");
-                let style = this.el.getAttribute("animationStyle");
+                let words = document.querySelector("#words");
+                let style = words.getAttribute("animationStyle");
+                let myColor = words.getAttribute("material");
+                let myFont = words.getAttribute("text-geometry");
                 // console.log(style);
 
-                if (  style == "rotate" )
-                {
-                    let words = document.querySelector("#words");
-
-                    setRotate(words, "green", "#font1");
-                  
-                }
+                choice(style, words, myColor.color, myFont.font);
           }
 
     });
@@ -55,10 +46,10 @@
 </body>
     <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
         <a-assets>
-        <a-asset-item id="font1" src="fonts/Gloria Hallelujah_Regular.json"></a-asset-item>
+        <a-asset-item id="gloriaH" src="fonts/Gloria Hallelujah_Regular.json"></a-asset-item>
     </a-assets>
        <a-marker type = "pattern" url = "data/innocent_emoji.patt" id = "EmojiMarker" insight>
-            <a-entity id="words" text-geometry="value: Rotate Please; font: #font1;" material="color: #000000" customize animationStyle="rotate"></a-entity>
+            <a-entity id="words" text-geometry="value: Rotating; font: #gloriaH;" material="color: lime", customize animationStyle="rotate"></a-entity>
        </a-marker>
 
        <a-entity camera></a-entity>
