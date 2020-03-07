@@ -96,17 +96,23 @@ def homepage():
 # Create Paths Page
 @app.route("/createPaths",  methods = ['GET', 'POST'])
 def createPath():
+	#Getting all the checkpoints in the database
+	checkpoint_list = Checkpoints.query.all()
 	# Getting all information in the form
 	if request.method == "POST":
-		try:
-			pathname = request.form['pathname']
-			description = request.form['description']
-			numOfCheckpoints = request.form['checkpoint']
+		pathname = request.form['pathname']
+		description = request.form['description']
+		numOfCheckpoints = request.form.getlist("checkpoints")
+		if "" in [pathname, description, numOfCheckpoints]:
+			flash("Error! Fields Cannot be Empty!")
+		else:
+			flash(numOfCheckpoints)
+	return render_template("createPaths.html", checkpoints = checkpoint_list)
 
-			print(numOfCheckpoints)
-		except:
-			flash("Please Choose A Number of Checkpoints")
-	return render_template("createPaths.html")
+# Create Checkpoints
+@app.route("/createCheckpoint", methods = ['GET', 'POST'])
+def createCheckpoint():
+	return render_template("createCheckpoint.html")
 
 # Logging Out redirects to login page
 @app.route("/logout")
