@@ -3,6 +3,19 @@
 {% block title %} <title> Create Paths </title> {% endblock title %}
 
 {% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class = flashes>
+			{% for message in messages %}
+				<div class = "alert">
+					<p> {{message}}</p>
+				</div>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
 <body class = "body-html">
 	<div class = "jumbotron">
 		<div class = "container text-center"> Create A New Path Here! </div>
@@ -17,20 +30,21 @@
 					<input type="description" class = "form-control" name="description" value = "{{request.form.description}}">
 				</div>
 
-				<label class="my-1 mr-2" for="inlineFormCustomSelectPref">Number of Checkpoints</label>
-				  <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
-				    <option selected>Choose...</option>
-				    <option name = "checkpoint" value="1">One</option>
-				    <option name = "checkpoint" value="2">Two</option>
-				    <option name = "checkpoint" value="3">Three</option>
-				    <option name = "checkpoint" value="4">Four</option>
-				    <option name = "checkpoint" value="5">Five</option>
-				  </select>
-
+				<p> Choose Checkpoints </p>
+				{% for checkpoint in checkpoints %}
+				<div class="form-check form-check-inline">
+  					<input class="form-check-input" type="checkbox" id="inlineCheckbox" name = "checkpoints" value="{{checkpoint.checkpoint_id}}">
+  					<label class="form-check-label" for="inlineCheckbox1">{{checkpoint.checkpoint_id}} | {{checkpoint.text}} | {{checkpoint.animation}}</label>
+				</div>
+  					{% endfor %}
 				<div class ="text-center">
-					<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Path </button>
+					<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Path! </button>
 				</div>
 			</form>
+
+			<a href="{{url_for('createCheckpoint')}}" class = "btn btn-primary btn-primary-block"> Create New Checkpoint! </a>
 	</div>
 </body>
 {% endblock body %}
+
+<!-- https://stackoverflow.com/questions/47179348/getting-drop-down-menu-data-on-flask-via-form-is-giving-400-bad-request-->
