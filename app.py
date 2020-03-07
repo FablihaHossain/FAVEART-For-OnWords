@@ -26,7 +26,7 @@ def login():
 	# Getting the username and password entered
 	if request.method == "POST":
 		# If either field is empty, gives an error message
-		if request.form['username'] is "" or request.form['password'] is "":
+		if request.form['username'] == "" or request.form['password'] == "":
 			flash("Error! Neither field can be empty!")
 		else:
 			username = request.form['username']
@@ -92,6 +92,21 @@ def register():
 @app.route("/homepage")
 def homepage():
 	return render_template("homepage.html")
+
+# Create Paths Page
+@app.route("/createPaths",  methods = ['GET', 'POST'])
+def createPath():
+	# Getting all information in the form
+	if request.method == "POST":
+		try:
+			pathname = request.form['pathname']
+			description = request.form['description']
+			numOfCheckpoints = request.form['checkpoint']
+
+			print(numOfCheckpoints)
+		except:
+			flash("Please Choose A Number of Checkpoints")
+	return render_template("createPaths.html")
 
 # Logging Out redirects to login page
 @app.route("/logout")
