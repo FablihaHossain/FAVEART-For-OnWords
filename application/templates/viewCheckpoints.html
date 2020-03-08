@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %} <title>{{path.name}}: Checkpoints</title> {% endblock title %}
+
+{% block body %}
+<body class = "body-html">
+	<h1>{{path.name}} Checkpoint List</h1>
+	<div class="jumbotron">
+	{% for checkpoint in points %}
+		{% if checkpoint.checkpoint_id in path.checkpoints %}
+			<h2>Checkpoint {{checkpoint.checkpoint_id}}</h2>
+			<button type = "view" class = "btn btn-primary btn-primary-block">View Checkpoint</button>
+			<hr>
+		{% endif %}
+	{% endfor %}
+	</div>
+</body>
+{% endblock body %}
