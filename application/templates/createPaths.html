@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %} <title> Create Paths </title> {% endblock title %}
+
+{% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class = flashes>
+			{% for message in messages %}
+				<div class = "alert">
+					<p> {{message}}</p>
+				</div>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+
+<body class = "body-html">
+	<div class = "jumbotron">
+		<div class = "container text-center"> Create A New Path Here! </div>
+			<form method = "post">
+				<div class = "form-group">
+					<label for = "inputPathname"> Path Name </label>
+					<input type="pathname" class = "form-control" name="pathname" value = "{{request.form.pathname}}">
+				</div>
+
+				<div class = "form-group">
+					<label for = "inputPathname"> Path Description </label>
+					<input type="description" class = "form-control" name="description" value = "{{request.form.description}}">
+				</div>
+
+				<p> Choose Checkpoints </p>
+				{% for checkpoint in checkpoints %}
+				<div class="form-check form-check-inline">
+  					<input class="form-check-input" type="checkbox" id="inlineCheckbox" name = "checkpoints" value="{{checkpoint.checkpoint_id}}">
+  					<label class="form-check-label" for="inlineCheckbox1">{{checkpoint.checkpoint_id}} | {{checkpoint.text}} | {{checkpoint.animation}} | {{checkpoint.color}} | {{checkpoint.font}}</label>
+				</div>
+  					{% endfor %}
+				<div class ="text-center">
+					<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Path! </button>
+				</div>
+			</form>
+	</div>
+
+	<a href="{{url_for('createCheckpoint')}}" class = "btn btn-primary btn-primary-block"> Create New Checkpoint! </a>
+
+</body>
+{% endblock body %}
+
+<!-- https://stackoverflow.com/questions/47179348/getting-drop-down-menu-data-on-flask-via-form-is-giving-400-bad-request-->

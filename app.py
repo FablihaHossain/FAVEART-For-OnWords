@@ -26,7 +26,7 @@ def login():
 	# Getting the username and password entered
 	if request.method == "POST":
 		# If either field is empty, gives an error message
-		if request.form['username'] is "" or request.form['password'] is "":
+		if request.form['username'] == "" or request.form['password'] == "":
 			flash("Error! Neither field can be empty!")
 		else:
 			username = request.form['username']
@@ -92,6 +92,63 @@ def register():
 @app.route("/homepage")
 def homepage():
 	return render_template("homepage.html")
+
+# Create Paths Page
+@app.route("/createPaths",  methods = ['GET', 'POST'])
+def createPath():
+	if not session.get('username') and not session.get('user_id'):
+		return redirect(url_for('login'))
+	else:
+		#Getting all the checkpoints in the database
+		checkpoint_list = Checkpoints.query.all()
+		# Getting all information in the form
+		if request.method == "POST":
+			pathname = request.form['pathname']
+			description = request.form['description']
+			numOfCheckpoints = request.form.getlist("checkpoints")
+			if "" in [pathname, description, numOfCheckpoints]:
+				flash("Error! Fields Cannot be Empty!")
+			elif len(numOfCheckpoints) > 5:
+				flash("Error! You Must Choose Only 5 Checkpoints")
+			elif len(numOfCheckpoints) < 1:
+				flash("Error! You must choose at least one checkpoint!")
+			else:
+				# Empty interactions for now
+				interactions = []
+				user_id = session.get('user_id')
+				print(user_id)
+
+				# Getting the name of the pathmaker
+				firstname = Database.select_where("users", "user_id", user_id, "firstname")
+				lastname = Database.select_where("users", "user_id", user_id, "lastname")
+				pathmaker = firstname + " " + lastname
+
+				# Adding the path data to the database
+				Database.insert_path(pathname, description, numOfCheckpoints, interactions, pathmaker, "public")
+				flash("New Path Created!")
+				return redirect(url_for('homepage'))
+		return render_template("createPaths.html", checkpoints = checkpoint_list)
+
+# Create Checkpoints
+@app.route("/createCheckpoint", methods = ['GET', 'POST'])
+def createCheckpoint():
+	# Getting all the form data
+	if request.method == "POST":
+		text = request.form['text']
+		animation = request.form.get("animations")
+		color = request.form.get("colors")
+		font = request.form.get("fonts")
+		
+		if text == "" or animation == "Choose An Animation..." or color == "Choose A Color..." or font == "Choose A Font...":
+			flash("Error! Please Complete the Entire Form!")
+		else:
+			# No geolocations for now
+			geolocation = []
+			Database.insert_checkpoint(text, animation, color, geolocation, font)
+			flash("New Checkpoint Created!")
+			return redirect(url_for('createPath'))
+
+	return render_template("createCheckpoint.html")
 
 # Logging Out redirects to login page
 @app.route("/logout")
