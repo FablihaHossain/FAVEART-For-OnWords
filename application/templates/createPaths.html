@@ -30,6 +30,7 @@
 					<input type="description" class = "form-control" name="description" value = "{{request.form.description}}">
 				</div>
 
+				<!-- A checkbox for each checkpoint-->
 				<p> Choose Checkpoints </p>
 				{% for checkpoint in checkpoints %}
 				<div class="form-check form-check-inline">
@@ -43,7 +44,10 @@
 			</form>
 	</div>
 
-	<a href="{{url_for('createCheckpoint')}}" class = "btn btn-primary btn-primary-block"> Create New Checkpoint! </a>
+	<!-- Route to createCheckpoint page and form-->
+	<div class = "jumbotron">
+		<a href="{{url_for('createCheckpoint')}}" class = "btn btn-primary btn-primary-block"> Create New Checkpoint! </a>
+	</div>
 
 </body>
 {% endblock body %}
