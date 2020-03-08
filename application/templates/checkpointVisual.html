@@ -2,22 +2,42 @@
 
 <!DOCTYPE html>
 <html>
+<!-- {% block head %} -->
 <head>
-<!-- 	<script type="text/javascript" src = "{{url_for('static', filename = 'animations/js/aframe-ar.js')}}"></script>
+	<!-- 	<script type="text/javascript" src = "{{url_for('static', filename = 'animations/js/aframe-ar.js')}}"></script>
 
 	<script type="text/javascript" src = "{{url_for('static', filename = 'animations/js/aframe-text-geometry-component.min.js')}}"></script> -->
 
-    <script type="text/javascript" src = "{{url_for('static', filename = 'animations/js/animations.js')}}"></script>
+	<!--     <script type="text/javascript" src = "{{url_for('static', filename = 'animations/js/animations.js')}}"></script>
 
      <script type="text/javascript" src = "{{url_for('static', filename = 'animations/js/aframe.min.js')}}"></script>
 
      <script type="text/javascript" src = "{{url_for('static', filename = 'animations/js/ar.js')}}"></script>
 
-     <script type="text/javascript" src = "{{url_for('static', filename = 'animations/js/three.js')}}"></script>
+     <script type="text/javascript" src = "{{url_for('static', filename = 'animations/js/three.js')}}"></script> -->
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <script src="../static/animations/js/aframe.min.js"></script>
+        <script src="../static/animations/js/aframe-ar.js"></script>
+        <!-- support 3D text -->
+        <script src="../static/animations/js/aframe-text-geometry-component.min.js"></script>    
+        <script src="../static/animations/js/animations.js"></script>
  </head>
+<!--  {% endblock head %}
+ {% block body %} -->
+ <script>
+ 	choice("{{checkpoint.animation}}", "{{checkpoint.text}}", "{{checkpoint.color}}", "{{checkpoint.font}}")
+ </script>
  <body>
-<a-scene>
+    <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+        <a-assets>
+        <a-asset-item id="cinzelBold" src="../static/animations/fonts/Cinzel_Bold.json"></a-asset-item>
+    </a-assets>
+       <a-marker type = "pattern" url = "../static/innocent_emoji.patt" id = "EmojiMarker" insight>
+            <a-entity id="words" text-geometry="value: {{checkpoint.text}} ; font: #cinzelBold;" material="color: {{checkpoint.color}};" customize animationStyle="{{checkpoint.animation}}"></a-entity>
+       </a-marker>
 
-	 <a-entity camera></a-entity>
-</a-scene>
+       <a-entity camera></a-entity>
+    </a-scene>
+</body>
+<!-- {% endblock body %} -->
 </html>
