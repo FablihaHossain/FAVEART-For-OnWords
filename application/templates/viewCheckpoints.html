@@ -9,7 +9,7 @@
 	{% for checkpoint in points %}
 		{% if checkpoint.checkpoint_id in path.checkpoints %}
 			<h2>Checkpoint {{checkpoint.checkpoint_id}}</h2>
-			<button type = "view" class = "btn btn-primary btn-primary-block">View Checkpoint</button>
+				<a href="{{url_for('checkpointVisual', checkpointID = checkpoint.checkpoint_id)}}" class="btn btn-primary btn-primary-block">View Checkpoint Here!</a>
 			<hr>
 		{% endif %}
 	{% endfor %}
