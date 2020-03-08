@@ -4,6 +4,18 @@
 
 {% block body %}
 <body class = "body-html">
-	TBD
+	<h1>All Paths</h1>
+	<div class="jumbotron">
+	{% for path in paths %}
+			<h2>{{path.name}}</h2>
+			<h3>Creator: {{path.pathmaker}}</h3>
+			<p>{{path.description}}</p>
+		    <a href="{{url_for('viewCheckpoints', pathID = path.path_id)}}" class="btn btn-primary btn-primary-block">View Checkpoints</a>
+			<hr>
+	{% endfor %}
+	</div>
+	<button type = "submit" class = "btn btn-primary btn-primary-block">Create Path</button>
+
+	
 </body>
 {% endblock body %}

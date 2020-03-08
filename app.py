@@ -18,6 +18,14 @@ def index():
 	#Getting all the interactions in the database
 	interaction_list = Interactions.query.all()
 
+	checks = {1, 2, 3}
+	interact = {2, 3, 4}
+	geolocations = {0,0}
+
+	# Database.insert_path("VickiesJourney", "just stuff", checks, interact, "vgrinthal", "public")
+
+	# Database.insert_checkpoint("Love", "bounce", "red", geolocations, "arial")
+
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
 
 # Login Page
@@ -82,7 +90,7 @@ def register():
 				else:
 					# Adding the user to the database
 					Database.insert_user(firstname, lastname, email, username, password, role)
-					flash("Congradulations! You've been registers to FAVEART For OnWords Successfully!")
+					flash("Congratulations! You've been registers to FAVEART For OnWords Successfully!")
 					return redirect(url_for('login'))
 		except Exception as error: # Exception Handling to avoid program crashing when a role is choosen 
 			flash("Please Choose a Role!")
@@ -91,7 +99,11 @@ def register():
 # Home Page
 @app.route("/homepage")
 def homepage():
-	return render_template("homepage.html")
+	if not session.get('username'):
+		return redirect(url_for('login'))
+
+	paths_list = Paths.query.all()
+	return render_template("homepage.html", paths = paths_list)
 
 # Logging Out redirects to login page
 @app.route("/logout")
@@ -100,3 +112,16 @@ def logout():
 	session.pop('user_id', None)
 	flash("You have logged out sucessfully")
 	return redirect(url_for('login'))
+
+@app.route("/viewCheckpoints/<int:pathID>", methods = ['GET', 'POST'])
+def viewCheckpoints(pathID):
+	if not session.get('username'):
+		return redirect(url_for('login'))
+	
+	current_path = Paths.query.filter_by(path_id = pathID).first()
+	checkpoint_list = Checkpoints.query.all()
+
+	return render_template("viewCheckpoints.html", path = current_path, points = checkpoint_list)
+
+
+
