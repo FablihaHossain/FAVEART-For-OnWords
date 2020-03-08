@@ -3,7 +3,67 @@
 {% block title %} <title> Create Checkpoints </title> {% endblock title %}
 
 {% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class = flashes>
+			{% for message in messages %}
+				<div class = "alert">
+					<p> {{message}}</p>
+				</div>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+	
 <body class = "body-html">
-	TBD
+	<div class = "jumbotron">
+		<form method = "post">
+			<div class = "form-group">
+				<label for = "inputText"> Text </label>
+				<input type="text" class = "form-control" name="text" value = "{{request.form.text}}">
+			</div>
+
+			<div class = "form-group">
+				<label for = "inputText"> Animation </label>
+				<select class="custom-select" name = "animations">
+	  				<option selected>Choose An Animation...</option>
+	  				<option value="bounce">Bounce</option>
+	  				<option value="rotate">Rotate </option>
+	  				<option value="float">Float</option>
+	  				<option value="flash">Flash</option>
+	  				<option value="tilt">Tilt</option>
+				</select>
+			</div>
+
+			<div class = "form-group">
+				<label for = "inputText"> Color </label>
+				<select class="custom-select" name = "colors">
+	  				<option selected>Choose A Color...</option>
+	  				<option value="red">Red</option>
+	  				<option value="blue">Blue </option>
+	  				<option value="green">Green</option>
+	  				<option value="yellow">Yellow</option>
+	  				<option value="skyblue">Skyblue</option>
+	  				<option value="pink">Pink</option>
+				</select>
+			</div>
+
+			<div class = "form-group">
+				<label for = "inputText"> Font </label>
+				<select class="custom-select" name = "fonts">
+	  				<option selected>Choose A Font...</option>
+	  				<option value="Abril Fatface_Regular">Abril Fatface_Regular</option>
+	  				<option value="Anton_Regular">Anton_Regular</option>
+	  				<option value="Cinzel Black_Regular">Cinzel Black_Regular</option>
+	  				<option value="Gloria Hallelujah_Regular">Gloria Hallelujah_Regular</option>
+				</select>
+			</div>
+
+				<div class ="text-center">
+					<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Checkpoint! </button>
+				</div>
+		</form>
+	</div>
 </body>
 {% endblock body %}
