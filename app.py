@@ -18,14 +18,6 @@ def index():
 	#Getting all the interactions in the database
 	interaction_list = Interactions.query.all()
 
-	checks = {1, 2, 3}
-	interact = {2, 3, 4}
-	geolocations = {0,0}
-
-	# Database.insert_path("VickiesJourney", "just stuff", checks, interact, "vgrinthal", "public")
-
-	# Database.insert_checkpoint("Love", "bounce", "red", geolocations, "arial")
-
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
 
 # Login Page
@@ -102,6 +94,7 @@ def homepage():
 	if not session.get('username'):
 		return redirect(url_for('login'))
 
+	# Getting all the paths from the database
 	paths_list = Paths.query.all()
 	return render_template("homepage.html", paths = paths_list)
 
@@ -113,22 +106,29 @@ def createPath():
 	else:
 		#Getting all the checkpoints in the database
 		checkpoint_list = Checkpoints.query.all()
+
 		# Getting all information in the form
 		if request.method == "POST":
 			pathname = request.form['pathname']
 			description = request.form['description']
-			numOfCheckpoints = request.form.getlist("checkpoints")
-			if "" in [pathname, description, numOfCheckpoints]:
+			checkpoints_str = request.form.getlist("checkpoints")
+
+			# Invalid Input Checking
+			if "" in [pathname, description]:
 				flash("Error! Fields Cannot be Empty!")
-			elif len(numOfCheckpoints) > 5:
+			elif len(checkpoints_str) > 5:
 				flash("Error! You Must Choose Only 5 Checkpoints")
-			elif len(numOfCheckpoints) < 1:
+			elif len(checkpoints_str) < 1:
 				flash("Error! You must choose at least one checkpoint!")
 			else:
+				# Casting all the text values in the checkpoints list from form
+				checkpoint_ints = [int(num) for num in checkpoints_str]
+
 				# Empty interactions for now
 				interactions = []
+
+				# Getting the user id of the pathmaker
 				user_id = session.get('user_id')
-				print(user_id)
 
 				# Getting the name of the pathmaker
 				firstname = Database.select_where("users", "user_id", user_id, "firstname")
@@ -136,8 +136,10 @@ def createPath():
 				pathmaker = firstname + " " + lastname
 
 				# Adding the path data to the database
-				Database.insert_path(pathname, description, numOfCheckpoints, interactions, pathmaker, "public")
+				Database.insert_path(pathname, description, checkpoint_ints, interactions, pathmaker, "public")
 				flash("New Path Created!")
+
+				# Redirecting to homepage
 				return redirect(url_for('homepage'))
 		return render_template("createPaths.html", checkpoints = checkpoint_list)
 
@@ -165,8 +167,11 @@ def createCheckpoint():
 # Logging Out redirects to login page
 @app.route("/logout")
 def logout():
+	# Clearing the session data
 	session.pop('username', None)
 	session.pop('user_id', None)
+
+	# Log Out Messages
 	flash("You have logged out sucessfully")
 	return redirect(url_for('login'))
 
@@ -175,7 +180,10 @@ def viewCheckpoints(pathID):
 	if not session.get('username'):
 		return redirect(url_for('login'))
 	
+	# Getting the current path, given the path id
 	current_path = Paths.query.filter_by(path_id = pathID).first()
+
+	# Getting the list of all checkpoints in the database
 	checkpoint_list = Checkpoints.query.all()
 
 	return render_template("viewCheckpoints.html", path = current_path, points = checkpoint_list)
@@ -190,3 +198,4 @@ def checkpointVisual(checkpointID):
 	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first()
 	return render_template("checkpointVisual.html", checkpoint = current_checkpoint)
 
+# Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers

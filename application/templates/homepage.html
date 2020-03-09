@@ -3,6 +3,19 @@
 {% block title %} <title> Home Page </title> {% endblock title %}
 
 {% block body %}
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class = flashes>
+			{% for message in messages %}
+				<div class = "alert">
+					<p> {{message}}</p>
+				</div>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+	
 <body class = "body-html">
 	<h1>All Paths</h1>
 	<div class="jumbotron">
