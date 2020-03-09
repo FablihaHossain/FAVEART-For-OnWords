@@ -188,4 +188,14 @@ def viewCheckpoints(pathID):
 
 	return render_template("viewCheckpoints.html", path = current_path, points = checkpoint_list)
 
+# The AR Component
+@app.route("/checkpointVisual/<int:checkpointID>")
+def checkpointVisual(checkpointID):
+	if not session.get('username'):
+		return redirect(url_for('login'))
+
+	# Getting the details for the checkpoint given the ID
+	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first()
+	return render_template("checkpointVisual.html", checkpoint = current_checkpoint)
+
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
