@@ -1,1 +1,5 @@
-List of animations
+Bounce
+Float
+Rotate
+Tilt
+Flash
