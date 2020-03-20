@@ -143,6 +143,18 @@ def createPath():
 				return redirect(url_for('homepage'))
 		return render_template("createPaths.html", checkpoints = checkpoint_list)
 
+# Getting all the possible animations
+animations_list = []
+animations_pathfile = open("application/data/animations.txt", "r")
+for animation in animations_pathfile:
+	animations_list.append(animation)
+
+# Getting all the possible fonts
+fonts_list = []
+fonts_pathfile = open("application/data/fonts.txt", "r")
+for font in fonts_pathfile:
+	fonts_list.append(font)
+
 # Create Checkpoints
 @app.route("/createCheckpoint", methods = ['GET', 'POST'])
 def createCheckpoint():
@@ -162,7 +174,7 @@ def createCheckpoint():
 			flash("New Checkpoint Created!")
 			return redirect(url_for('createPath'))
 
-	return render_template("createCheckpoint.html")
+	return render_template("createCheckpoint.html", animations_list = animations_list, fonts_list = fonts_list)
 
 # Logging Out redirects to login page
 @app.route("/logout")
@@ -196,6 +208,6 @@ def checkpointVisual(checkpointID):
 
 	# Getting the details for the checkpoint given the ID
 	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first()
-	return render_template("checkpointVisual.html", checkpoint = current_checkpoint)
+	return render_template("checkpointVisual.html", checkpoint = current_checkpoint, fonts_list = fonts_list)
 
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
