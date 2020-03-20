@@ -28,17 +28,21 @@
 				<label for = "inputText"> Animation </label>
 				<select class="custom-select" name = "animations">
 	  				<option selected>Choose An Animation...</option>
-	  				<option value="bounce">Bounce</option>
-	  				<option value="rotate">Rotate </option>
+	  				{% for animation in animations_list %}
+	  				<option value="{{animation}}">{{animation}}</option>
+	  				{% endfor %}
+<!-- 	  				<option value="rotate">Rotate </option>
 	  				<option value="float">Float</option>
 	  				<option value="flash">Flash</option>
-	  				<option value="tilt">Tilt</option>
+	  				<option value="tilt">Tilt</option> -->
 				</select>
 			</div>
 
 			<div class = "form-group">
-				<label for = "inputText"> Color </label>
-				<select class="custom-select" name = "colors">
+				<label for = "head"> Color </label>
+				<br>
+				<input type="color" id="colors" name="colors" value="#e66465" >
+<!-- 				<select class="custom-select" name = "colors">
 	  				<option selected>Choose A Color...</option>
 	  				<option value="red">Red</option>
 	  				<option value="blue">Blue </option>
@@ -46,19 +50,21 @@
 	  				<option value="yellow">Yellow</option>
 	  				<option value="skyblue">Skyblue</option>
 	  				<option value="pink">Pink</option>
-				</select>
+				</select> -->
 			</div>
 
 			<div class = "form-group">
 				<label for = "inputText"> Font </label>
 				<select class="custom-select" name = "fonts">
 	  				<option selected>Choose A Font...</option>
-	  				<option value="Abril Fatface_Regular">Abril Fatface_Regular</option>
-	  				<option value="Anton_Regular">Anton_Regular</option>
+	  				{% for font in fonts_list %}
+	  				<option value="{{font}}">{{font}}</option>
+	  				{% endfor %}
+<!-- 	  				<option value="Anton_Regular">Anton_Regular</option>
 	  				<option value="Cinzel Black_Regular">Cinzel Black_Regular</option>
 	  				<option value="Gloria Hallelujah_Regular">Gloria Hallelujah_Regular</option>
 	  				<option value = "Inconsolata_Bold">Inconsolata_Bold</option>
-	  				<option value = "Kaushan Script_Regular">Kaushan Script_Regular</option>
+	  				<option value = "Kaushan Script_Regular">Kaushan Script_Regular</option> -->
 				</select>
 			</div>
 
