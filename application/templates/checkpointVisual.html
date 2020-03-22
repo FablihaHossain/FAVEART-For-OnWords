@@ -24,23 +24,8 @@
  </script>
  <body>
     <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
-    <a-assets>
-        <a-asset-item id="Abril Fatface_Regular" src="../static/animations/fonts/Abril Fatface_Regular.json"></a-asset-item>
-        </a-assets>
-
-        <a-asset-item id="Anton_Regular" src="../static/animations/fonts/Anton_Regular.json"></a-asset-item>
-        </a-assets>
-
-        <a-asset-item id="Cinzel Black_Regular" src="../static/animations/fonts/Cinzel Black_Regular.json"></a-asset-item>
-        </a-assets>
-
-        <a-asset-item id="Gloria Hallelujah_Regular" src="../static/animations/fonts/Gloria Hallelujah_Regular.json"></a-asset-item>
-        </a-assets>
-
-         <a-asset-item id="Inconsolata_Bold" src="../static/animations/fonts/Inconsolata_Bold.json"></a-asset-item>
-        </a-assets>
-
-         <a-asset-item id="Kaushan Script_Regular" src="../static/animations/fonts/Kaushan Script_Regular.json"></a-asset-item>
+        <a-assets>
+            <a-asset-item id="{{checkpoint.font}}" src="../static/animations/fonts/{{checkpoint.font}}.json"></a-asset-item>
         </a-assets>
 
        <a-marker type = "pattern" url = "../static/markers/innocent_emoji.patt" id = "EmojiMarker" insight>
