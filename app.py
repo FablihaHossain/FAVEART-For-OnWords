@@ -147,13 +147,13 @@ def createPath():
 animations_list = []
 animations_pathfile = open("application/data/animations.txt", "r")
 for animation in animations_pathfile:
-	animations_list.append(animation)
+	animations_list.append(animation.strip())
 
 # Getting all the possible fonts
 fonts_list = []
 fonts_pathfile = open("application/data/fonts.txt", "r")
 for font in fonts_pathfile:
-	fonts_list.append(font)
+	fonts_list.append(font.strip())
 
 # Create Checkpoints
 @app.route("/createCheckpoint", methods = ['GET', 'POST'])
