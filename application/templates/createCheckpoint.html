@@ -24,6 +24,7 @@
 				<input type="text" class = "form-control" name="text" value = "{{request.form.text}}">
 			</div>
 
+			<!-- Animations List -->
 			<div class = "form-group">
 				<label for = "inputText"> Animation </label>
 				<select class="custom-select" name = "animations">
@@ -31,28 +32,17 @@
 	  				{% for animation in animations_list %}
 	  				<option value="{{animation}}">{{animation}}</option>
 	  				{% endfor %}
-<!-- 	  				<option value="rotate">Rotate </option>
-	  				<option value="float">Float</option>
-	  				<option value="flash">Flash</option>
-	  				<option value="tilt">Tilt</option> -->
 				</select>
 			</div>
 
+			<!-- Colors Option -->
 			<div class = "form-group">
 				<label for = "head"> Color </label>
 				<br>
 				<input type="color" id="colors" name="colors" value="#e66465" >
-<!-- 				<select class="custom-select" name = "colors">
-	  				<option selected>Choose A Color...</option>
-	  				<option value="red">Red</option>
-	  				<option value="blue">Blue </option>
-	  				<option value="green">Green</option>
-	  				<option value="yellow">Yellow</option>
-	  				<option value="skyblue">Skyblue</option>
-	  				<option value="pink">Pink</option>
-				</select> -->
 			</div>
 
+			<!-- Fonts List -->
 			<div class = "form-group">
 				<label for = "inputText"> Font </label>
 				<select class="custom-select" name = "fonts">
@@ -60,17 +50,13 @@
 	  				{% for font in fonts_list %}
 	  				<option value="{{font}}">{{font}}</option>
 	  				{% endfor %}
-<!-- 	  				<option value="Anton_Regular">Anton_Regular</option>
-	  				<option value="Cinzel Black_Regular">Cinzel Black_Regular</option>
-	  				<option value="Gloria Hallelujah_Regular">Gloria Hallelujah_Regular</option>
-	  				<option value = "Inconsolata_Bold">Inconsolata_Bold</option>
-	  				<option value = "Kaushan Script_Regular">Kaushan Script_Regular</option> -->
 				</select>
 			</div>
 
-				<div class ="text-center">
-					<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Checkpoint! </button>
-				</div>
+			<!-- Submit to Database -->
+			<div class ="text-center">
+				<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Checkpoint! </button>
+			</div>
 		</form>
 	</div>
 </body>
