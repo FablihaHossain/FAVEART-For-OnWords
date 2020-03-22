@@ -1,5 +1,5 @@
-Bounce
-Float
-Rotate
-Tilt
-Flash
+bounce
+float
+rotate
+tilt
+flash
