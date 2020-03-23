@@ -101,6 +101,11 @@ class Database():
 				hashed_password = Database.hash_password(password)
 				hash_decoded = hashed_password.decode('UTF-8')
 
+				# Formating the string values
+				firstname = Database.format_entry(firstname)
+				lastname = Database.format_entry(lastname)
+				username = Database.format_entry(username)
+
 				# Creating the new user
 				newUser = Users(user_id = nextId, firstname = firstname, lastname = lastname, email = email, username = username, password = hash_decoded, role = role)
 
@@ -132,6 +137,10 @@ class Database():
 				while(Database.check_duplicate("paths", "path_id", nextId)):
 					nextId = nextId + 1
 
+				# Formating the string values
+				pathname = Database.format_entry(pathname)
+				description = Database.format_entry(description)
+
 				# Creating a new path
 				newPath = Paths(path_id = nextId, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
 
@@ -147,6 +156,10 @@ class Database():
 	def insert_checkpoint(text, animation, color, geolocation, font):
 		# Getting the next ID
 		nextId = Database.next_id("Checkpoints")
+
+		# Formating the string values
+		text = Database.format_entry(text)
+		font = Database.format_entry(font)
 
 		# Ensuring that the ID doesn't duplicate
 		while(Database.check_duplicate("checkpoints", "checkpoint_id", nextId)):
@@ -249,8 +262,6 @@ class Database():
 
 				# Comparing the two passwords to see if they are a match
 				validated = Database.check_hashed_passwords(hash_password, password)
-				# if user_password == password:
-				# 	validated = True
 
 			# Returning the result
 			return validated
@@ -282,6 +293,17 @@ class Database():
 		except Exception as error:
 			print("Error! %s" % error)
 
+	# A String formating function to ensure that entries such as ' can be inserted into the tables
+	def format_entry(text):
+		# Checking if the entry has an apostrophe in it
+		if "'" in text:
+			# Finding the position of the apostrophe
+			position = text.find("'")
+
+			# Formating the string
+			text = text[0:position] + "'" + text[position:]
+		# Returning the text
+		return text
 
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
