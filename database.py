@@ -75,14 +75,8 @@ class Database():
 			# Getting the number of rows
 			count = cursor.rowcount
 
-			# Getting all the rows from the table given
-			rows = cursor.fetchall()
-
-			# Getting the id of the last row
-			last_id = rows[count-1][0]
-
-			# Incremeting the id
-			newId = last_id + 1
+			# Incrementing the id
+			newId = count + 1
 			return newId
 		except:
 			print("Error! Incorrect table name given")
@@ -98,6 +92,10 @@ class Database():
 		if not username_exists and not email_exists:
 				# Getting the next ID
 				nextId = Database.next_id("Users")
+
+				# Ensuring that the ID doesn't duplicate
+				while(Database.check_duplicate("users", "user_id", nextId)):
+					nextId = nextId + 1
 
 				# Hashing the password
 				hashed_password = Database.hash_password(password)
@@ -128,10 +126,14 @@ class Database():
 			# If the path doesn't exist, it is then added to the database
 			if not exists:
 				# Getting the next path ID
-				nextID = Database.next_id("Paths")
+				nextId = Database.next_id("Paths")
+
+				# Ensuring that the ID doesn't duplicate
+				while(Database.check_duplicate("paths", "path_id", nextId)):
+					nextId = nextId + 1
 
 				# Creating a new path
-				newPath = Paths(path_id = nextID, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
+				newPath = Paths(path_id = nextId, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
 
 				# Adding the new path to the database
 				db.session.add(newPath)
@@ -146,6 +148,10 @@ class Database():
 		# Getting the next ID
 		nextId = Database.next_id("Checkpoints")
 
+		# Ensuring that the ID doesn't duplicate
+		while(Database.check_duplicate("checkpoints", "checkpoint_id", nextId)):
+			nextId = nextId + 1
+
 		# Creating a new checkpoint
 		newCheckpoint = Checkpoints(checkpoint_id = nextId, text = text, animation = animation, color = color, geolocation = geolocation, font = font)
 		
@@ -159,6 +165,10 @@ class Database():
 	def insert_interaction(path_id, checkpoint_id, user_ids, currentDatetime):
 		# Getting the next ID
 		nextId = Database.next_id("Interactions")
+
+		# Ensuring that the ID doesn't duplicate
+		while(Database.check_duplicate("interactions", "interaction_id", nextId)):
+			nextId = nextId + 1
 
 		# Creating a new interaction
 		newInteraction = Interactions(interaction_id = nextId, path_id = path_id, checkpoint_id = checkpoint_id, user_id = user_ids, datetime = currentDatetime)
