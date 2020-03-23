@@ -30,10 +30,10 @@ def index():
 	# print("Next Interaction ID %d" % nextInteractionId)
 
 	# testing the string formatting function
-	newTEXT = Database.format_entry("D'Ambrosio")
-	newTEXT2 = Database.format_entry("kjgsdkfhjdfgjkdfg")
-	print(newTEXT)
-	print(newTEXT2)
+	# newTEXT = Database.format_entry("D'Ambrosio")
+	# newTEXT2 = Database.format_entry("kjgsdkfhjdfgjkdfg")
+	# print(newTEXT)
+	# print(newTEXT2)
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
 
 # Login Page
