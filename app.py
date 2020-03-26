@@ -210,4 +210,7 @@ def checkpointVisual(checkpointID):
 	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first()
 	return render_template("checkpointVisual.html", checkpoint = current_checkpoint, fonts_list = fonts_list)
 
+if __name__ == "__main__":
+    app.run(ssl_context='adhoc')
+
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
