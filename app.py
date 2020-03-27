@@ -203,8 +203,8 @@ def viewCheckpoints(pathID):
 # The AR Component
 @app.route("/checkpointVisual/<int:checkpointID>")
 def checkpointVisual(checkpointID):
-	if not session.get('username'):
-		return redirect(url_for('login'))
+	# if not session.get('username'):
+	# 	return redirect(url_for('login'))
 
 	# Getting the details for the checkpoint given the ID
 	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first()
