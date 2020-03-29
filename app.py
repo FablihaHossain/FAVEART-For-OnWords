@@ -209,5 +209,4 @@ def checkpointVisual(checkpointID):
 	# Getting the details for the checkpoint given the ID
 	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first()
 	return render_template("checkpointVisual.html", checkpoint = current_checkpoint, fonts_list = fonts_list)
-
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
