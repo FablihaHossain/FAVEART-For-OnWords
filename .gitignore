@@ -8,3 +8,7 @@ config.*
 # Re-Creating Database Tables (if necessary)
 tables.txt
 initial_values.txt
+
+# Certificate Files
+cert.pem
+privkey.pem
