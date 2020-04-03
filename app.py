@@ -18,22 +18,6 @@ def index():
 	#Getting all the interactions in the database
 	interaction_list = Interactions.query.all()
 
-	# # Testing the next id function
-	# nextUserId = Database.next_id("users")
-	# nextPathId = Database.next_id("paths")
-	# nextCheckpointId = Database.next_id("checkpoints")
-	# nextInteractionId = Database.next_id("interactions")
-
-	# print("Next User ID %d" % nextUserId)
-	# print("Next Path ID %d" % nextPathId)
-	# print("Next Checkpoint ID %d" % nextCheckpointId)
-	# print("Next Interaction ID %d" % nextInteractionId)
-
-	# testing the string formatting function
-	# newTEXT = Database.format_entry("D'Ambrosio")
-	# newTEXT2 = Database.format_entry("kjgsdkfhjdfgjkdfg")
-	# print(newTEXT)
-	# print(newTEXT2)
 	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
 
 # Login Page
@@ -102,7 +86,6 @@ def register():
 					return redirect(url_for('login'))
 		except Exception as error: # Exception Handling to avoid program crashing when a role is choosen 
 			flash("Please Choose a Role!")
-			flash(error)
 	return render_template("register.html")
 
 # Home Page
