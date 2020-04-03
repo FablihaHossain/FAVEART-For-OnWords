@@ -59,7 +59,6 @@ class Database():
 		except:
 			print("Error! Wrong table name given")
 
-
 	# Get Next ID
 	def next_id(tablename):
 		try:
@@ -101,11 +100,6 @@ class Database():
 				hashed_password = Database.hash_password(password)
 				hash_decoded = hashed_password.decode('UTF-8')
 
-				# Formating the string values
-				firstname = Database.format_entry(firstname)
-				lastname = Database.format_entry(lastname)
-				username = Database.format_entry(username)
-
 				# Creating the new user
 				newUser = Users(user_id = nextId, firstname = firstname, lastname = lastname, email = email, username = username, password = hash_decoded, role = role)
 
@@ -119,8 +113,12 @@ class Database():
 	# Pathmaker cannot have two paths with the same name AND description
 	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, codes=[0]):
 		try:
+			# Formating the string values for raw psycopg2
+			name = Database.format_entry(pathname)
+			description = Database.format_entry(path_description)
+
 			# Checking if the path already exists in the system (for the specified pathmaker)
-			query = "SELECT * FROM paths WHERE name = '%s' AND description = '%s' AND pathmaker = '%s'" % (pathname, path_description, pathmaker)
+			query = "SELECT * FROM paths WHERE name = '%s' AND description = '%s' AND pathmaker = '%s'" % (name, description, pathmaker)
 
 			# Executing the query
 			cursor.execute(query)
@@ -137,10 +135,6 @@ class Database():
 				while(Database.check_duplicate("paths", "path_id", nextId)):
 					nextId = nextId + 1
 
-				# Formating the string values
-				pathname = Database.format_entry(pathname)
-				description = Database.format_entry(description)
-
 				# Creating a new path
 				newPath = Paths(path_id = nextId, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
 
@@ -156,10 +150,6 @@ class Database():
 	def insert_checkpoint(text, animation, color, geolocation, font):
 		# Getting the next ID
 		nextId = Database.next_id("Checkpoints")
-
-		# Formating the string values
-		text = Database.format_entry(text)
-		font = Database.format_entry(font)
 
 		# Ensuring that the ID doesn't duplicate
 		while(Database.check_duplicate("checkpoints", "checkpoint_id", nextId)):
@@ -293,16 +283,23 @@ class Database():
 		except Exception as error:
 			print("Error! %s" % error)
 
-	# A String formating function to ensure that entries such as ' can be inserted into the tables
+	# A String formating function for text entries with '
+	# Helper function for insert_user and insert_path 
 	def format_entry(text):
-		# Checking if the entry has an apostrophe in it
-		if "'" in text:
+		# Declaring a variable to keep count
+		position = 0
+		# Parsing the text
+		while position < len(text):
 			# Finding the position of the apostrophe
-			position = text.find("'")
+			if text[position] == "'":
+				# Formating the string
+				text = text[0:position] + "'" + text[position:]
 
-			# Formating the string
-			text = text[0:position] + "'" + text[position:]
-		# Returning the text
+				# incrementing position to avoid triple apostrophes
+				position = position + 1
+			# Incrementing position
+			position = position + 1
+		# Returning the formatted text
 		return text
 
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
