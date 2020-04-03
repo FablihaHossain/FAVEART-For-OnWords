@@ -59,7 +59,6 @@ class Database():
 		except:
 			print("Error! Wrong table name given")
 
-
 	# Get Next ID
 	def next_id(tablename):
 		try:
@@ -75,14 +74,8 @@ class Database():
 			# Getting the number of rows
 			count = cursor.rowcount
 
-			# Getting all the rows from the table given
-			rows = cursor.fetchall()
-
-			# Getting the id of the last row
-			last_id = rows[count-1][0]
-
-			# Incremeting the id
-			newId = last_id + 1
+			# Incrementing the id
+			newId = count + 1
 			return newId
 		except:
 			print("Error! Incorrect table name given")
@@ -98,6 +91,10 @@ class Database():
 		if not username_exists and not email_exists:
 				# Getting the next ID
 				nextId = Database.next_id("Users")
+
+				# Ensuring that the ID doesn't duplicate
+				while(Database.check_duplicate("users", "user_id", nextId)):
+					nextId = nextId + 1
 
 				# Hashing the password
 				hashed_password = Database.hash_password(password)
@@ -116,8 +113,12 @@ class Database():
 	# Pathmaker cannot have two paths with the same name AND description
 	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, codes=[0]):
 		try:
+			# Formating the string values for raw psycopg2
+			name = Database.format_entry(pathname)
+			description = Database.format_entry(path_description)
+
 			# Checking if the path already exists in the system (for the specified pathmaker)
-			query = "SELECT * FROM paths WHERE name = '%s' AND description = '%s' AND pathmaker = '%s'" % (pathname, path_description, pathmaker)
+			query = "SELECT * FROM paths WHERE name = '%s' AND description = '%s' AND pathmaker = '%s'" % (name, description, pathmaker)
 
 			# Executing the query
 			cursor.execute(query)
@@ -128,10 +129,14 @@ class Database():
 			# If the path doesn't exist, it is then added to the database
 			if not exists:
 				# Getting the next path ID
-				nextID = Database.next_id("Paths")
+				nextId = Database.next_id("Paths")
+
+				# Ensuring that the ID doesn't duplicate
+				while(Database.check_duplicate("paths", "path_id", nextId)):
+					nextId = nextId + 1
 
 				# Creating a new path
-				newPath = Paths(path_id = nextID, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
+				newPath = Paths(path_id = nextId, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
 
 				# Adding the new path to the database
 				db.session.add(newPath)
@@ -146,6 +151,10 @@ class Database():
 		# Getting the next ID
 		nextId = Database.next_id("Checkpoints")
 
+		# Ensuring that the ID doesn't duplicate
+		while(Database.check_duplicate("checkpoints", "checkpoint_id", nextId)):
+			nextId = nextId + 1
+
 		# Creating a new checkpoint
 		newCheckpoint = Checkpoints(checkpoint_id = nextId, text = text, animation = animation, color = color, geolocation = geolocation, font = font)
 		
@@ -159,6 +168,10 @@ class Database():
 	def insert_interaction(path_id, checkpoint_id, user_ids, currentDatetime):
 		# Getting the next ID
 		nextId = Database.next_id("Interactions")
+
+		# Ensuring that the ID doesn't duplicate
+		while(Database.check_duplicate("interactions", "interaction_id", nextId)):
+			nextId = nextId + 1
 
 		# Creating a new interaction
 		newInteraction = Interactions(interaction_id = nextId, path_id = path_id, checkpoint_id = checkpoint_id, user_id = user_ids, datetime = currentDatetime)
@@ -239,8 +252,6 @@ class Database():
 
 				# Comparing the two passwords to see if they are a match
 				validated = Database.check_hashed_passwords(hash_password, password)
-				# if user_password == password:
-				# 	validated = True
 
 			# Returning the result
 			return validated
@@ -272,6 +283,24 @@ class Database():
 		except Exception as error:
 			print("Error! %s" % error)
 
+	# A String formating function for text entries with '
+	# Helper function for insert_user and insert_path 
+	def format_entry(text):
+		# Declaring a variable to keep count
+		position = 0
+		# Parsing the text
+		while position < len(text):
+			# Finding the position of the apostrophe
+			if text[position] == "'":
+				# Formating the string
+				text = text[0:position] + "'" + text[position:]
+
+				# incrementing position to avoid triple apostrophes
+				position = position + 1
+			# Incrementing position
+			position = position + 1
+		# Returning the formatted text
+		return text
 
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
