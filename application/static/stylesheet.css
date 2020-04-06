@@ -40,3 +40,13 @@ h1 {
 .btn-primary-block:hover{
 	background-color:#C7B63F;
 }
+
+.map
+{
+	width: 400px;
+	height: 300px;
+	position:fixed;
+	bottom:0;
+	right:0;  
+	z-index: 999;  
+}
