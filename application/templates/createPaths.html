@@ -1,9 +1,6 @@
 {% extends "layout.html" %}
 
 {% block title %} <title> Create Paths </title> {% endblock title %}
-	<meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script src="../static/leaflet/leaflet.js"></script>
    
 {% block body %}
 	{% with messages = get_flashed_messages() %}
@@ -19,28 +16,6 @@
 	{% endwith %}
 
 <body class = "body-html">
-	<!-- Map for Geolocations -->
-	<!-- Credit to Professor Stemkoski-->
-	<div id="map" class = "map"></div>
-
-	<!-- Script to Access and Modify Leaflet Contents-->
-	<script type="text/javascript">
-		var map = L.map('map').setView({lon: -72, lat: 42}, 19);
-
-      // add the OpenStreetMap tiles
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-      }).addTo(map);
-
-      // show the scale bar on the lower left corner
-      L.control.scale().addTo(map);
-
-      var us = L.marker({lon: -72, lat: 42})
-                     .bindPopup( "This is you." )
-                     .addTo( map );
-	</script>
-
 	<div class = "jumbotron">
 		<div class = "container text-center"> Create A New Path Here! </div>
 			<form method = "post">
