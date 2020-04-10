@@ -8,7 +8,7 @@
     align-content: center;
 }
 
-h1 {
+.h1 {
 	padding-top: 1%;
 	padding-left: 2%;
 }
@@ -43,10 +43,9 @@ h1 {
 
 .map
 {
-	width: 400px;
+	width: 2000px;
 	height: 300px;
-	position:fixed;
-	bottom:0;
-	right:0;  
-	z-index: 999;  
+	position:absolute;
+	bottom:-140px;
+	right:0;   
 }
