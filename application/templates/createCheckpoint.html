@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 
 {% block title %} <title> Create Checkpoints </title> {% endblock title %}
-
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="../static/leaflet/leaflet.js"></script>
 {% block body %}
 
 	{% with messages = get_flashed_messages() %}
@@ -17,6 +19,61 @@
 	{% endwith %}
 	
 <body class = "body-html">
+	<!-- Map for Geolocations -->
+	<!-- Credit to Professor Stemkoski-->
+	<div id="map" class = "map"></div>
+		<!-- Script to Access and Modify Leaflet Contents-->
+		<script type="text/javascript">	
+			let latitude = document.getElementById("latitude");
+			let longitude = document.getElementById("longitude");
+
+			var map = L.map('map').setView({lon: longitude, lat: latitude}, 19);
+
+	      // add the OpenStreetMap tiles
+	      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	        maxZoom: 19,
+	        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+	      }).addTo(map);
+
+	      // show the scale bar on the lower left corner
+	      L.control.scale().addTo(map);
+
+	      var us = L.marker({lon: longitude, lat: latitude})
+	                     .bindPopup( "This is you." )
+	                     .addTo( map );
+
+	    let latChosen = document.getElementById("latChosen");
+		let longChosen = document.getElementById("longChosen");
+
+   		map.on('click', function(ev){
+			var latlng = map.mouseEventToLatLng(ev.originalEvent);
+			latChosen = latlng.lat;
+			longChosen = latlng.lng;
+			console.log(latlng.lat + ', ' + latlng.lng);
+			});
+
+			navigator.geolocation.getCurrentPosition(function(position)
+		{
+			// Getting the current position of the user
+			let lat = position.coords.latitude;
+			let long = position.coords.longitude;
+
+			latitude  = lat;
+			longitude = long;
+
+			//Updating Map Center Display
+			map.setView({lon: long, lat: lat}, 19);
+			let newLatLng = new L.LatLng(lat, long);
+    		
+    		//Updating Marker position
+    		us.setLatLng(newLatLng); 
+
+			// console.log("Lat: " + latitude);
+			// console.log("Long: " + longitude);
+			});
+
+		</script>
+	<!-- Checkpoint Form -->
 	<div class = "jumbotron">
 		<form method = "post">
 			<div class = "form-group">
@@ -61,3 +118,5 @@
 	</div>
 </body>
 {% endblock body %}
+
+<!-- Credit to https://gis.stackexchange.com/questions/210041/using-leaflet-js-is-it-possible-to-know-the-onclick-location-of-a-marker-ignor/210102-->
