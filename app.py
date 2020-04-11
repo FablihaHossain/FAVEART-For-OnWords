@@ -109,38 +109,42 @@ def createPath():
 
 		# Getting all information in the form
 		if request.method == "POST":
-			pathname = request.form['pathname']
-			description = request.form['description']
-			checkpoints_str = request.form.getlist("checkpoints")
+			try:
+				pathname = request.form['pathname']
+				description = request.form['description']
+				checkpoints_str = request.form.getlist("checkpoints")
+				format_chosen = request.form['format']
 
-			# Invalid Input Checking
-			if "" in [pathname, description]:
-				flash("Error! Fields Cannot be Empty!")
-			elif len(checkpoints_str) > 5:
-				flash("Error! You Must Choose Only 5 Checkpoints")
-			elif len(checkpoints_str) < 1:
-				flash("Error! You must choose at least one checkpoint!")
-			else:
-				# Casting all the text values in the checkpoints list from form
-				checkpoint_ints = [int(num) for num in checkpoints_str]
+				# Invalid Input Checking
+				if "" in [pathname, description]:
+					flash("Error! Fields Cannot be Empty!")
+				elif len(checkpoints_str) > 5:
+					flash("Error! You Must Choose Only 5 Checkpoints")
+				elif len(checkpoints_str) < 1:
+					flash("Error! You must choose at least one checkpoint!")
+				else:
+					# Casting all the text values in the checkpoints list from form
+					checkpoint_ints = [int(num) for num in checkpoints_str]
 
-				# Empty interactions for now
-				interactions = []
+					# Empty interactions for now
+					interactions = []
 
-				# Getting the user id of the pathmaker
-				user_id = session.get('user_id')
+					# Getting the user id of the pathmaker
+					user_id = session.get('user_id')
 
-				# Getting the name of the pathmaker
-				firstname = Database.select_where("users", "user_id", user_id, "firstname")
-				lastname = Database.select_where("users", "user_id", user_id, "lastname")
-				pathmaker = firstname + " " + lastname
+					# Getting the name of the pathmaker
+					firstname = Database.select_where("users", "user_id", user_id, "firstname")
+					lastname = Database.select_where("users", "user_id", user_id, "lastname")
+					pathmaker = firstname + " " + lastname
 
-				# Adding the path data to the database
-				Database.insert_path(pathname, description, checkpoint_ints, interactions, pathmaker, "public")
-				flash("New Path Created!")
+					# Adding the path data to the database
+					Database.insert_path(pathname, description, checkpoint_ints, interactions, pathmaker, "public", format_chosen)
+					flash("New %s-Based Path Created!" % format_chosen)
 
-				# Redirecting to homepage
-				return redirect(url_for('homepage'))
+					# Redirecting to homepage
+					return redirect(url_for('homepage'))
+			except Exception as error: # Exception Handling to avoid program crashing when a format is chosen
+				flash("Please Choose a Base Format for the Path!")
 		return render_template("createPaths.html", checkpoints = checkpoint_list)
 
 # Getting all the possible animations
@@ -164,7 +168,7 @@ def createCheckpoint():
 		animation = request.form.get("animations")
 		color = request.form.get("colors")
 		font = request.form.get("fonts")
-	
+
 		if text == "" or animation == "Choose An Animation..." or color == "Choose A Color..." or font == "Choose A Font...":
 			flash("Error! Please Complete the Entire Form!")
 		else:
