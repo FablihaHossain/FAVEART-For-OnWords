@@ -24,7 +24,7 @@ class Paths(db.Model):
 	interactions = db.Column(db.ARRAY(db.Integer))
 	pathmaker = db.Column(db.String(100), nullable = False)
 	status = db.Column(db.String(50), nullable = False)
-	access_codes = db.Column(db.ARRAY(db.Integer))
+	base_format = db.Column(db.String(20), nullable = False)
 	
 
 # Checkpoint Table 
@@ -36,6 +36,8 @@ class Checkpoints(db.Model):
 	color = db.Column(db.String(100))
 	geolocation = db.Column(db.ARRAY(db.Float))  # Latitude and Longitude
 	font = db.Column(db.String(200))
+	marker = db.Column(db.String(200))	# Name of associated Marker 
+	path_id = db.Column(db.Integer, db.ForeignKey('paths.path_id'), nullable = False)
 
 # Interactions Table
 class Interactions(db.Model):
