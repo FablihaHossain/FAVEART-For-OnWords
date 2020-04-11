@@ -28,8 +28,8 @@ h1 {
 
 .jumbotron{
 	background-color: transparent;
-	padding:4rem 33rem;
 	height:auto;
+
 }
 .btn-primary{
 	background-color:#FDEE9A;
@@ -49,4 +49,8 @@ h1 {
 	bottom:0;
 	right:0;  
 	z-index: 999;  
+}
+
+@media screen and (max-width: 600px) {
+	.jumbotron.responsive {position: relative;}
 }
