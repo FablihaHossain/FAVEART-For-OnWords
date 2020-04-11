@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 
 {% block title %} <title> Create Checkpoints </title> {% endblock title %}
-	<meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script src="../static/leaflet/leaflet.js"></script>
+
+	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+	<script src="{{url_for('static', filename = 'leaflet/leaflet.js')}}"></script>
+	<script src="{{url_for('static', filename = 'leaflet/Control.OSMGeocoder.js')}}"></script> 
 {% block body %}
 
 	{% with messages = get_flashed_messages() %}
@@ -19,60 +20,6 @@
 	{% endwith %}
 	
 <body class = "body-html">
-	<!-- Map for Geolocations -->
-	<!-- Credit to Professor Stemkoski-->
-	<div id="map" class = "map"></div>
-		<!-- Script to Access and Modify Leaflet Contents-->
-		<script type="text/javascript">	
-			let latitude = document.getElementById("latitude");
-			let longitude = document.getElementById("longitude");
-
-			var map = L.map('map').setView({lon: longitude, lat: latitude}, 19);
-
-	      // add the OpenStreetMap tiles
-	      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	        maxZoom: 19,
-	        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-	      }).addTo(map);
-
-	      // show the scale bar on the lower left corner
-	      L.control.scale().addTo(map);
-
-	      var us = L.marker({lon: longitude, lat: latitude})
-	                     .bindPopup( "This is you." )
-	                     .addTo( map );
-
-	    let latChosen = document.getElementById("latChosen");
-		let longChosen = document.getElementById("longChosen");
-
-   		map.on('click', function(ev){
-			var latlng = map.mouseEventToLatLng(ev.originalEvent);
-			latChosen = latlng.lat;
-			longChosen = latlng.lng;
-			console.log(latlng.lat + ', ' + latlng.lng);
-			});
-
-			navigator.geolocation.getCurrentPosition(function(position)
-		{
-			// Getting the current position of the user
-			let lat = position.coords.latitude;
-			let long = position.coords.longitude;
-
-			latitude  = lat;
-			longitude = long;
-
-			//Updating Map Center Display
-			map.setView({lon: long, lat: lat}, 19);
-			let newLatLng = new L.LatLng(lat, long);
-    		
-    		//Updating Marker position
-    		us.setLatLng(newLatLng); 
-
-			// console.log("Lat: " + latitude);
-			// console.log("Long: " + longitude);
-			});
-
-		</script>
 	<!-- Checkpoint Form -->
 	<div class = "jumbotron">
 		<form method = "post">
@@ -110,13 +57,83 @@
 				</select>
 			</div>
 
+			<p>Your location is <span id="latChosen">0.00</span>°
+  			latitude by <span id="longChosen">0.00</span>° longitude.
+			</p>
+
 			<!-- Submit to Database -->
 			<div class ="text-center">
 				<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Checkpoint! </button>
 			</div>
 		</form>
 	</div>
+
+	<!-- Map for Geolocations -->
+	<!-- Credit to Professor Stemkoski-->
+	<div id="map" class = "map"></div>
+		<!-- Script to Access and Modify Leaflet Contents-->
+		<script type="text/javascript">	
+			let latitude = document.getElementById("latitude");
+			let longitude = document.getElementById("longitude");
+
+			var map = L.map('map').setView({lon: longitude, lat: latitude}, 19);
+
+			 var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmAttrib='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+
+		var osmGeocoder = new L.Control.OSMGeocoder({placeholder: 'Search location...'});
+
+		map.addControl(osmGeocoder).addLayer(osm);
+
+	      // add the OpenStreetMap tiles
+	      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	        maxZoom: 19,
+	        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+	      }).addTo(map);
+
+	      // show the scale bar on the lower left corner
+	      L.control.scale().addTo(map);
+
+	      var us = L.marker({lon: longitude, lat: latitude})
+	                     .bindPopup( "This is you." )
+	                     .addTo( map );
+
+	    let latChosen = document.getElementById("latChosen");
+		let longChosen = document.getElementById("longChosen");
+
+		var markerCount = 0;
+
+	   		map.on('click', function(ev){
+				var latlng = map.mouseEventToLatLng(ev.originalEvent);
+				latChosen.innerText = latlng.lat;
+				longChosen.innerText = latlng.lng;
+				var mark = new L.marker({lon: latlng.lng, lat: latlng.lat}, {draggable: true}).addTo( map );
+				markerCount = markerCount + 1;
+				console.log("markerCount:" + markerCount)
+				console.log(latlng.lat + ', ' + latlng.lng);
+			});
+
+		navigator.geolocation.getCurrentPosition(function(position)
+		{
+			// Getting the current position of the user
+			let lat = position.coords.latitude;
+			let long = position.coords.longitude;
+
+			latitude  = lat;
+			longitude = long;
+
+			//Updating Map Center Display
+			map.setView({lon: long, lat: lat}, 19);
+			let newLatLng = new L.LatLng(lat, long);
+    		
+    		//Updating Marker position
+    		us.setLatLng(newLatLng);
+			});
+
+		</script>
 </body>
 {% endblock body %}
 
 <!-- Credit to https://gis.stackexchange.com/questions/210041/using-leaflet-js-is-it-possible-to-know-the-onclick-location-of-a-marker-ignor/210102-->
+<!-- Credit to https://github.com/k4r573n/leaflet-control-osm-geocoder-->
