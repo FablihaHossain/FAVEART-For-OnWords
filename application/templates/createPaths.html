@@ -37,7 +37,20 @@
   					<input class="form-check-input" type="checkbox" id="inlineCheckbox" name = "checkpoints" value="{{checkpoint.checkpoint_id}}">
   					<label class="form-check-label" for="inlineCheckbox1">{{checkpoint.checkpoint_id}} | {{checkpoint.text}} | {{checkpoint.animation}} | {{checkpoint.color}} | {{checkpoint.font}}</label>
 				</div>
-  					{% endfor %}
+				{% endfor %}
+
+				<!-- Choice for Based Format: Marker-Based or Location-Based-->
+				<div class = "container text-center"> Choose a Format: </div>
+				<div class = "text-center">
+					<div class="form-check form-check-inline">
+		  				<input class="form-check-input" type="radio" name="format" id="marker" value="marker">
+		  				<label class="form-check-label" for="format">Marker</label>
+					</div>
+					<div class="form-check form-check-inline">
+		  				<input class="form-check-input" type="radio" name="format" id="geolocation" value="geolocation">
+		  				<label class="form-check-label" for="format">Geolocation</label>
+					</div>
+				</div>
 				<div class ="text-center">
 					<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Path! </button>
 				</div>
