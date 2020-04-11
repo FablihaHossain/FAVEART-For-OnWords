@@ -164,7 +164,7 @@ def createCheckpoint():
 		animation = request.form.get("animations")
 		color = request.form.get("colors")
 		font = request.form.get("fonts")
-		
+	
 		if text == "" or animation == "Choose An Animation..." or color == "Choose A Color..." or font == "Choose A Font...":
 			flash("Error! Please Complete the Entire Form!")
 		else:
