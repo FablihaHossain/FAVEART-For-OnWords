@@ -77,14 +77,15 @@
 			let longitude = document.getElementById("longitude");
 
 			var map = L.map('map').setView({lon: longitude, lat: latitude}, 19);
+			// Geocoder => Search Bar Functionality
+			var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+	        var osmAttrib='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	        var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
 
-			 var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        var osmAttrib='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
-
-		var osmGeocoder = new L.Control.OSMGeocoder({placeholder: 'Search location...'});
-
-		map.addControl(osmGeocoder).addLayer(osm);
+	        // New control for search bar
+			var osmGeocoder = new L.Control.OSMGeocoder({placeholder: 'Type Location Here...'});
+			//Adding new control to the map and displaying the entered address on the map
+			map.addControl(osmGeocoder).addLayer(osm);
 
 	      // add the OpenStreetMap tiles
 	      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -102,6 +103,7 @@
 	    let latChosen = document.getElementById("latChosen");
 		let longChosen = document.getElementById("longChosen");
 
+		//Allowing the user to pin markers by clicking on various points on the map
 		var markerCount = 0;
 
 	   		map.on('click', function(ev){
@@ -114,6 +116,7 @@
 				console.log(latlng.lat + ', ' + latlng.lng);
 			});
 
+	   	// Finding the current location of the user and placing the map's display there with a marker
 		navigator.geolocation.getCurrentPosition(function(position)
 		{
 			// Getting the current position of the user
