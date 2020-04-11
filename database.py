@@ -111,7 +111,7 @@ class Database():
 
 	# Insert Path into Database
 	# Pathmaker cannot have two paths with the same name AND description
-	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, codes=[0]):
+	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, base_format):
 		try:
 			# Formating the string values for raw psycopg2
 			name = Database.format_entry(pathname)
@@ -136,7 +136,7 @@ class Database():
 					nextId = nextId + 1
 
 				# Creating a new path
-				newPath = Paths(path_id = nextId, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
+				newPath = Paths(path_id = nextId, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, base_format = base_format)
 
 				# Adding the new path to the database
 				db.session.add(newPath)
@@ -147,7 +147,7 @@ class Database():
 				print ("Error! %s" % error)
 
 	# Insert Checkpoint into Database
-	def insert_checkpoint(text, animation, color, geolocation, font):
+	def insert_checkpoint(text, animation, color, geolocation, font, markerName, path_id):
 		# Getting the next ID
 		nextId = Database.next_id("Checkpoints")
 
@@ -156,7 +156,7 @@ class Database():
 			nextId = nextId + 1
 
 		# Creating a new checkpoint
-		newCheckpoint = Checkpoints(checkpoint_id = nextId, text = text, animation = animation, color = color, geolocation = geolocation, font = font)
+		newCheckpoint = Checkpoints(checkpoint_id = nextId, text = text, animation = animation, color = color, geolocation = geolocation, font = font, marker = markerName, path_id = path_id)
 		
 		# Adding the new checkpoint to the database
 		db.session.add(newCheckpoint)
