@@ -104,27 +104,31 @@ def createPath():
 	if not session.get('username') and not session.get('user_id'):
 		return redirect(url_for('login'))
 	else:
-		#Getting all the checkpoints in the database
-		checkpoint_list = Checkpoints.query.all()
+		# #Getting all the checkpoints in the database
+		# checkpoint_list = Checkpoints.query.all()
 
 		# Getting all information in the form
 		if request.method == "POST":
 			try:
 				pathname = request.form['pathname']
+				session['pathname'] = pathname
 				description = request.form['description']
-				checkpoints_str = request.form.getlist("checkpoints")
+				session['description'] = description
+				#checkpoints_str = request.form.getlist("checkpoints")
 				format_chosen = request.form['format']
-
+				session['format_chosen'] = format_chosen
+				numOfCheckpoints = request.form.get("checkpointNum")
+				session['numOfCheckpoints'] = str(numOfCheckpoints)
 				# Invalid Input Checking
-				if "" in [pathname, description]:
+				if "" in [pathname, description] or numOfCheckpoints == "Choose Number of Checkpoints Here...":
 					flash("Error! Fields Cannot be Empty!")
-				elif len(checkpoints_str) > 5:
-					flash("Error! You Must Choose Only 5 Checkpoints")
-				elif len(checkpoints_str) < 1:
-					flash("Error! You must choose at least one checkpoint!")
+				# elif len(checkpoints_str) > 5:
+				# 	flash("Error! You Must Choose Only 5 Checkpoints")
+				# elif len(checkpoints_str) < 1:
+				# 	flash("Error! You must choose at least one checkpoint!")
 				else:
 					# Casting all the text values in the checkpoints list from form
-					checkpoint_ints = [int(num) for num in checkpoints_str]
+					# checkpoint_ints = [int(num) for num in checkpoints_str]
 
 					# Empty interactions for now
 					interactions = []
@@ -136,16 +140,21 @@ def createPath():
 					firstname = Database.select_where("users", "user_id", user_id, "firstname")
 					lastname = Database.select_where("users", "user_id", user_id, "lastname")
 					pathmaker = firstname + " " + lastname
+					session['pathmaker'] = pathmaker
 
 					# Adding the path data to the database
-					Database.insert_path(pathname, description, checkpoint_ints, interactions, pathmaker, "public", format_chosen)
-					flash("New %s-Based Path Created!" % format_chosen)
-
+					# Database.insert_path(pathname, description, checkpoint_ints, interactions, pathmaker, "public", format_chosen)
+					# flash("New %s-Based Path Created!" % format_chosen)
+					# session['pathname'] = pathname
+					# session['description'] = description
+					# session['pathmaker'] = pathmaker
+					# session['format_chosen'] = format_chosen
 					# Redirecting to homepage
-					return redirect(url_for('homepage'))
+
+					return redirect(url_for('createCheckpoint', numOfCheckpoints = numOfCheckpoints))
 			except Exception as error: # Exception Handling to avoid program crashing when a format is chosen
 				flash("Please Choose a Base Format for the Path!")
-		return render_template("createPaths.html", checkpoints = checkpoint_list)
+		return render_template("createPaths.html")
 
 # Getting all the possible animations
 animations_list = []
@@ -162,23 +171,32 @@ for font in fonts_pathfile:
 # Create Checkpoints
 @app.route("/createCheckpoint", methods = ['GET', 'POST'])
 def createCheckpoint():
-	# Getting all the form data
-	if request.method == "POST":
-		text = request.form['text']
-		animation = request.form.get("animations")
-		color = request.form.get("colors")
-		font = request.form.get("fonts")
+	if not session.get('username') and not session.get('user_id'):
+		return redirect(url_for('login'))
+	else:
+		# Getting all the form data
+		if request.method == "POST":
+			
+			text = request.form['text']
+			animation = request.form.get("animations")
+			color = request.form.get("colors")
+			font = request.form.get("fonts")
 
-		if text == "" or animation == "Choose An Animation..." or color == "Choose A Color..." or font == "Choose A Font...":
-			flash("Error! Please Complete the Entire Form!")
-		else:
-			# No geolocations for now
-			geolocation = []
-			Database.insert_checkpoint(text, animation, color, geolocation, font)
-			flash("New Checkpoint Created!")
-			return redirect(url_for('createPath'))
+			# if text == "" or animation == "Choose An Animation..." or color == "Choose A Color..." or font == "Choose A Font...":
+			# 	flash("Error! Please Complete the Entire Form!")
+			# else:
+			# 	# No geolocations for now
+			# 	geolocation = []
+			# 	Database.insert_checkpoint(text, animation, color, geolocation, font)
+			# 	flash("New Checkpoint Created!")
+			# 	return redirect(url_for('createPath'))
 
-	return render_template("createCheckpoint.html", animations_list = animations_list, fonts_list = fonts_list)
+		return render_template("createCheckpoint.html", animations_list = animations_list, fonts_list = fonts_list)
+
+# Finalize Path Details before creating
+# @app.route("/pathDetails")
+# def pathDetails():
+
 
 # Logging Out redirects to login page
 @app.route("/logout")
