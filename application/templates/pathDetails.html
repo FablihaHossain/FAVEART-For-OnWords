@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %} <title> Path Details </title> {% endblock title %}
+   
+{% block body %}
+
+<!-- Displaying the Path Information-->
+<body class = "body-html">
+	<div class = "jumbotron">
+		Path Name: {{ session['pathname'] }}
+		<br>
+		Path Description: {{ session['description'] }}
+		<br>
+		Pathmaker: {{ session['pathmaker'] }}
+		<br>
+		Format: {{ session['format_chosen'] }}
+		<br>
+		Total Number of Checkpoints: {{session['numOfCheckpoints']}}
+		<br><br>
+
+		<!-- Getting the Checkpoint Information From Session -->
+		{% set count = session['numOfCheckpoints'] | int %}
+		{% set textList = session['checkpointTexts'] %}
+		{% set animationList = session['checkpointAnimations'] %}
+		{% set colorList = session['checkpointColors'] %}
+		{% set fontList = session['checkpointFonts'] %}
+		{% set latitudeList = session['checkpointLatitudes'] %}
+		{% set longitudeList = session['checkpointLongitudes'] %}
+
+		<!-- Displaying the Checkpoint Information-->
+		{% for x in range(0, count) %}
+			Checkpoint {{x+1}}:
+			<br>
+			Text: {{ textList[x] }}
+			<br>
+			Animation: {{ animationList[x] }}
+			<br>
+			Color: {{ colorList[x] }}
+			<br>
+			Font: {{ fontList[x] }}
+			<br>
+			Latitude: {{ latitudeList[x] }}
+			<br>
+			Longitude: {{ longitudeList[x] }}
+			<br><br>
+		{% endfor %}
+
+		<!-- Asking the Pathmaker if they'd like to create the path or delete progress--> 
+		<form method = "post">
+			<div class ="text-left">
+				<button type = "submit" name = "pathCreation" value = "createPath" class = "btn btn-primary btn-primary-block"> Create Path! </button>
+			</div>
+			<br>
+			<div class ="text-left">
+				<button type = "submit" name = "pathCreation" value = "cancelPath" class = "btn btn-primary btn-primary-block"> Cancel Path </button>
+			</div>
+		</form>
+	</div>
+</body>
+{% endblock body %}
+
+<!-- Credit tp https://stackoverflow.com/questions/43811779/use-many-submit-buttons-in-the-same-form-->
