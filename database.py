@@ -42,6 +42,25 @@ class Database():
 			return user_id
 		except Exception as error:
 			print ("Error! %s" % error)
+
+	# Function to get checkpoint id
+	def getCheckpointID(text, animation, color, font):
+		try:
+			# Developing the query
+			query = "SELECT * FROM checkpoints WHERE text = '%s' AND animation = '%s' AND color = '%s' AND font = '%s'" % (text, animation, color, font)
+
+			# Executing the query
+			cursor.execute(query)
+
+			# Getting the user info from cursor, then user_id
+			checkpoint = cursor.fetchall()
+			checkpoint_id = checkpoint[0][0]
+
+			# Returning the user_id
+			return checkpoint_id
+		except Exception as error:
+			print ("Error! %s" % error)
+
 	# Function to count the number of rows at a given table
 	def row_count(tablename):
 		try:
