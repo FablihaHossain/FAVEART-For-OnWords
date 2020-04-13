@@ -104,9 +104,6 @@ def createPath():
 	if not session.get('username') and not session.get('user_id'):
 		return redirect(url_for('login'))
 	else:
-		# #Getting all the checkpoints in the database
-		# checkpoint_list = Checkpoints.query.all()
-
 		# Getting all information in the form
 		if request.method == "POST":
 			try:
@@ -122,17 +119,7 @@ def createPath():
 				# Invalid Input Checking
 				if "" in [pathname, description] or numOfCheckpoints == "Choose Number of Checkpoints Here...":
 					flash("Error! Fields Cannot be Empty!")
-				# elif len(checkpoints_str) > 5:
-				# 	flash("Error! You Must Choose Only 5 Checkpoints")
-				# elif len(checkpoints_str) < 1:
-				# 	flash("Error! You must choose at least one checkpoint!")
 				else:
-					# Casting all the text values in the checkpoints list from form
-					# checkpoint_ints = [int(num) for num in checkpoints_str]
-
-					# Empty interactions for now
-					interactions = []
-
 					# Getting the user id of the pathmaker
 					user_id = session.get('user_id')
 
@@ -142,15 +129,7 @@ def createPath():
 					pathmaker = firstname + " " + lastname
 					session['pathmaker'] = pathmaker
 
-					# Adding the path data to the database
-					# Database.insert_path(pathname, description, checkpoint_ints, interactions, pathmaker, "public", format_chosen)
-					# flash("New %s-Based Path Created!" % format_chosen)
-					# session['pathname'] = pathname
-					# session['description'] = description
-					# session['pathmaker'] = pathmaker
-					# session['format_chosen'] = format_chosen
-					# Redirecting to homepage
-
+					# Going to the create checkpoints page 
 					return redirect(url_for('createCheckpoint', numOfCheckpoints = numOfCheckpoints))
 			except Exception as error: # Exception Handling to avoid program crashing when a format is chosen
 				flash("Please Choose a Base Format for the Path!")
@@ -174,29 +153,142 @@ def createCheckpoint():
 	if not session.get('username') and not session.get('user_id'):
 		return redirect(url_for('login'))
 	else:
+		# Getting the number of checkpoints the user chose for 
+		numOfCheckpoints = session.get('numOfCheckpoints')
+
+		# Creating lists to store the checkpoint information
+		checkpointTexts = []
+		checkpointAnimations = []
+		checkpointColors = []
+		checkpointFonts = []
+		checkpointLatitudes = []
+		checkpointLongitudes = []
+
 		# Getting all the form data
 		if request.method == "POST":
-			
-			text = request.form['text']
-			animation = request.form.get("animations")
-			color = request.form.get("colors")
-			font = request.form.get("fonts")
+			# Parsing through each checkpoint form card
+			for x in range(1, (int(numOfCheckpoints)+1)):
+				# Getting the text of the current checkpoint and adding to list
+				textNum = "text" + str(x)
+				text = request.form.get(textNum)
+				checkpointTexts.append(text)
 
-			# if text == "" or animation == "Choose An Animation..." or color == "Choose A Color..." or font == "Choose A Font...":
-			# 	flash("Error! Please Complete the Entire Form!")
-			# else:
-			# 	# No geolocations for now
-			# 	geolocation = []
-			# 	Database.insert_checkpoint(text, animation, color, geolocation, font)
-			# 	flash("New Checkpoint Created!")
-			# 	return redirect(url_for('createPath'))
+				# Getting the animation of the current checkpoint and adding to list
+				animationNum = "animations" + str(x)
+				animation = request.form.get(animationNum)
+				checkpointAnimations.append(animation)
+
+				# Getting the color of the current checkpoint and adding to list
+				colorNum = "colors" + str(x)
+				color = request.form.get(colorNum)
+				checkpointColors.append(color)
+
+				# Getting the font of the current checkpoint and adding to list
+				fontNum = "fonts" + str(x)
+				font = request.form.get(fontNum)
+				checkpointFonts.append(font)
+
+				# Getting the latitude of the current checkpoint and adding to the list
+				latitudeNum = "latitude" + str(x)
+				latitude = request.form.get(latitudeNum)
+				latitude.strip("°")
+				checkpointLatitudes.append(latitude)
+
+				# Getting the longitude of the current checkpoint and adding to the list
+				longitudeNum = "longitude" + str(x)
+				longitude = request.form.get(longitudeNum)
+				longitude.strip("°")
+				checkpointLongitudes.append(longitude)
+
+			# Ensuring that none of the data is NoneType or not filled properly
+			if "" in checkpointTexts or "Choose An Animation..." in checkpointAnimations or "Choose A Font..." in checkpointFonts or "" in checkpointLongitudes or "" in checkpointLatitudes:
+				flash("Error! Please complete all fields")
+			else:
+				# Storing all data in the session
+				session['checkpointTexts'] = checkpointTexts
+				session['checkpointAnimations'] = checkpointAnimations
+				session['checkpointColors'] = checkpointColors
+				session['checkpointFonts'] = checkpointFonts
+				session['checkpointLatitudes'] = checkpointLatitudes
+				session['checkpointLongitudes'] = checkpointLongitudes
+
+				# Redirecting the path detail page
+				return redirect(url_for('pathDetails'))
 
 		return render_template("createCheckpoint.html", animations_list = animations_list, fonts_list = fonts_list)
 
 # Finalize Path Details before creating
-# @app.route("/pathDetails")
-# def pathDetails():
+@app.route("/pathDetails", methods = ['GET', 'POST'])
+def pathDetails():
+	if not session.get('username'):
+		return redirect(url_for('login'))
+	if not session.get('pathname') or not session.get('description'):
+		return redirect(url_for('createPath'))
 
+	if request.method == "POST":
+		if request.form.get('pathCreation') == 'createPath':
+			# Getting all the data for checkpoints and path
+			pathname = session.get('pathname')
+			description = session.get('description')
+			pathmaker = session.get('pathmaker')
+			format_chosen = session.get('format_chosen')
+			numOfCheckpoints = session.get('numOfCheckpoints')
+			checkpointTexts = session.get('checkpointTexts')
+			checkpointAnimations = session.get('checkpointAnimations')
+			checkpointColors = session.get('checkpointColors')
+			checkpointFonts = session.get('checkpointFonts')
+			checkpointLatitudes = session.get('checkpointLatitudes')
+			checkpointLongitudes = session.get('checkpointLongitudes')
+
+			# Creating a new list to store checkpoint ids
+			checkpointIDs = []
+
+			for y in range(1, (int(numOfCheckpoints)+1)):
+				# Developing the geolocation
+				currentLatitude = float(checkpointLatitudes[y-1])
+				currentLongitude = float(checkpointLongitudes[y-1])
+				geolocation = {currentLatitude, currentLongitude}
+
+				# Getting the next possible path_id
+				path_id = Database.next_id("paths")
+
+				# Adding the new checkpoint in the database
+				print("inserting checkpoint")
+				Database.insert_checkpoint(checkpointTexts[y-1], checkpointAnimations[y-1], checkpointColors[y-1], geolocation, checkpointFonts[y-1], "no_marker", path_id)
+				
+				# Getting the checkpoint id and putting them in the list
+				checkpoint_id = Database.getCheckpointID(checkpointTexts[y-1], checkpointAnimations[y-1], checkpointColors[y-1], checkpointFonts[y-1])
+				checkpointIDs.append(checkpoint_id)
+
+				# Storing the list into the session
+				session['checkpointIDs'] = checkpointIDs
+
+			# Empty interactions for now
+			interactions = []
+			# Creating the path and adding it to the database
+			Database.insert_path(pathname, description, checkpointIDs, interactions, pathmaker, "public", format_chosen)
+		
+			# Return to homepage
+			flash("New Path Created!")
+			return redirect(url_for('homepage'))
+		if request.form.get('pathCreation') == 'cancelPath':
+			# Clearing the session data
+			session.pop('pathname', None)
+			session.pop('description', None)
+			session.pop('pathmaker', None)
+			session.pop('format_chosen', None)
+			session.pop('numOfCheckpoints', None)
+			session.pop('checkpointTexts', None)
+			session.pop('checkpointAnimations', None)
+			session.pop('checkpointColors', None)
+			session.pop('checkpointFonts', None)
+			session.pop('checkpointLatitudes', None)
+			session.pop('checkpointLongitudes', None)
+
+			# Returning to homepage
+			flash("Path Creation Canceled")
+			return redirect(url_for('homepage'))
+	return render_template("pathDetails.html")
 
 # Logging Out redirects to login page
 @app.route("/logout")
