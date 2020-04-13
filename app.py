@@ -222,7 +222,7 @@ def createCheckpoint():
 def pathDetails():
 	if not session.get('username'):
 		return redirect(url_for('login'))
-	if not session.get('pathname') or not session.get('description'):
+	if not session.get('pathname') or not session.get('checkpointTexts'):
 		return redirect(url_for('createPath'))
 
 	if request.method == "POST":
