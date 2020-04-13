@@ -11,8 +11,9 @@
 		{% if messages %}
 			<ul class = flashes>
 			{% for message in messages %}
-				<div class = "alert">
-					<p> {{message}}</p>
+				<div class = "alert alert-dark alert-dismissible">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <!-- <strong>Title</strong> --> {{ message }}
 				</div>
 			{% endfor %}
 			</ul>
@@ -20,15 +21,22 @@
 	{% endwith %}
 	
 <body class = "body-html">
+	<!-- Displaying the Path Information-->
 	Path Name: {{ session['pathname'] }}
-		<br>
-		Path Description: {{ session['description'] }}
-		<br>
-		Pathmaker: {{ session['pathmaker'] }}
-		<br>
-		Format: {{ session['format_chosen'] }}
-		<br>
-		Number of Checkpoints: {{session['numOfCheckpoints']}}
+	<br>
+	Path Description: {{ session['description'] }}
+	<br>
+	Pathmaker: {{ session['pathmaker'] }}
+	<br>
+	Format: {{ session['format_chosen'] }}
+	<br>
+	Number of Checkpoints: {{session['numOfCheckpoints']}}
+	<br><br>
+	<div class = "text-topright">
+	    <p>Latitude: <span id="latChosen">0.00</span>°<br>
+		Longitude: <span id="longChosen">0.00</span>°
+		</p>
+	</div>
 	<!-- Checkpoint Form -->
 	<form method = "post">
 		<div class="row">
@@ -40,12 +48,13 @@
       					<a href="#" class = "button" data-toggle="collapse" data-target="#collapseOne{{x+1}}" aria-expanded="true" aria-controls="collapseOne">Checkpoint Number {{x+1}}</a>
       				</div>
       				<div class = "collapse card-body" id = "collapseOne{{x+1}}">
+      					<!-- Text Field -->
       					<label for = "inputText"> Text </label>
-						<input type="text" class = "form-control" name="text" value = "{{request.form.text}}">
+						<input type="text" class = "form-control" name="text{{x+1}}">
       				
       					<!-- Animations List -->
 						<label for = "inputText"> Animation </label>
-						<select class="custom-select" name = "animations">
+						<select class="custom-select" name = "animations{{x+1}}">
 			  				<option selected>Choose An Animation...</option>
 			  				{% for animation in animations_list %}
 			  				<option value="{{animation}}">{{animation}}</option>
@@ -55,17 +64,27 @@
 						<!-- Colors Option -->
 						<label for = "head"> Color </label>
 						<br>
-						<input type="color" id="colors" name="colors" value="#e66465" style = "height: 40px; width: 670px">
+						<input type="color" id="colors" name="colors{{x+1}}" value="#e66465" style = "height: 40px; width: 670px">
 						<br>
 
 						<!-- Fonts List -->
 						<label for = "inputText"> Font </label>
-						<select class="custom-select" name = "fonts">
+						<select class="custom-select" name = "fonts{{x+1}}">
 			  				<option selected>Choose A Font...</option>
 			  				{% for font in fonts_list %}
 			  				<option value="{{font}}">{{font}}</option>
 			  				{% endfor %}
 						</select>
+
+						<!-- Geolocation Fields -->
+						<label for = "inputText"> Latitude </label>
+						<div class = "col-sm-9">
+							<input type="number" step = "any" class = "form-control" name="latitude{{x+1}}">
+						</div>
+						<label for = "inputText"> Longitude </label>
+						<div class = "col-sm-9">
+							<input type="number" step = "any" class = "form-control" name="longitude{{x+1}}">
+						</div>
 					</div>
 				{% endfor %}
       		</div>
@@ -76,12 +95,6 @@
 			</div>
 		</div>
 	</form>
-		<div class = "text-topright">
-		    <p>Latitude: <span id="latChosen">0.00</span>°<br>
-			Longitude: <span id="longChosen">0.00</span>°
-			</p>
-<!-- 			<button onclick ="clearMarkers()">Clear Markers</button> -->
-		</div>
 	<!-- Map for Geolocations -->
 	<!-- Credit to Professor Stemkoski-->
 	<div id="map" class = "map"></div>
@@ -111,7 +124,7 @@
 	      // show the scale bar on the lower left corner
 	      L.control.scale().addTo(map);
 
-	      var us = L.marker({lon: longitude, lat: latitude}, {draggable: true})
+	      var us = L.marker({lon: longitude, lat: latitude})
 	                     .bindPopup( "This is you." )
 	                     .addTo( map );
 
@@ -121,8 +134,9 @@
 		//Allowing the user to pin markers by clicking on maximum 5 points on the map
 		var mark;
 		var markerCount = 0;
+		var totalMarkers = '{{session['numOfCheckpoints']}}';
 		function onClick(e) {
-			if (markerCount < 5)
+			if (markerCount < totalMarkers)
 			{
 				var latlng = map.mouseEventToLatLng(e.originalEvent);
 				latChosen.innerText = latlng.lat;
