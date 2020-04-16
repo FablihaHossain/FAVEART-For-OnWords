@@ -12,8 +12,7 @@
 			<ul class = flashes>
 			{% for message in messages %}
 				<div class = "alert alert-dark alert-dismissible">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <!-- <strong>Title</strong> --> {{ message }}
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ message }}
 				</div>
 			{% endfor %}
 			</ul>
@@ -21,6 +20,7 @@
 	{% endwith %}
 	
 <body class = "body-html">
+	<div>
 	<!-- Displaying the Path Information-->
 	Path Name: {{ session['pathname'] }}
 	<br>
@@ -32,10 +32,13 @@
 	<br>
 	Number of Checkpoints: {{session['numOfCheckpoints']}}
 	<br><br>
-	<div class = "text-topright">
-	    <p>Latitude: <span id="latChosen">0.00</span>°<br>
+	    <!-- <p>Latitude: <span id="latChosen">0.00</span>°<br>
 		Longitude: <span id="longChosen">0.00</span>°
-		</p>
+		</p> -->
+		{% set geo_format = "geolocation" %}
+		{% if session['format_chosen'] == geo_format %}
+		<button onclick = "clearMarkers()" class = "btn btn-primary btn-primary-block">Clear Markers</button>
+		{% endif %}
 	</div>
 	<!-- Checkpoint Form -->
 	<form method = "post">
@@ -77,6 +80,8 @@
 						</select>
 
 						<!-- Geolocation Fields -->
+						{% set geo_format = "geolocation" %}
+						{% if session['format_chosen'] == geo_format %}
 						<label for = "inputText"> Latitude </label>
 						<div class = "col-sm-9">
 							<input type="number" step = "any" class = "form-control" name="latitude{{x+1}}">
@@ -85,6 +90,7 @@
 						<div class = "col-sm-9">
 							<input type="number" step = "any" class = "form-control" name="longitude{{x+1}}">
 						</div>
+						{% endif %}
 					</div>
 				{% endfor %}
       		</div>
@@ -95,9 +101,12 @@
 			</div>
 		</div>
 	</form>
+	{% set geo_format = "geolocation" %}
+	{% if session['format_chosen'] == geo_format %}
 	<!-- Map for Geolocations -->
 	<!-- Credit to Professor Stemkoski-->
 	<div id="map" class = "map"></div>
+	{% endif %}
 		<!-- Script to Access and Modify Leaflet Contents-->
 		<script type="text/javascript">	
 			let latitude = document.getElementById("latitude");
@@ -128,58 +137,49 @@
 	                     .bindPopup( "This is you." )
 	                     .addTo( map );
 
-	    let latChosen = document.getElementById("latChosen");
-		let longChosen = document.getElementById("longChosen");
+	 //    let latChosen = document.getElementById("latChosen");
+		// let longChosen = document.getElementById("longChosen");
 
 		//Allowing the user to pin markers by clicking on maximum 5 points on the map
-		var mark;
+		//var mark;
 		var markerCount = 0;
 		var totalMarkers = '{{session['numOfCheckpoints']}}';
+		var layerGroup = L.layerGroup().addTo(map);
 		function onClick(e) {
 			if (markerCount < totalMarkers)
 			{
 				var latlng = map.mouseEventToLatLng(e.originalEvent);
-				latChosen.innerText = latlng.lat;
-				longChosen.innerText = latlng.lng;
-				mark = new L.marker({lon: latlng.lng, lat: latlng.lat}, {draggable: true}).addTo(map);
-				markerCount = markerCount + 1;
+				// latChosen.innerText = latlng.lat;
+				// longChosen.innerText = latlng.lng;
 
+				let info = "Checkpoint Number " + (markerCount+1) + ":<br>" + "Latitude: " + latlng.lat + "<br>" +"Longitude: " + latlng.lng;
+				let mark = new L.marker({lon: latlng.lng, lat: latlng.lat}, {draggable: true}).bindPopup(info).addTo(map);
+				
+				mark.addTo(layerGroup)
 
-				mark.on('dragend', function (ex) {
-					latChosen.innerText = mark.getLatLng().lat;
-					longChosen.innerText = mark.getLatLng().lng;
-  					// document.getElementById('latChosen').value = marker.getLatLng().lat;
-  					// document.getElementById('longChosen').value = marker.getLatLng().lng;
+				// mark.on('drag', function (ex) {
+				// 	latChosen.innerText = mark.getLatLng().lat;
+				// 	longChosen.innerText = mark.getLatLng().lng;
+				// });
+
+				mark.on('dragend', function(g)
+				{
+					mark.bindPopup("Latitude: " + mark.getLatLng().lat + '<br>' + "Longitude: " + mark.getLatLng().lng);
 				});
+
+				markerCount = markerCount + 1;
 				
 			}
 		};
 	
 		map.on('click', onClick);
 
-		// function clearMarkers()
-		// {
-		// 	map.removeLayer(mark);
-		// }
-
-		//map.off('click', onClick);
-
-
-		// var markerCount = 0;
-		// var mark;
-	 //   		map.on('click', function(ev){
-		// 		var latlng = map.mouseEventToLatLng(e.originalEvent);
-		// 		latChosen.innerText = latlng.lat;
-		// 		longChosen.innerText = latlng.lng;
-		// 		mark = new L.marker({lon: latlng.lng, lat: latlng.lat}, {draggable: true}).addTo( map );
-		// 		markerCount = markerCount + 1;
-		// 		console.log("markerCount:" + markerCount)
-		// 		console.log(latlng.lat + ', ' + latlng.lng);
-		// 	});
-
-			// mark.on('click', function(e){
-			// 	map.removeLayer(mark);
-			// });
+		function clearMarkers()
+		{
+			map.removeLayer(layerGroup);
+			markerCount = 0;
+			layerGroup = L.layerGroup().addTo(map);
+		}
 
 	   	// Finding the current location of the user and placing the map's display there with a marker
 		navigator.geolocation.getCurrentPosition(function(position)
@@ -212,3 +212,4 @@
 <!-- Credit to https://stackoverflow.com/questions/39938323/jinja-convert-string-to-integer-->
 <!-- Credit to https://leanpub.com/leaflet-tips-and-tricks/read-->
 <!-- Credit to http://plnkr.co/edit/iyMhaoAyllr2uNSOHhS9?p=preview&preview-->
+<!-- Credit to https://gis.stackexchange.com/questions/31859/how-to-insert-new-line-text-in-popup-->
