@@ -163,6 +163,7 @@ def createCheckpoint():
 		checkpointFonts = []
 		checkpointLatitudes = []
 		checkpointLongitudes = []
+		markerNames = []
 
 		# Getting all the form data
 		if request.method == "POST":
@@ -188,17 +189,23 @@ def createCheckpoint():
 				font = request.form.get(fontNum)
 				checkpointFonts.append(font)
 
-				# Getting the latitude of the current checkpoint and adding to the list
-				latitudeNum = "latitude" + str(x)
-				latitude = request.form.get(latitudeNum)
-				latitude.strip("°")
-				checkpointLatitudes.append(latitude)
+				# Geolocation Path
+				if session.get('format_chosen') == "geolocation":
+					# Getting the latitude of the current checkpoint and adding to the list
+					latitudeNum = "latitude" + str(x)
+					latitude = request.form.get(latitudeNum)
+					latitude.strip("°")
+					checkpointLatitudes.append(latitude)
 
-				# Getting the longitude of the current checkpoint and adding to the list
-				longitudeNum = "longitude" + str(x)
-				longitude = request.form.get(longitudeNum)
-				longitude.strip("°")
-				checkpointLongitudes.append(longitude)
+					# Getting the longitude of the current checkpoint and adding to the list
+					longitudeNum = "longitude" + str(x)
+					longitude = request.form.get(longitudeNum)
+					longitude.strip("°")
+					checkpointLongitudes.append(longitude)
+
+				# Marker Path
+				if session.get('format_chosen') == "marker":
+					markerNames.append("marker1")
 
 			# Ensuring that none of the data is NoneType or not filled properly
 			if "" in checkpointTexts or "Choose An Animation..." in checkpointAnimations or "Choose A Font..." in checkpointFonts or "" in checkpointLongitudes or "" in checkpointLatitudes:
@@ -209,8 +216,12 @@ def createCheckpoint():
 				session['checkpointAnimations'] = checkpointAnimations
 				session['checkpointColors'] = checkpointColors
 				session['checkpointFonts'] = checkpointFonts
-				session['checkpointLatitudes'] = checkpointLatitudes
-				session['checkpointLongitudes'] = checkpointLongitudes
+
+				if session.get('format_chosen') == "geolocation":
+					session['checkpointLatitudes'] = checkpointLatitudes
+					session['checkpointLongitudes'] = checkpointLongitudes
+				if session.get('format_chosen') == "marker":
+					session['markerNames'] = markerNames
 
 				# Redirecting the path detail page
 				return redirect(url_for('pathDetails'))
@@ -237,24 +248,34 @@ def pathDetails():
 			checkpointAnimations = session.get('checkpointAnimations')
 			checkpointColors = session.get('checkpointColors')
 			checkpointFonts = session.get('checkpointFonts')
-			checkpointLatitudes = session.get('checkpointLatitudes')
-			checkpointLongitudes = session.get('checkpointLongitudes')
+
+			if format_chosen == "geolocation":
+				checkpointLatitudes = session.get('checkpointLatitudes')
+				checkpointLongitudes = session.get('checkpointLongitudes')
+			if format_chosen == "marker":
+				markerNames = session.get('markerNames')
 
 			# Creating a new list to store checkpoint ids
 			checkpointIDs = []
 
 			for y in range(1, (int(numOfCheckpoints)+1)):
-				# Developing the geolocation
-				currentLatitude = float(checkpointLatitudes[y-1])
-				currentLongitude = float(checkpointLongitudes[y-1])
-				geolocation = {currentLatitude, currentLongitude}
+				if format_chosen == "geolocation":
+					# Developing the geolocation
+					currentLatitude = float(checkpointLatitudes[y-1])
+					currentLongitude = float(checkpointLongitudes[y-1])
+					geolocation = {currentLatitude, currentLongitude}
+					marker = "no_marker"
+
+				if format_chosen == "marker":
+					marker = markerNames[y-1]
+					geolocation = []
 
 				# Getting the next possible path_id
 				path_id = Database.next_id("paths")
 
 				# Adding the new checkpoint in the database
 				print("inserting checkpoint")
-				Database.insert_checkpoint(checkpointTexts[y-1], checkpointAnimations[y-1], checkpointColors[y-1], geolocation, checkpointFonts[y-1], "no_marker", path_id)
+				Database.insert_checkpoint(checkpointTexts[y-1], checkpointAnimations[y-1], checkpointColors[y-1], geolocation, checkpointFonts[y-1], marker, path_id)
 				
 				# Getting the checkpoint id and putting them in the list
 				checkpoint_id = Database.getCheckpointID(checkpointTexts[y-1], checkpointAnimations[y-1], checkpointColors[y-1], checkpointFonts[y-1])
@@ -284,6 +305,7 @@ def pathDetails():
 			session.pop('checkpointFonts', None)
 			session.pop('checkpointLatitudes', None)
 			session.pop('checkpointLongitudes', None)
+			session.pop('markerNames', None)
 
 			# Returning to homepage
 			flash("Path Creation Canceled")
