@@ -24,9 +24,17 @@
 		{% set animationList = session['checkpointAnimations'] %}
 		{% set colorList = session['checkpointColors'] %}
 		{% set fontList = session['checkpointFonts'] %}
-		{% set latitudeList = session['checkpointLatitudes'] %}
-		{% set longitudeList = session['checkpointLongitudes'] %}
 
+		{% set marker_format = "marker" %}
+		{% set geo_format = "geolocation" %}
+		{% if session['format_chosen'] == geo_format %}
+			{% set latitudeList = session['checkpointLatitudes'] %}
+			{% set longitudeList = session['checkpointLongitudes'] %}
+		{% endif %}
+
+		{% if session['format_chosen'] == marker_format %}
+			{% set markerList = session['markerNames']%}
+		{% endif %}
 		<!-- Displaying the Checkpoint Information-->
 		{% for x in range(0, count) %}
 			Checkpoint {{x+1}}:
@@ -39,9 +47,17 @@
 			<br>
 			Font: {{ fontList[x] }}
 			<br>
-			Latitude: {{ latitudeList[x] }}
-			<br>
-			Longitude: {{ longitudeList[x] }}
+			{% set marker_format = "marker" %}
+			{% set geo_format = "geolocation" %}
+			{% if session['format_chosen'] == geo_format %}
+					Latitude: {{ latitudeList[x] }}
+					<br>
+					Longitude: {{ longitudeList[x] }}
+			{% endif %}
+
+			{% if session['format_chosen'] == marker_format %}
+				Marker: {{  markerList[x]  }}
+			{% endif %}
 			<br><br>
 		{% endfor %}
 
