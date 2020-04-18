@@ -56,6 +56,7 @@
 					Longitude: {{ longitudeList[x] }}
 			{% endif %}
 
+			<!-- If Marker path, download buttons that lead to the pdf versions of the markers-->
 			{% if session['format_chosen'] == marker_format %}
 				Marker: {{  markerList[x]  }}
 				{% set marker_filename = markerfile[x] %}
@@ -63,6 +64,7 @@
 			{% endif %}
 			<br><br>
 		{% endfor %}
+
 		<!-- Asking the Pathmaker if they'd like to create the path or delete progress--> 
 		<form method = "post">
 			<div class ="text-left">
