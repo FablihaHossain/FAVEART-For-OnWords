@@ -27,6 +27,10 @@
 	color: #C7B63F;
 }
 
+.navbar-toggler-icon{
+	color: black;
+}
+
 .jumbotron{
 	background-color: transparent;
 	height:auto;
