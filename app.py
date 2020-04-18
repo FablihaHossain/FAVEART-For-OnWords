@@ -43,9 +43,13 @@ def login():
 				# Getting the user_id of the current user
 				user_id = Database.get_userId(username)
 
+				# Getting the role of current user
+				role = Database.select_where("users", "user_id", user_id, "role")
+
 				# Creating a session with the user
 				session['username'] = username
 				session['user_id'] = user_id 
+				session['role'] = role
 
 				# Taking the user to the homepage
 				return redirect(url_for('homepage'))
@@ -350,6 +354,7 @@ def logout():
 	flash("You have logged out sucessfully")
 	return redirect(url_for('login'))
 
+# Viewing the list of checkpoints in a given path
 @app.route("/viewCheckpoints/<int:pathID>", methods = ['GET', 'POST'])
 def viewCheckpoints(pathID):
 	if not session.get('username'):
@@ -370,7 +375,7 @@ def checkpointVisual(checkpointID):
 		return redirect(url_for('login'))
 
 	# Getting the details for the checkpoint given the ID
-	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first()
+	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first() 
 	return render_template("checkpointVisual.html", checkpoint = current_checkpoint, fonts_list = fonts_list)
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
