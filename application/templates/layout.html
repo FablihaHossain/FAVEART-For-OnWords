@@ -2,6 +2,12 @@
 {% block head %}
 <head>
 	{% block title %} <title> FAVEART for OnWords </title> {% endblock title %}
+		{% block meta %}
+		<meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1" media="(device-height: 568px)">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="HandheldFriendly" content="True">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		{% endblock meta %}
 		{% block styles %}
 			<script src="../static/leaflet/leaflet.js"></script>
 			<script src="../static/leaflet/Control.OSMGeocoder.js"></script>

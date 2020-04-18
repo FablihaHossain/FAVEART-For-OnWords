@@ -23,6 +23,10 @@
     });
  </script>
  <body>
+    <div>
+        <img src="../static/markers/MarkYourVisit.png" style="position: absolute; right: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="visit" />
+        <img src="../static/markers/ReturnToPath.png" style="position: absolute; left: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="back" onclick="window.location.href='{{url_for('homepage')}}'"/>
+    </div>
     <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
         <a-assets>
             <a-asset-item id="{{checkpoint.font}}" src="../static/animations/fonts/{{checkpoint.font}}.json"></a-asset-item>
@@ -36,3 +40,5 @@
     </a-scene>
 </body>
 </html>
+
+<!-- Credit to https://stackoverflow.com/questions/42871046/using-flask-url-for-in-button-onclick-location-href-redirect-leads-to-method-no-->
