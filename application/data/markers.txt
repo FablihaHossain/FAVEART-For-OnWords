@@ -1,0 +1,8 @@
+alpha
+beta
+delta
+epsilon
+gamma
+lambda
+phi
+pi

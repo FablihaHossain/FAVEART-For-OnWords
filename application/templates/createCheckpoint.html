@@ -2,14 +2,17 @@
 
 {% block title %} <title> Create Checkpoints </title> {% endblock title %}
 
+	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+	<script src="{{url_for('static', filename = 'leaflet/leaflet.js')}}"></script>
+	<script src="{{url_for('static', filename = 'leaflet/Control.OSMGeocoder.js')}}"></script> 
 {% block body %}
 
 	{% with messages = get_flashed_messages() %}
 		{% if messages %}
 			<ul class = flashes>
 			{% for message in messages %}
-				<div class = "alert">
-					<p> {{message}}</p>
+				<div class = "alert alert-dark alert-dismissible">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ message }}
 				</div>
 			{% endfor %}
 			</ul>
@@ -17,47 +20,209 @@
 	{% endwith %}
 	
 <body class = "body-html">
-	<div class = "jumbotron">
-		<form method = "post">
-			<div class = "form-group">
-				<label for = "inputText"> Text </label>
-				<input type="text" class = "form-control" name="text" value = "{{request.form.text}}">
-			</div>
+	<div>
+	<!-- Displaying the Path Information-->
+	Path Name: {{ session['pathname'] }}
+	<br>
+	Path Description: {{ session['description'] }}
+	<br>
+	Pathmaker: {{ session['pathmaker'] }}
+	<br>
+	Format: {{ session['format_chosen'] }}
+	<br>
+	Number of Checkpoints: {{session['numOfCheckpoints']}}
+	<br><br>
 
-			<!-- Animations List -->
-			<div class = "form-group">
-				<label for = "inputText"> Animation </label>
-				<select class="custom-select" name = "animations">
-	  				<option selected>Choose An Animation...</option>
-	  				{% for animation in animations_list %}
-	  				<option value="{{animation}}">{{animation}}</option>
-	  				{% endfor %}
-				</select>
-			</div>
-
-			<!-- Colors Option -->
-			<div class = "form-group">
-				<label for = "head"> Color </label>
-				<br>
-				<input type="color" id="colors" name="colors" value="#e66465" style = "height: 40px; width: 390px">
-			</div>
-
-			<!-- Fonts List -->
-			<div class = "form-group">
-				<label for = "inputText"> Font </label>
-				<select class="custom-select" name = "fonts">
-	  				<option selected>Choose A Font...</option>
-	  				{% for font in fonts_list %}
-	  				<option value="{{font}}">{{font}}</option>
-	  				{% endfor %}
-				</select>
-			</div>
-
-			<!-- Submit to Database -->
-			<div class ="text-center">
-				<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Checkpoint! </button>
-			</div>
-		</form>
+	<!-- Button to clear markers on the map-->
+		{% set geo_format = "geolocation" %}
+		{% if session['format_chosen'] == geo_format %}
+		<button onclick = "clearMarkers()" class = "btn btn-primary btn-primary-block">Clear Markers</button>
+		{% endif %}
 	</div>
+	<!-- Checkpoint Form -->
+	<form method = "post">
+		<div class="row">
+			<div class="col-sm-6">
+      			<h5 class="card-header"> Checkpoints</h5>
+      			<!-- Allowing fields for all checkpoints-->
+      			{% set count = session['numOfCheckpoints'] | int %}
+				{% for x in range(0, count) %}
+      				<div class ="card-body">
+      					<a href="#" class = "button" data-toggle="collapse" data-target="#collapseOne{{x+1}}" aria-expanded="true" aria-controls="collapseOne">Checkpoint Number {{x+1}}</a>
+      				</div>
+      				<div class = "collapse card-body" id = "collapseOne{{x+1}}">
+      					<!-- Text Field -->
+      					<label for = "inputText"> Text </label>
+						<input type="text" class = "form-control" name="text{{x+1}}">
+      				
+      					<!-- Animations List -->
+						<label for = "inputText"> Animation </label>
+						<select class="custom-select" name = "animations{{x+1}}">
+			  				<option selected>Choose An Animation...</option>
+			  				{% for animation in animations_list %}
+			  				<option value="{{animation}}">{{animation}}</option>
+			  				{% endfor %}
+						</select>
+
+						<!-- Colors Option -->
+						<label for = "head"> Color </label>
+						<br>
+						<input type="color" id="colors" name="colors{{x+1}}" value="#e66465" style = "height: 40px; width: 670px">
+						<br>
+
+						<!-- Fonts List -->
+						<label for = "inputText"> Font </label>
+						<select class="custom-select" name = "fonts{{x+1}}">
+			  				<option selected>Choose A Font...</option>
+			  				{% for font in fonts_list %}
+			  				<option value="{{font}}">{{font}}</option>
+			  				{% endfor %}
+						</select>
+
+						<!-- Geolocation Fields -->
+						{% set geo_format = "geolocation" %}
+						{% if session['format_chosen'] == geo_format %}
+						<label for = "inputText"> Latitude </label>
+						<div class = "col-sm-9">
+							<input type="number" step = "any" class = "form-control" name="latitude{{x+1}}">
+						</div>
+						<label for = "inputText"> Longitude </label>
+						<div class = "col-sm-9">
+							<input type="number" step = "any" class = "form-control" name="longitude{{x+1}}">
+						</div>
+						{% endif %}
+
+						<!-- Marker Fields-->
+						{% set marker_format = "marker" %}
+						{% if session['format_chosen'] == marker_format %}
+						<label for = "inputText"> Marker </label>
+						<select class="custom-select" name = "markers{{x+1}}">
+			  				<option selected>Choose A Marker...</option>
+			  				{% for marker in markers_list %}
+			  				<option value="{{marker}}">{{marker}}</option>
+			  				{% endfor %}
+						</select>
+						{% endif %}
+					</div>
+				{% endfor %}
+      		</div>
+      	</div>
+			<!-- Submit to Database -->
+			<div class ="text-left">
+				<button type = "submit" class = "btn btn-primary btn-primary-block"> Create Checkpoints </button>
+			</div>
+		</div>
+	</form>
+	{% set geo_format = "geolocation" %}
+	{% if session['format_chosen'] == geo_format %}
+	<!-- Map for Geolocations -->
+	<!-- Credit to Professor Stemkoski-->
+	<div id="map" class = "map"></div>
+	{% endif %}
+		<!-- Script to Access and Modify Leaflet Contents-->
+		<script type="text/javascript">	
+			let latitude = document.getElementById("latitude");
+			let longitude = document.getElementById("longitude");
+
+			var map = L.map('map').setView({lon: longitude, lat: latitude}, 15);
+
+			// Geocoder => Search Bar Functionality
+			var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+	        var osmAttrib='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	        var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+
+	        // New control for search bar
+			var osmGeocoder = new L.Control.OSMGeocoder({collapsed: false, position: 'topright', text: 'Locate!',});
+			//Adding new control to the map and displaying the entered address on the map
+			map.addControl(osmGeocoder).addLayer(osm);
+
+	      // add the OpenStreetMap tiles
+	      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	        maxZoom: 19,
+	        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+	      }).addTo(map);
+
+	      // show the scale bar on the lower left corner
+	      L.control.scale().addTo(map);
+
+	      // Marker pinned at user's current location
+	      var us = L.marker({lon: longitude, lat: latitude})
+	                     .bindPopup( "This is you." )
+	                     .addTo( map );
+
+		//Allowing the user to pin markers by clicking on maximum 5 points on the map
+		var markerCount = 0;
+		var totalMarkers = '{{session['numOfCheckpoints']}}';
+		//Creating a layergroup to store all markers
+		var layerGroup = L.layerGroup().addTo(map);
+
+		// Function to allow user to pin markers at various points on the map
+		function onClick(e) {
+			if (markerCount < totalMarkers)
+			{
+				// Getting the coordinates of the marker's pinned location
+				var latlng = map.mouseEventToLatLng(e.originalEvent);
+
+				// Storing the detailed information 
+				let info = "Checkpoint Number " + (markerCount+1) + ":<br>" + "Latitude: " + latlng.lat + "<br>" +"Longitude: " + latlng.lng;
+
+				// Creating the marker and adding it to the map
+				let mark = new L.marker({lon: latlng.lng, lat: latlng.lat}, {draggable: true}).bindPopup(info).addTo(map);
+				// Adding the marker to the layer group
+				mark.addTo(layerGroup)
+
+				// Users can drag the marker to another point in the map
+				mark.on('dragend', function(g)
+				{
+					// Getting the new location of the marker and displaying in the pop up
+					mark.bindPopup("Latitude: " + mark.getLatLng().lat + '<br>' + "Longitude: " + mark.getLatLng().lng);
+				});
+
+				// Incrementing marker count
+				markerCount = markerCount + 1;
+			}
+		};
+	
+		// Allowing function to work on map
+		map.on('click', onClick);
+
+		// Function to clear all markers from the map
+		function clearMarkers()
+		{
+			map.removeLayer(layerGroup);
+			markerCount = 0;
+			layerGroup = L.layerGroup().addTo(map);
+		}
+
+	   	// Finding the current location of the user and placing the map's display there with a marker
+		navigator.geolocation.getCurrentPosition(function(position)
+		{
+			// Getting the current position of the user
+			let lat = position.coords.latitude;
+			let long = position.coords.longitude;
+
+			latitude  = lat;
+			longitude = long;
+
+			//Updating Map Center Display
+			map.setView({lon: long, lat: lat}, 19);
+			let newLatLng = new L.LatLng(lat, long);
+    		
+    		//Updating Marker position
+    		us.setLatLng(newLatLng);
+			});
+
+		</script>
 </body>
+{# Javascript Lines from https://getbootstrap.com/docs/4.3/getting-started/introduction/ #}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 {% endblock body %}
+
+<!-- Credit to https://gis.stackexchange.com/questions/210041/using-leaflet-js-is-it-possible-to-know-the-onclick-location-of-a-marker-ignor/210102-->
+<!-- Credit to https://github.com/k4r573n/leaflet-control-osm-geocoder-->
+<!-- Credit to https://stackoverflow.com/questions/39938323/jinja-convert-string-to-integer-->
+<!-- Credit to https://leanpub.com/leaflet-tips-and-tricks/read-->
+<!-- Credit to http://plnkr.co/edit/iyMhaoAyllr2uNSOHhS9?p=preview&preview-->
+<!-- Credit to https://gis.stackexchange.com/questions/31859/how-to-insert-new-line-text-in-popup-->

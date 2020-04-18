@@ -42,6 +42,25 @@ class Database():
 			return user_id
 		except Exception as error:
 			print ("Error! %s" % error)
+
+	# Function to get checkpoint id
+	def getCheckpointID(text, animation, color, font):
+		try:
+			# Developing the query
+			query = "SELECT * FROM checkpoints WHERE text = '%s' AND animation = '%s' AND color = '%s' AND font = '%s'" % (text, animation, color, font)
+
+			# Executing the query
+			cursor.execute(query)
+
+			# Getting the user info from cursor, then user_id
+			checkpoint = cursor.fetchall()
+			checkpoint_id = checkpoint[0][0]
+
+			# Returning the user_id
+			return checkpoint_id
+		except Exception as error:
+			print ("Error! %s" % error)
+
 	# Function to count the number of rows at a given table
 	def row_count(tablename):
 		try:
@@ -111,7 +130,7 @@ class Database():
 
 	# Insert Path into Database
 	# Pathmaker cannot have two paths with the same name AND description
-	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, codes=[0]):
+	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, base_format):
 		try:
 			# Formating the string values for raw psycopg2
 			name = Database.format_entry(pathname)
@@ -136,7 +155,7 @@ class Database():
 					nextId = nextId + 1
 
 				# Creating a new path
-				newPath = Paths(path_id = nextId, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, access_codes = codes)
+				newPath = Paths(path_id = nextId, name = pathname, description = path_description, checkpoints = checkpoint_ids, interactions = interaction_ids, pathmaker = pathmaker, status = status, base_format = base_format)
 
 				# Adding the new path to the database
 				db.session.add(newPath)
@@ -147,7 +166,7 @@ class Database():
 				print ("Error! %s" % error)
 
 	# Insert Checkpoint into Database
-	def insert_checkpoint(text, animation, color, geolocation, font):
+	def insert_checkpoint(text, animation, color, geolocation, font, markerName, path_id):
 		# Getting the next ID
 		nextId = Database.next_id("Checkpoints")
 
@@ -156,7 +175,7 @@ class Database():
 			nextId = nextId + 1
 
 		# Creating a new checkpoint
-		newCheckpoint = Checkpoints(checkpoint_id = nextId, text = text, animation = animation, color = color, geolocation = geolocation, font = font)
+		newCheckpoint = Checkpoints(checkpoint_id = nextId, text = text, animation = animation, color = color, geolocation = geolocation, font = font, marker = markerName, path_id = path_id)
 		
 		# Adding the new checkpoint to the database
 		db.session.add(newCheckpoint)
@@ -302,6 +321,14 @@ class Database():
 		# Returning the formatted text
 		return text
 
+	# A function to check for duplicates in a given list
+	# A helper function to ensure that a pathmaker cannot chose the same markers for two checkpoints
+	def duplicate_markers(marker_list):
+		if len(marker_list) == len(set(marker_list)):
+			return False
+		else:
+			return True
+				
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
@@ -310,3 +337,4 @@ class Database():
 	# Credit to http://zetcode.com/python/psycopg2/
 	# Credit to https://wiki.postgresql.org/wiki/Psycopg2_Tutorial
 	# Credit to https://stackoverflow.com/questions/606191/convert-bytes-to-a-string
+	# Credit to https://thispointer.com/python-3-ways-to-check-if-there-are-duplicates-in-a-list/
