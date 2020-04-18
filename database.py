@@ -321,6 +321,14 @@ class Database():
 		# Returning the formatted text
 		return text
 
+	# A function to check for duplicates in a given list
+	# A helper function to ensure that a pathmaker cannot chose the same markers for two checkpoints
+	def duplicate_markers(marker_list):
+		if len(marker_list) == len(set(marker_list)):
+			return False
+		else:
+			return True
+				
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
@@ -329,3 +337,4 @@ class Database():
 	# Credit to http://zetcode.com/python/psycopg2/
 	# Credit to https://wiki.postgresql.org/wiki/Psycopg2_Tutorial
 	# Credit to https://stackoverflow.com/questions/606191/convert-bytes-to-a-string
+	# Credit to https://thispointer.com/python-3-ways-to-check-if-there-are-duplicates-in-a-list/
