@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <script src="../static/animations/js/aframe.min.js"></script>
+        <script src="../static/animations/js/aframe-ar.js"></script>
+        <!-- support 3D text -->
+        <script src="../static/animations/js/aframe-text-geometry-component.min.js"></script>    
+        <script src="../static/animations/js/animations.js"></script>
+ </head>
+  <script>
+
+    AFRAME.registerComponent("customize", {
+            tick: function()
+            {
+                let words = document.querySelector("#words");
+                let style = words.getAttribute("animationStyle");
+                let myColor = words.getAttribute("material");
+                let myFont = words.getAttribute("text-geometry");
+
+                choice(style, words, myColor.color, myFont.font);
+          }
+    });
+ </script>
+ <body>
+ 	{% for checkpoint in checkpointList %}
+ 	{{checkpoint.text}}
+ 	{{checkpoint.animation}}
+ 	{% endfor %}
+ 	<br>
+ 	{% for marker in markerList %}
+ 	{{marker}}
+ 	{% endfor %}
+ 	 	<br>
+
+ 	{% for latitude in latitudeList %}
+ 	{{latitude}}
+ 	{% endfor %}
+ 	<br>
+
+ 	{% for longitude in longitudeList %}
+ 	{{longitude}}
+ 	{% endfor %}
+ </body>
