@@ -385,5 +385,49 @@ def checkpointVisual(checkpointID):
 	# Getting the details for the checkpoint given the ID
 	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first() 
 	return render_template("checkpointVisual.html", checkpoint = current_checkpoint, fonts_list = fonts_list)
+
+@app.route("/explorePath/<int:path_id>", methods = ['GET', 'POST'])
+def explorePath(path_id):
+	if not session.get('username'):
+		return redirect(url_for('login'))
+
+	# Getting the path information based on path id
+	current_path = Paths.query.filter_by(path_id = path_id).first()
+
+	# Getting the list of checkpoints based on the path
+	checkpointIdList = Database.select_where("paths", "path_id", path_id, "checkpoints")
+
+	# Getting the base format of the path
+	base_format = Database.select_where("paths", "path_id", path_id, "base_format")
+	print("base_format %s" % base_format)
+
+	# Getting the list of checkpoints and adding them to a list
+	# Addtionally getting the list of markers and coordinates
+	listOfCheckpoints = []
+	listOfMarkers = []
+	listOfLatitudes = []
+	listOfLongitudes = []
+	for checkpoint_id in checkpointIdList:
+		# Getting current checkpoint based on id
+		checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpoint_id).first()
+		listOfCheckpoints.append(checkpoint)
+
+		# Getting the marker associated with it
+		if base_format == "marker":
+			marker = Database.select_where("checkpoints", "checkpoint_id", checkpoint_id, "marker")
+			print("marker is %s" % marker)
+			marker_file = marker + ".patt"
+			print(marker_file)
+			listOfMarkers.append(marker_file)
+
+		# Getting the geographical coordinates
+		if base_format == "geolocation":
+			geo_coordinates = Database.select_where("checkpoints", "checkpoint_id", checkpoint_id, "geolocation")
+			latitude = geo_coordinates[0]
+			listOfLatitudes.append(latitude)
+			longitude = geo_coordinates[1]
+			listOfLongitudes.append(longitude)
+
+	return render_template("explorePath.html", checkpointList = listOfCheckpoints, markerList = listOfMarkers, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
