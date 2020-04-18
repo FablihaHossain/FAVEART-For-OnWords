@@ -27,4 +27,8 @@ except:
 # Bcrypt Connection (For password hashing)
 bcrypt = Bcrypt(app)
 
+# File location for all the markers
+MARKER_FOLDER = '../static/markers'
+app.config['MARKER_FOLDER'] = MARKER_FOLDER
+
 # Credit to https://flask.palletsprojects.com/en/1.1.x/quickstart/
