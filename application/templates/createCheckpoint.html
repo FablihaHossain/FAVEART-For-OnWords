@@ -91,6 +91,18 @@
 							<input type="number" step = "any" class = "form-control" name="longitude{{x+1}}">
 						</div>
 						{% endif %}
+
+						<!-- Marker Fields-->
+						{% set marker_format = "marker" %}
+						{% if session['format_chosen'] == marker_format %}
+						<label for = "inputText"> Marker </label>
+						<select class="custom-select" name = "markers{{x+1}}">
+			  				<option selected>Choose A Marker...</option>
+			  				{% for marker in markers_list %}
+			  				<option value="{{marker}}">{{marker}}</option>
+			  				{% endfor %}
+						</select>
+						{% endif %}
 					</div>
 				{% endfor %}
       		</div>
