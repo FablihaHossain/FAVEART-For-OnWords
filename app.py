@@ -1,8 +1,11 @@
+import os
 from application import app, db
-from flask import render_template, request, url_for, session, flash, redirect
+from flask import render_template, request, url_for, session, flash, redirect, send_from_directory
 from models import Users, Paths, Checkpoints, Interactions
 from database import Database
 from datetime import *
+from werkzeug import secure_filename
+
 # Defining basic route
 @app.route("/")
 def index():
@@ -147,6 +150,12 @@ fonts_pathfile = open("application/data/fonts.txt", "r")
 for font in fonts_pathfile:
 	fonts_list.append(font.strip())
 
+# Getting all the possible markers
+markers_list = []
+marker_pathfile = open("application/data/markers.txt", "r")
+for marker in marker_pathfile:
+	markers_list.append(marker.strip())
+
 # Create Checkpoints
 @app.route("/createCheckpoint", methods = ['GET', 'POST'])
 def createCheckpoint():
@@ -164,6 +173,7 @@ def createCheckpoint():
 		checkpointLatitudes = []
 		checkpointLongitudes = []
 		markerNames = []
+		markerFilenames = []
 
 		# Getting all the form data
 		if request.method == "POST":
@@ -194,22 +204,27 @@ def createCheckpoint():
 					# Getting the latitude of the current checkpoint and adding to the list
 					latitudeNum = "latitude" + str(x)
 					latitude = request.form.get(latitudeNum)
-					latitude.strip("°")
 					checkpointLatitudes.append(latitude)
 
 					# Getting the longitude of the current checkpoint and adding to the list
 					longitudeNum = "longitude" + str(x)
 					longitude = request.form.get(longitudeNum)
-					longitude.strip("°")
 					checkpointLongitudes.append(longitude)
 
 				# Marker Path
 				if session.get('format_chosen') == "marker":
-					markerNames.append("marker1")
+					markerNum = "markers" + str(x)
+					marker = request.form.get(markerNum)
+					markerNames.append(marker)
+					marker_filename = marker + ".png"
+					print(marker_filename)
+					markerFilenames.append(marker_filename)
 
 			# Ensuring that none of the data is NoneType or not filled properly
-			if "" in checkpointTexts or "Choose An Animation..." in checkpointAnimations or "Choose A Font..." in checkpointFonts or "" in checkpointLongitudes or "" in checkpointLatitudes:
+			if "" in checkpointTexts or "Choose An Animation..." in checkpointAnimations or "Choose A Font..." in checkpointFonts or "" in checkpointLongitudes or "" in checkpointLatitudes or "Choose A Marker..." in markerNames:
 				flash("Error! Please complete all fields")
+			elif Database.duplicate_markers(markerNames):
+				flash("Error! Markers cannot duplicate in a path")
 			else:
 				# Storing all data in the session
 				session['checkpointTexts'] = checkpointTexts
@@ -222,11 +237,12 @@ def createCheckpoint():
 					session['checkpointLongitudes'] = checkpointLongitudes
 				if session.get('format_chosen') == "marker":
 					session['markerNames'] = markerNames
+					session['markerFilenames'] = markerFilenames
 
 				# Redirecting the path detail page
 				return redirect(url_for('pathDetails'))
 
-		return render_template("createCheckpoint.html", animations_list = animations_list, fonts_list = fonts_list)
+		return render_template("createCheckpoint.html", animations_list = animations_list, fonts_list = fonts_list, markers_list = markers_list)
 
 # Finalize Path Details before creating
 @app.route("/pathDetails", methods = ['GET', 'POST'])
@@ -289,9 +305,9 @@ def pathDetails():
 			# Creating the path and adding it to the database
 			Database.insert_path(pathname, description, checkpointIDs, interactions, pathmaker, "public", format_chosen)
 		
-			# Return to homepage
 			flash("New Path Created!")
 			return redirect(url_for('homepage'))
+
 		if request.form.get('pathCreation') == 'cancelPath':
 			# Clearing the session data
 			session.pop('pathname', None)
@@ -306,11 +322,18 @@ def pathDetails():
 			session.pop('checkpointLatitudes', None)
 			session.pop('checkpointLongitudes', None)
 			session.pop('markerNames', None)
+			session.pop('markerFilenames', None)
 
 			# Returning to homepage
 			flash("Path Creation Canceled")
 			return redirect(url_for('homepage'))
 	return render_template("pathDetails.html")
+
+# Download Markers
+@app.route('/../static/markers/<path:filename>')
+def downloadMarkerFile(filename):
+	marker_file = os.path.join(app.config['MARKER_FOLDER'], filename)
+	return send_from_directory(directory = marker_file, filename = filename)
 
 # Logging Out redirects to login page
 @app.route("/logout")
@@ -318,6 +341,7 @@ def logout():
 	# Clearing the session data
 	session.pop('username', None)
 	session.pop('user_id', None)
+	session.clear()
 
 	# Log Out Messages
 	flash("You have logged out sucessfully")
@@ -346,3 +370,4 @@ def checkpointVisual(checkpointID):
 	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first()
 	return render_template("checkpointVisual.html", checkpoint = current_checkpoint, fonts_list = fonts_list)
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
+# Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
