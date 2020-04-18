@@ -114,7 +114,6 @@ def createPath():
 				session['pathname'] = pathname
 				description = request.form['description']
 				session['description'] = description
-				#checkpoints_str = request.form.getlist("checkpoints")
 				format_chosen = request.form['format']
 				session['format_chosen'] = format_chosen
 				numOfCheckpoints = request.form.get("checkpointNum")
@@ -216,7 +215,7 @@ def createCheckpoint():
 					markerNum = "markers" + str(x)
 					marker = request.form.get(markerNum)
 					markerNames.append(marker)
-					marker_filename = marker + ".png"
+					marker_filename = marker + ".pdf"
 					print(marker_filename)
 					markerFilenames.append(marker_filename)
 
@@ -232,9 +231,11 @@ def createCheckpoint():
 				session['checkpointColors'] = checkpointColors
 				session['checkpointFonts'] = checkpointFonts
 
+				# Storing geolocation coordinates in session 
 				if session.get('format_chosen') == "geolocation":
 					session['checkpointLatitudes'] = checkpointLatitudes
 					session['checkpointLongitudes'] = checkpointLongitudes
+				# Storing marker names in session
 				if session.get('format_chosen') == "marker":
 					session['markerNames'] = markerNames
 					session['markerFilenames'] = markerFilenames
@@ -265,9 +266,11 @@ def pathDetails():
 			checkpointColors = session.get('checkpointColors')
 			checkpointFonts = session.get('checkpointFonts')
 
+			# Getting geolocation coordinates 
 			if format_chosen == "geolocation":
 				checkpointLatitudes = session.get('checkpointLatitudes')
 				checkpointLongitudes = session.get('checkpointLongitudes')
+			# Getting marker choices 
 			if format_chosen == "marker":
 				markerNames = session.get('markerNames')
 
