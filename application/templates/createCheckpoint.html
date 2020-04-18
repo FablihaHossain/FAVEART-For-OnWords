@@ -32,9 +32,8 @@
 	<br>
 	Number of Checkpoints: {{session['numOfCheckpoints']}}
 	<br><br>
-	    <!-- <p>Latitude: <span id="latChosen">0.00</span>°<br>
-		Longitude: <span id="longChosen">0.00</span>°
-		</p> -->
+
+	<!-- Button to clear markers on the map-->
 		{% set geo_format = "geolocation" %}
 		{% if session['format_chosen'] == geo_format %}
 		<button onclick = "clearMarkers()" class = "btn btn-primary btn-primary-block">Clear Markers</button>
@@ -45,6 +44,7 @@
 		<div class="row">
 			<div class="col-sm-6">
       			<h5 class="card-header"> Checkpoints</h5>
+      			<!-- Allowing fields for all checkpoints-->
       			{% set count = session['numOfCheckpoints'] | int %}
 				{% for x in range(0, count) %}
       				<div class ="card-body">
@@ -145,47 +145,48 @@
 	      // show the scale bar on the lower left corner
 	      L.control.scale().addTo(map);
 
+	      // Marker pinned at user's current location
 	      var us = L.marker({lon: longitude, lat: latitude})
 	                     .bindPopup( "This is you." )
 	                     .addTo( map );
 
-	 //    let latChosen = document.getElementById("latChosen");
-		// let longChosen = document.getElementById("longChosen");
-
 		//Allowing the user to pin markers by clicking on maximum 5 points on the map
-		//var mark;
 		var markerCount = 0;
 		var totalMarkers = '{{session['numOfCheckpoints']}}';
+		//Creating a layergroup to store all markers
 		var layerGroup = L.layerGroup().addTo(map);
+
+		// Function to allow user to pin markers at various points on the map
 		function onClick(e) {
 			if (markerCount < totalMarkers)
 			{
+				// Getting the coordinates of the marker's pinned location
 				var latlng = map.mouseEventToLatLng(e.originalEvent);
-				// latChosen.innerText = latlng.lat;
-				// longChosen.innerText = latlng.lng;
 
+				// Storing the detailed information 
 				let info = "Checkpoint Number " + (markerCount+1) + ":<br>" + "Latitude: " + latlng.lat + "<br>" +"Longitude: " + latlng.lng;
+
+				// Creating the marker and adding it to the map
 				let mark = new L.marker({lon: latlng.lng, lat: latlng.lat}, {draggable: true}).bindPopup(info).addTo(map);
-				
+				// Adding the marker to the layer group
 				mark.addTo(layerGroup)
 
-				// mark.on('drag', function (ex) {
-				// 	latChosen.innerText = mark.getLatLng().lat;
-				// 	longChosen.innerText = mark.getLatLng().lng;
-				// });
-
+				// Users can drag the marker to another point in the map
 				mark.on('dragend', function(g)
 				{
+					// Getting the new location of the marker and displaying in the pop up
 					mark.bindPopup("Latitude: " + mark.getLatLng().lat + '<br>' + "Longitude: " + mark.getLatLng().lng);
 				});
 
+				// Incrementing marker count
 				markerCount = markerCount + 1;
-				
 			}
 		};
 	
+		// Allowing function to work on map
 		map.on('click', onClick);
 
+		// Function to clear all markers from the map
 		function clearMarkers()
 		{
 			map.removeLayer(layerGroup);
