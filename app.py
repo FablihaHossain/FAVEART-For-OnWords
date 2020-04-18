@@ -110,6 +110,8 @@ def homepage():
 def createPath():
 	if not session.get('username') and not session.get('user_id'):
 		return redirect(url_for('login'))
+	elif not session.get('role') == "pathmaker":
+		return redirect(url_for('homepage'))
 	else:
 		# Getting all information in the form
 		if request.method == "POST":
@@ -164,6 +166,10 @@ for marker in marker_pathfile:
 def createCheckpoint():
 	if not session.get('username') and not session.get('user_id'):
 		return redirect(url_for('login'))
+	elif not session.get('role') == "pathmaker":
+		return redirect(url_for('homepage'))
+	elif not session.get('pathname') or not session.get('checkpointTexts'):
+		return redirect(url_for('createPath'))
 	else:
 		# Getting the number of checkpoints the user chose for 
 		numOfCheckpoints = session.get('numOfCheckpoints')
@@ -254,6 +260,8 @@ def createCheckpoint():
 def pathDetails():
 	if not session.get('username'):
 		return redirect(url_for('login'))
+	if not session.get('role') == "pathmaker":
+		return redirect(url_for('homepage'))
 	if not session.get('pathname') or not session.get('checkpointTexts'):
 		return redirect(url_for('createPath'))
 
