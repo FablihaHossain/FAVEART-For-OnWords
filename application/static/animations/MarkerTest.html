@@ -86,18 +86,12 @@ AFRAME.registerComponent("registerevents", {
   <a-marker type = "pattern" url = "/application/static/markers/Marker4d.patt" id = "innocent">
  -->
     <a-scene
-      vr-mode-ui="enabled: false;"
-      renderer="logarithmicDepthBuffer: true;"
-      embedded
-      arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;">
-      <a-nft
-        type="nft"
-        url="/application/static/markers/BOOK1"
-        smooth="true"
-        smoothCount="10"
-        smoothTolerance=".01"
-        smoothThreshold="5">
-            <a-entity 
+     <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+    <a-assets>
+        <a-asset-item id="cinzelBold" src="fonts/Cinzel_Bold.json"></a-asset-item>
+    </a-assets>
+       <a-marker type = "pattern" url = "Marker1Redo.patt" id = "EmojiMarker" insight>
+     <a-entity 
                 id="words" 
                 text-geometry="value: Hello, world!;"
                 material="color: yellow; repeat: 0.5 0.5;" 
@@ -105,8 +99,7 @@ AFRAME.registerComponent("registerevents", {
                 animation__rise = "property: position; dur: 5000; easing: linear; dir: normal; from:-1 0 0; to: -1 0 -2; loop: true;"
                 animation__fade = "property: material.opacity; dur: 4000; from: 1.0; to: 0.0; loop:true; delay: 1000;">
             </a-entity>
-         <!-- </a-marker> -->
-        </a-nft>
+         </a-marker>
         <a-entity camera></a-entity>
     </a-scene>
 
