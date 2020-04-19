@@ -399,35 +399,32 @@ def explorePath(path_id):
 
 	# Getting the base format of the path
 	base_format = Database.select_where("paths", "path_id", path_id, "base_format")
-	print("base_format %s" % base_format)
 
 	# Getting the list of checkpoints and adding them to a list
-	# Addtionally getting the list of markers and coordinates
+	# Addtionally getting the list of coordinates if location based
 	listOfCheckpoints = []
-	listOfMarkers = []
 	listOfLatitudes = []
 	listOfLongitudes = []
 	for checkpoint_id in checkpointIdList:
-		# Getting current checkpoint based on id
+		# Getting current checkpoint based on id number
 		checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpoint_id).first()
 		listOfCheckpoints.append(checkpoint)
 
 		# Getting the marker associated with it
 		if base_format == "marker":
 			marker = Database.select_where("checkpoints", "checkpoint_id", checkpoint_id, "marker")
-			print("marker is %s" % marker)
-			marker_file = marker + ".patt"
-			print(marker_file)
-			listOfMarkers.append(marker_file)
 
 		# Getting the geographical coordinates
 		if base_format == "geolocation":
 			geo_coordinates = Database.select_where("checkpoints", "checkpoint_id", checkpoint_id, "geolocation")
+			# Latitude of checkpoint 
 			latitude = geo_coordinates[0]
 			listOfLatitudes.append(latitude)
+
+			# Longitude of checkpoint
 			longitude = geo_coordinates[1]
 			listOfLongitudes.append(longitude)
 
-	return render_template("explorePath.html", checkpointList = listOfCheckpoints, markerList = listOfMarkers, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
+	return render_template("explorePath.html", base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
