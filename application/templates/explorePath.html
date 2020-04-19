@@ -23,22 +23,32 @@
     });
  </script>
  <body>
- 	{% for checkpoint in checkpointList %}
- 	{{checkpoint.text}}
- 	{{checkpoint.animation}}
- 	{% endfor %}
- 	<br>
- 	{% for marker in markerList %}
- 	{{marker}}
- 	{% endfor %}
- 	 	<br>
+ 	<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+ 		<!-- Marker Based Path-->
+ 		{% if base_format == "marker" %}
+	 		{% for checkpoint in checkpointList %}
+		        <a-assets>
+		            <a-asset-item id="{{checkpoint.font}}" src="../static/animations/fonts/{{checkpoint.font}}.json"></a-asset-item>
+		        </a-assets>
 
- 	{% for latitude in latitudeList %}
- 	{{latitude}}
- 	{% endfor %}
- 	<br>
+		       <a-marker type = "pattern" url = "../static/markers/{{checkpoint.marker}}.patt" id = "EmojiMarker" insight>
+		            <a-entity id="words" text-geometry="value: {{checkpoint.text}} ; font: #{{checkpoint.font}};" material="color: {{checkpoint.color}};" customize animationStyle="{{checkpoint.animation}}"></a-entity>
+		       </a-marker>
+	       {% endfor %}
+       {% endif %}
 
- 	{% for longitude in longitudeList %}
- 	{{longitude}}
- 	{% endfor %}
+       <!-- Location-Based Path-->
+       {% if base_format == "geolocation" %}
+	       {% for checkpoint in checkpointList %}
+			    <a-assets>
+		        	<a-asset-item id="{{checkpoint.font}}" src="../static/animations/fonts/{{checkpoint.font}}.json"></a-asset-item>
+		        </a-assets>
+
+		        <a-entity id="words" text-geometry="value: {{checkpoint.text}}; font: #{{checkpoint.font}};" material="color: {{checkpoint.color}};" customize animationStyle="{{checkpoint.animation}}"
+		        gps-entity-place = "latitude: {{latitudeList[loop.index-1]}}; longitude:{{longitudeList[loop.index-1]}};"
+		        ></a-entity>
+	       {% endfor %}
+       {% endif %}
+       <a-entity camera></a-entity>
+    </a-scene>
  </body>
