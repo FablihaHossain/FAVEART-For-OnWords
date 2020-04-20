@@ -5,6 +5,7 @@ from models import Users, Paths, Checkpoints, Interactions
 from database import Database
 from datetime import *
 from werkzeug import secure_filename
+from datetime import datetime
 
 # Defining basic route
 @app.route("/")
@@ -43,9 +44,13 @@ def login():
 				# Getting the user_id of the current user
 				user_id = Database.get_userId(username)
 
+				# Getting the role of current user
+				role = Database.select_where("users", "user_id", user_id, "role")
+
 				# Creating a session with the user
 				session['username'] = username
 				session['user_id'] = user_id 
+				session['role'] = role
 
 				# Taking the user to the homepage
 				return redirect(url_for('homepage'))
@@ -106,6 +111,8 @@ def homepage():
 def createPath():
 	if not session.get('username') and not session.get('user_id'):
 		return redirect(url_for('login'))
+	elif not session.get('role') == "pathmaker":
+		return redirect(url_for('homepage'))
 	else:
 		# Getting all information in the form
 		if request.method == "POST":
@@ -160,6 +167,10 @@ for marker in marker_pathfile:
 def createCheckpoint():
 	if not session.get('username') and not session.get('user_id'):
 		return redirect(url_for('login'))
+	elif not session.get('role') == "pathmaker":
+		return redirect(url_for('homepage'))
+	elif not session.get('pathname') or not session.get('numOfCheckpoints'):
+		return redirect(url_for('createPath'))
 	else:
 		# Getting the number of checkpoints the user chose for 
 		numOfCheckpoints = session.get('numOfCheckpoints')
@@ -250,6 +261,8 @@ def createCheckpoint():
 def pathDetails():
 	if not session.get('username'):
 		return redirect(url_for('login'))
+	if not session.get('role') == "pathmaker":
+		return redirect(url_for('homepage'))
 	if not session.get('pathname') or not session.get('checkpointTexts'):
 		return redirect(url_for('createPath'))
 
@@ -293,7 +306,6 @@ def pathDetails():
 				path_id = Database.next_id("paths")
 
 				# Adding the new checkpoint in the database
-				print("inserting checkpoint")
 				Database.insert_checkpoint(checkpointTexts[y-1], checkpointAnimations[y-1], checkpointColors[y-1], geolocation, checkpointFonts[y-1], marker, path_id)
 				
 				# Getting the checkpoint id and putting them in the list
@@ -350,6 +362,7 @@ def logout():
 	flash("You have logged out sucessfully")
 	return redirect(url_for('login'))
 
+# Viewing the list of checkpoints in a given path
 @app.route("/viewCheckpoints/<int:pathID>", methods = ['GET', 'POST'])
 def viewCheckpoints(pathID):
 	if not session.get('username'):
@@ -363,14 +376,83 @@ def viewCheckpoints(pathID):
 
 	return render_template("viewCheckpoints.html", path = current_path, points = checkpoint_list)
 
-# The AR Component
+# The route that allows pathmakers to visualize specific checkpoints 
 @app.route("/checkpointVisual/<int:checkpointID>")
 def checkpointVisual(checkpointID):
 	if not session.get('username'):
 		return redirect(url_for('login'))
 
 	# Getting the details for the checkpoint given the ID
-	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first()
+	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first() 
 	return render_template("checkpointVisual.html", checkpoint = current_checkpoint, fonts_list = fonts_list)
+
+# Route allowing explorers to visualize the entire path with all checkpoints
+@app.route("/explorePath/<int:path_id>", methods = ['GET', 'POST'])
+def explorePath(path_id):
+	if not session.get('username'):
+		return redirect(url_for('login'))
+
+	# Getting the path information based on path id
+	current_path = Paths.query.filter_by(path_id = path_id).first()
+
+	# Getting the list of checkpoints based on the path and the number of checkpoints
+	checkpointIdList = Database.select_where("paths", "path_id", path_id, "checkpoints")
+	numOfCheckpoints = len(checkpointIdList)
+
+	if request.method == "POST":
+		if request.form.get('logInteraction') == "interaction":
+			# Getting the number of the checkpoint the explorer would like to log in
+			loggedCheckpointNum = request.form.get('checkpointNumber')
+
+			# Ensuring that it continues only if they choose an appropriate number
+			if loggedCheckpointNum != "Checkpoint Number":
+				# Getting the associated checkpoint id
+				checkpoint_id = checkpointIdList[int(loggedCheckpointNum)-1]
+
+				# Getting the user_id of the user
+				user_id = session.get('user_id')
+
+				# Checking if the interaction has already been logged or not
+				interaction_already = Database.interaction_check(path_id, checkpoint_id, user_id)
+
+				if not interaction_already:
+					# Getting the current date and time
+					dateTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+					# Logging the interaction in the database
+					Database.insert_interaction(path_id, checkpoint_id, user_id, dateTime)
+					print("Logged Interaction")
+				else:
+					print("Interaction Already Logged")
+
+	# Getting the base format of the path
+	base_format = Database.select_where("paths", "path_id", path_id, "base_format")
+
+	# Getting the list of checkpoints and adding them to a list
+	# Addtionally getting the list of coordinates if location based
+	listOfCheckpoints = []
+	listOfLatitudes = []
+	listOfLongitudes = []
+	for checkpoint_id in checkpointIdList:
+		# Getting current checkpoint based on id number
+		checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpoint_id).first()
+		listOfCheckpoints.append(checkpoint)
+
+		# Getting the marker associated with it
+		if base_format == "marker":
+			marker = Database.select_where("checkpoints", "checkpoint_id", checkpoint_id, "marker")
+
+		# Getting the geographical coordinates
+		if base_format == "geolocation":
+			geo_coordinates = Database.select_where("checkpoints", "checkpoint_id", checkpoint_id, "geolocation")
+			# Latitude of checkpoint 
+			latitude = geo_coordinates[0]
+			listOfLatitudes.append(latitude)
+
+			# Longitude of checkpoint
+			longitude = geo_coordinates[1]
+			listOfLongitudes.append(longitude)
+
+	return render_template("explorePath.html", numOfCheckpoints = numOfCheckpoints, base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
