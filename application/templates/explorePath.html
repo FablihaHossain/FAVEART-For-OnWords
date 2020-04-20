@@ -23,6 +23,19 @@
     });
  </script>
  <body>
+ 	<div>
+        <!-- <img src="../static/markers/MarkYourVisit.png" style="position: absolute; right: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="visit" type = "submit" name = "logInteraction" value = "interaction"/> -->
+        <form method = "post">
+				<select style="position: absolute; right: 10px; top: 10px; width:200px; height:80px; z-index: 999;" class="custom-select" name = "checkpointNumber">
+	  				<option selected> Checkpoint Number</option>
+	  				{% for x in range (0, numOfCheckpoints) %}
+	  				<option value="{{x+1}}">{{x+1}}</option>
+	  				{% endfor %}
+				</select>
+        	<button style="position: absolute; right: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="visit" type = "submit" name = "logInteraction" value = "interaction" class = "btn btn-primary btn-primary-block"><img src="../static/markers/MarkYourVisit.png"></button>
+    	</form>
+        <img src="../static/markers/ReturnToPath.png" style="position: absolute; left: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="back" onclick="window.location.href='{{url_for('homepage')}}'"/>
+    </div>
  	<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
  		<!-- Marker Based Path-->
  		{% if base_format == "marker" %}
