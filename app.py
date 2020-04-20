@@ -5,7 +5,7 @@ from models import Users, Paths, Checkpoints, Interactions
 from database import Database
 from datetime import *
 from werkzeug import secure_filename
-from datatime import datetime
+from datetime import datetime
 
 # Defining basic route
 @app.route("/")
@@ -376,7 +376,7 @@ def viewCheckpoints(pathID):
 
 	return render_template("viewCheckpoints.html", path = current_path, points = checkpoint_list)
 
-# The AR Component
+# The route that allows pathmakers to visualize specific checkpoints 
 @app.route("/checkpointVisual/<int:checkpointID>")
 def checkpointVisual(checkpointID):
 	if not session.get('username'):
@@ -386,6 +386,7 @@ def checkpointVisual(checkpointID):
 	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first() 
 	return render_template("checkpointVisual.html", checkpoint = current_checkpoint, fonts_list = fonts_list)
 
+# Route allowing explorers to visualize the entire path with all checkpoints
 @app.route("/explorePath/<int:path_id>", methods = ['GET', 'POST'])
 def explorePath(path_id):
 	if not session.get('username'):
@@ -411,12 +412,18 @@ def explorePath(path_id):
 				# Getting the user_id of the user
 				user_id = session.get('user_id')
 
-				# Getting the current date and time
-				dateTime = datetime.now()
-				print("loggedCheckpointNum %s" % loggedCheckpointNum)
-				print("checkpoint_id %d" % checkpoint_id)
-				print("user_id %d" % user_id)
-				print(dateTime)
+				# Checking if the interaction has already been logged or not
+				interaction_already = Database.interaction_check(path_id, checkpoint_id, user_id)
+
+				if not interaction_already:
+					# Getting the current date and time
+					dateTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+					# Logging the interaction in the database
+					Database.insert_interaction(path_id, checkpoint_id, user_id, dateTime)
+					print("Logged Interaction")
+				else:
+					print("Interaction Already Logged")
 
 	# Getting the base format of the path
 	base_format = Database.select_where("paths", "path_id", path_id, "base_format")
