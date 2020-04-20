@@ -5,6 +5,7 @@ from models import Users, Paths, Checkpoints, Interactions
 from database import Database
 from datetime import *
 from werkzeug import secure_filename
+from datatime import datetime
 
 # Defining basic route
 @app.route("/")
@@ -168,7 +169,7 @@ def createCheckpoint():
 		return redirect(url_for('login'))
 	elif not session.get('role') == "pathmaker":
 		return redirect(url_for('homepage'))
-	elif not session.get('pathname') or not session.get('checkpointTexts'):
+	elif not session.get('pathname') or not session.get('numOfCheckpoints'):
 		return redirect(url_for('createPath'))
 	else:
 		# Getting the number of checkpoints the user chose for 
@@ -305,7 +306,6 @@ def pathDetails():
 				path_id = Database.next_id("paths")
 
 				# Adding the new checkpoint in the database
-				print("inserting checkpoint")
 				Database.insert_checkpoint(checkpointTexts[y-1], checkpointAnimations[y-1], checkpointColors[y-1], geolocation, checkpointFonts[y-1], marker, path_id)
 				
 				# Getting the checkpoint id and putting them in the list
@@ -394,8 +394,29 @@ def explorePath(path_id):
 	# Getting the path information based on path id
 	current_path = Paths.query.filter_by(path_id = path_id).first()
 
-	# Getting the list of checkpoints based on the path
+	# Getting the list of checkpoints based on the path and the number of checkpoints
 	checkpointIdList = Database.select_where("paths", "path_id", path_id, "checkpoints")
+	numOfCheckpoints = len(checkpointIdList)
+
+	if request.method == "POST":
+		if request.form.get('logInteraction') == "interaction":
+			# Getting the number of the checkpoint the explorer would like to log in
+			loggedCheckpointNum = request.form.get('checkpointNumber')
+
+			# Ensuring that it continues only if they choose an appropriate number
+			if loggedCheckpointNum != "Checkpoint Number":
+				# Getting the associated checkpoint id
+				checkpoint_id = checkpointIdList[int(loggedCheckpointNum)-1]
+
+				# Getting the user_id of the user
+				user_id = session.get('user_id')
+
+				# Getting the current date and time
+				dateTime = datetime.now()
+				print("loggedCheckpointNum %s" % loggedCheckpointNum)
+				print("checkpoint_id %d" % checkpoint_id)
+				print("user_id %d" % user_id)
+				print(dateTime)
 
 	# Getting the base format of the path
 	base_format = Database.select_where("paths", "path_id", path_id, "base_format")
@@ -425,6 +446,6 @@ def explorePath(path_id):
 			longitude = geo_coordinates[1]
 			listOfLongitudes.append(longitude)
 
-	return render_template("explorePath.html", base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
+	return render_template("explorePath.html", numOfCheckpoints = numOfCheckpoints, base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
