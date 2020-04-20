@@ -184,7 +184,7 @@ class Database():
 		db.session.commit()
 	
 	# Insert Interaction into Database 
-	def insert_interaction(path_id, checkpoint_id, user_ids, currentDatetime):
+	def insert_interaction(path_id, checkpoint_id, user_id, currentDatetime):
 		# Getting the next ID
 		nextId = Database.next_id("Interactions")
 
@@ -193,7 +193,7 @@ class Database():
 			nextId = nextId + 1
 
 		# Creating a new interaction
-		newInteraction = Interactions(interaction_id = nextId, path_id = path_id, checkpoint_id = checkpoint_id, user_id = user_ids, datetime = currentDatetime)
+		newInteraction = Interactions(interaction_id = nextId, path_id = path_id, checkpoint_id = checkpoint_id, user_id = user_id, datetime = currentDatetime)
 
 		# Creating a new checkpoint
 		db.session.add(newInteraction)
