@@ -10,6 +10,12 @@
     padding: 3%;
 }
 
+.h1 {
+	padding: 3%;
+	text-align: center;
+	text-decoration: none;
+}
+
 .navbar{
 	background-color: #FDEE9A;
 	list-style: none;
