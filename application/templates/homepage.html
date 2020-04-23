@@ -18,7 +18,6 @@
 	
 <body class = "body-html">
 	<h1>All Paths</h1>
-	<div class="jumbotron">
 	{% for path in paths %}
 			<h2>{{path.name}}</h2>
 			<h3>Creator: {{path.pathmaker}}</h3>
@@ -35,7 +34,6 @@
 
 			<hr>
 	{% endfor %}
-	</div>
 
 	<!-- Button for Pathmakers only-->
 	{% set pathmaker = "pathmaker" %}
