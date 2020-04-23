@@ -40,6 +40,10 @@
 	background-color:#C7B63F;
 }
 
+.menu-btn{
+	float: right;
+}
+
 }
 .map{
 	width: 700px;
