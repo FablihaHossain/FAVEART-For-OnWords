@@ -35,13 +35,17 @@
 
 			<hr>
 	{% endfor %}
-	</div>
-
-	<!-- Button for Pathmakers only-->
-	{% set pathmaker = "pathmaker" %}
+		{% set pathmaker = "pathmaker" %}
 	{% if session['role'] == pathmaker %}
 	<a href="{{url_for('createPath')}}" class="btn btn-primary btn-primary-block">Create Path</a>
 	{% endif %}
+	</div>
+
+	<!-- Button for Pathmakers only-->
+<!-- 	{% set pathmaker = "pathmaker" %}
+	{% if session['role'] == pathmaker %}
+	<a href="{{url_for('createPath')}}" class="btn btn-primary btn-primary-block">Create Path</a>
+	{% endif %} -->
 
 	
 </body>
