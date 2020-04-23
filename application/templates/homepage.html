@@ -22,12 +22,12 @@
 	{% for path in paths %}
 		{% set pathmaker = "pathmaker" %}
 			{% if session['role'] == pathmaker %}
-				    <a class="menu-btn" href="{{url_for('viewCheckpoints', pathID = path.path_id)}}" class="btn btn-primary btn-primary-block">View Checkpoints</a>
+				    <a href="{{url_for('viewCheckpoints', pathID = path.path_id)}}" class="btn btn-primary btn-primary-block menu-btn">View Checkpoints</a>
 			 {% endif %}
 
 		{% set explorer = "explorer" %}
 			{% if session['role'] == explorer %}
-				    <a class="menu-btn" href="{{url_for('explorePath', path_id = path.path_id)}}" class="btn btn-primary btn-primary-block">Explore Path</a>
+				    <a href="{{url_for('explorePath', path_id = path.path_id)}}" class="btn btn-primary btn-primary-block menu-btn">Explore Path</a>
 			  {% endif %}
 			<h2>{{path.name}}</h2>
 			<h3>Creator: {{path.pathmaker}}</h3>
