@@ -45,9 +45,9 @@ h1 {
 	background-color:#C7B63F;
 }
 
-.menu{
+.menu-btn{
+	text-align: right;
 	position: absolute;
-	right: 10px;
 }
 
 .map{
