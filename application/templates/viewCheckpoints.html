@@ -5,7 +5,7 @@
 {% block body %}
 <body class = "body-html">
 	<div class="jumbotron">
-	<h1>{{path.name}} Checkpoint List</h1>
+	<h1>{{path.name}} Checkpoint List</h1><br />
 	{% for checkpoint in points %}
 		{% if checkpoint.checkpoint_id in path.checkpoints %}
 		<a href="{{url_for('checkpointVisual', checkpointID = checkpoint.checkpoint_id)}}" class="btn btn-primary btn-primary-block menu-btn">View Checkpoint Here!</a>
