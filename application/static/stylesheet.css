@@ -10,12 +10,6 @@
     padding: 3%;
 }
 
-h1 {
-	padding: 3%;
-	text-align: center;
-	text-decoration: none;
-}
-
 .navbar{
 	background-color: #FDEE9A;
 	list-style: none;
@@ -45,11 +39,9 @@ h1 {
 	background-color:#C7B63F;
 }
 
-.btn-primary-block-menu{
-	text-align: right;
-	position: absolute;
+div a{
+	float:right;
 }
-
 .map{
 	width: 700px;
 	height: 550px;

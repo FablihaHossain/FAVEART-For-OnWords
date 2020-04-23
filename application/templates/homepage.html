@@ -25,7 +25,7 @@
 			<p>{{path.description}}</p>
 				{% set pathmaker = "pathmaker" %}
 				{% if session['role'] == pathmaker %}
-				    <a href="{{url_for('viewCheckpoints', pathID = path.path_id)}}" class="btn btn-primary btn-primary-block btn-primary-block-menu">View Checkpoints</a>
+				    <a href="{{url_for('viewCheckpoints', pathID = path.path_id)}}" class="btn btn-primary btn-primary-block">View Checkpoints</a>
 			    {% endif %}
 
 				{% set explorer = "explorer" %}
@@ -35,18 +35,13 @@
 
 			<hr>
 	{% endfor %}
-		{% set pathmaker = "pathmaker" %}
-	{% if session['role'] == pathmaker %}
-	<a href="{{url_for('createPath')}}" class="btn btn-primary btn-primary-block">Create Path</a>
-	{% endif %}
 	</div>
 
 	<!-- Button for Pathmakers only-->
-<!-- 	{% set pathmaker = "pathmaker" %}
+	{% set pathmaker = "pathmaker" %}
 	{% if session['role'] == pathmaker %}
 	<a href="{{url_for('createPath')}}" class="btn btn-primary btn-primary-block">Create Path</a>
-	{% endif %} -->
-
+	{% endif %}
 	
 </body>
 {% endblock body %}
