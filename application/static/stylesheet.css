@@ -46,7 +46,8 @@ h1 {
 }
 
 .menu{
-	position: right;
+	position: absolute;
+	right: 0px;
 }
 
 .map{
