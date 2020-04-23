@@ -184,7 +184,7 @@ class Database():
 		db.session.commit()
 	
 	# Insert Interaction into Database 
-	def insert_interaction(path_id, checkpoint_id, user_ids, currentDatetime):
+	def insert_interaction(path_id, checkpoint_id, user_id, currentDatetime):
 		# Getting the next ID
 		nextId = Database.next_id("Interactions")
 
@@ -193,7 +193,7 @@ class Database():
 			nextId = nextId + 1
 
 		# Creating a new interaction
-		newInteraction = Interactions(interaction_id = nextId, path_id = path_id, checkpoint_id = checkpoint_id, user_id = user_ids, datetime = currentDatetime)
+		newInteraction = Interactions(interaction_id = nextId, path_id = path_id, checkpoint_id = checkpoint_id, user_id = user_id, datetime = currentDatetime)
 
 		# Creating a new checkpoint
 		db.session.add(newInteraction)
@@ -328,7 +328,23 @@ class Database():
 			return False
 		else:
 			return True
-				
+
+	# A function to check if given user_id, checkpoint_id, and path_id are in the database
+	# A helper function to avoid duplicate interaction inputs (i.e. A user cannot log in the same checkpoint in the same path twice)
+	def interaction_check(path_id, checkpoint_id, user_id):
+		# Developing the query 
+		query = "SELECT * FROM interactions WHERE path_id = %d AND checkpoint_id = %d AND user_id = %d" % (path_id, checkpoint_id, user_id)
+		try:
+			# Executing the query
+			cursor.execute(query)
+
+			# Finding out if it exists in the table
+			exists = cursor.fetchone() is not None
+
+			# Returning if the entry exists or not
+			return exists
+		except Exception as error:
+			return "Error! %s" % error
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
