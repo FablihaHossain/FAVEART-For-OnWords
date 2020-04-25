@@ -454,5 +454,28 @@ def explorePath(path_id):
 			listOfLongitudes.append(longitude)
 
 	return render_template("explorePath.html", numOfCheckpoints = numOfCheckpoints, base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
+
+# Admin Route
+@app.route("/manageSite", methods = ['GET', 'POST'])
+def manageSite():
+	if not session.get('username'):
+		return redirect(url_for('login'))
+	elif not session.get('role') == "admin":
+		return redirect(url_for('homepage'))
+
+	# Getting all users in the database
+	user_list = Users.query.all()
+
+	# Getting all the paths in the database
+	paths_list = Paths.query.all()
+
+	#Getting all the checkpoints in the database
+	checkpoint_list = Checkpoints.query.all()
+
+	#Getting all the interactions in the database
+	interaction_list = Interactions.query.all()
+
+	return render_template("manageSite.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
+
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
