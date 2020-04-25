@@ -43,6 +43,10 @@
 	<a href="{{url_for('createPath')}}" class="btn btn-primary btn-primary-block">Create Path</a>
 	{% endif %}
 
-	
+	<!-- Button for Admin Only-->
+	{% set admin = "admin" %}
+	{% if session['role'] == admin %}
+	<a href="{{url_for('manageSite')}}" class="btn btn-primary btn-primary-block"> Manage Site</a>
+	{% endif %}
 </body>
 {% endblock body %}
