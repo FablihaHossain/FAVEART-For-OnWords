@@ -45,9 +45,8 @@
 }
 
 .map{
-	width: 550px;
+	width: 700px;
 	height: 550px;
-	position:absolute;
 	bottom:-10px;
 	right:10px;   
 }
@@ -66,3 +65,4 @@
 
 @media screen and (max-width: 600px) {
 	.jumbotron.responsive {position: relative;}
+	.map.responsive {position: relative;}
