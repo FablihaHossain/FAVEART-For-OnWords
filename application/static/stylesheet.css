@@ -50,7 +50,8 @@
 .map{
 	width: 50%;
 	height: 70%;
-	float:right;   
+	float:right;
+	padding-top: 10px;   
 }
 
 .col-sm-6 .card-header{
@@ -62,6 +63,10 @@
 	padding-top: 3px;
 	padding-bottom: 3px;
 	margin-left: 3px;
+	width:50%;
+}
+
+#colors{
 	width:50%;
 }
 
