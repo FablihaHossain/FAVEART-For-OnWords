@@ -48,7 +48,7 @@
 	width: 700px;
 	height: 550px;
 	bottom:-10px;
-	right:10px;   
+	float:right;   
 }
 
 .col-sm-6 .card-header{
