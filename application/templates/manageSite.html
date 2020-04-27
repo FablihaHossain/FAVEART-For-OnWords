@@ -3,23 +3,65 @@
 {% block title %} <title> Manage Site (Admin) </title> {% endblock title %}
 
 {% block body %}
- 
+
+<script>
+	function myFunction(form, user_id) {
+		var check = confirm("Are You Sure You'd Like to Delete This User?\n User Id: " + user_id);
+
+		if (check == true)
+		{
+			form.submit()
+		}
+		else
+		{
+			alert("Cancelling Request")
+		}
+	}
+</script>
+
 <body class = "body-html">
 	<form method = "post">
-		<div class ="text-center">
-			<button type = "submit" class = "btn btn-primary btn-primary-block"> TEST DELETION </button>
-		</div>
+		<table class = "table table-hover">
+			<thead class = "thead-dark">
+				<tr>
+					<th scope="col">User ID</th>
+				    <th scope="col">Name</th>
+				    <th scope="col">Email</th>
+				    <th scope="col">Username</th>
+				    <th scope="col">Role</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for user in users %}
+				<tr>
+					<th scope="row">{{user.user_id}}</th>
+					<th>{{user.firstname}} {{user.lastname}}</th>
+					<th>{{user.email}}</th>
+					<th>{{user.username}}</th>
+					<th>{{user.role}}</th>
+					<th>
+						<div class ="text-center">
+							<button name = "user_id" value = {{user.user_id}} onClick="myFunction(this.form, '{{user.user_id}}');"class = "btn btn-primary btn-primary-block"
+							> Delete User </button>
+						</div>
+					</th>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</form>
-
-	
+</body>
+ 
+<!-- <body class = "body-html">
 	<div class="row">
   		<div class="col-4">
     		<div class="list-group" id="list-tab" role="tablist">
       		<a class="list-group-item list-group-item-action active" id="list-users-list" data-toggle="list" href="#list-users" role="tab" aria-controls="user">Users</a>
       		<a class="list-group-item list-group-item-action" id="list-paths-list" data-toggle="list" href="#list-paths" role="tab" aria-controls="paths">Paths</a>
-    	</div>
-  </div>
+    		</div>
+  		</div>
   
+  <form method = "post">
   	<div class="col-8">
     	<div class="tab-content" id="nav-tabContent">
       		<div class="tab-pane fade show active" id="list-users" role="tabpanel" aria-labelledby="list-users-list">
@@ -34,6 +76,9 @@
 					<br>
 					Role: {{user.role}}
 					<br>
+					<div class ="text-center">
+						<button type = "submit" class = "btn btn-primary btn-primary-block"> TEST DELETION </button>
+					</div>
 					{% endfor %}
 				</ul>
       		</div>
@@ -73,14 +118,18 @@
 						{% endif %}
 						<br>
 					{% endif %}
+					<div class ="text-center">
+						<button type = "submit" class = "btn btn-primary btn-primary-block"> TEST DELETION </button>
+					</div>
 					{% endfor %}
 				{% endfor %}
 				</ul>
       		</div>
     	</div>
   	</div>
+  </form>
 	</div>
-</body>
+</body> -->
 
 {# Javascript Lines from https://getbootstrap.com/docs/4.3/getting-started/introduction/ #}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -89,3 +138,4 @@
 {% endblock body %}
 
 <!-- Credit to https://getbootstrap.com/docs/4.4/components/list-group/-->
+<!-- Credit to https://getbootstrap.com/docs/4.0/content/tables/-->
