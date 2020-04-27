@@ -55,8 +55,8 @@
 }
 
 .col-sm-6 .card-header{
-background-color:#FDEE9A;
-
+	background-color:#FDEE9A;
+	padding: 3px;
 }
 
 @media screen and (max-width: 600px) {
