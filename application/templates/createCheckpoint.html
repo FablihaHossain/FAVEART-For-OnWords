@@ -25,14 +25,14 @@
 	Path Name: {{ session['pathname'] }}
 	<br>
 	Path Description: {{ session['description'] }}
-	<br>
-	Pathmaker: {{ session['pathmaker'] }}
+	<br><br>
+<!-- 	Pathmaker: {{ session['pathmaker'] }}
 	<br>
 	Format: {{ session['format_chosen'] }}
 	<br>
 	Number of Checkpoints: {{session['numOfCheckpoints']}}
 	<br><br>
-
+ -->
 	<!-- Button to clear markers on the map-->
 		{% set geo_format = "geolocation" %}
 		{% if session['format_chosen'] == geo_format %}

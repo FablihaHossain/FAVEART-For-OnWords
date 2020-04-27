@@ -38,6 +38,7 @@
 
 .btn-primary-block:hover{
 	background-color:#C7B63F;
+	padding: 3px;
 }
 
 .menu-btn{
@@ -51,6 +52,11 @@
 	position:absolute;
 	bottom:-10px;
 	right:10px;   
+}
+
+.col-sm-6 .card-header{
+background-color:#FDEE9A;
+
 }
 
 @media screen and (max-width: 600px) {
