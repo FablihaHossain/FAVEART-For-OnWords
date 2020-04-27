@@ -39,8 +39,10 @@
 		<button onclick = "clearMarkers()" class = "btn btn-primary btn-primary-block">Clear Markers</button>
 		{% endif %}
 	</div>
+	<div id="map" class = "map"></div>
+
 	<!-- Checkpoint Form -->
-	<form method = "post">
+	<form method = "post" id="Checkpoints">
 		<div class="row">
 			<div class="col-sm-6">
       			<h5 class="card-header"> Checkpoints</h5>
@@ -117,8 +119,8 @@
 	{% if session['format_chosen'] == geo_format %}
 	<!-- Map for Geolocations -->
 	<!-- Credit to Professor Stemkoski-->
-	<div id="map" class = "map"></div>
-	{% endif %}
+<!-- 	<div id="map" class = "map"></div>
+ -->	{% endif %}
 		<!-- Script to Access and Modify Leaflet Contents-->
 		<script type="text/javascript">	
 			let latitude = document.getElementById("latitude");
