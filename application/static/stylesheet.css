@@ -59,8 +59,9 @@
 
 }
 
-.form{
+#Checkpoints{
 	padding: 3px;
+	margin-left: 3px;
 }
 
 @media screen and (max-width: 600px) {
