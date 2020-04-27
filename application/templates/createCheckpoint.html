@@ -20,6 +20,7 @@
 	{% endwith %}
 	
 <body class = "body-html">
+	<div id="map" class = "map"></div>
 	<div>
 	<!-- Displaying the Path Information-->
 	Path Name: {{ session['pathname'] }}
@@ -39,7 +40,6 @@
 		<button onclick = "clearMarkers()" class = "btn btn-primary btn-primary-block">Clear Markers</button>
 		{% endif %}
 	</div>
-	<div id="map" class = "map"></div>
 
 	<!-- Checkpoint Form -->
 	<form method = "post" id="Checkpoints">
