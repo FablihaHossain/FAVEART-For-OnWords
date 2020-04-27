@@ -54,10 +54,6 @@ def login():
 				session['user_id'] = user_id 
 				session['role'] = role
 
-				if role == "admin":
-					print("updating db connection")
-					conn = psycopg2.connect(user=Config.user, password=Config.password, host = "localhost", database=Config.db, port = 5432)
-
 				# Taking the user to the homepage
 				return redirect(url_for('homepage'))
 
@@ -466,8 +462,8 @@ def explorePath(path_id):
 def manageSite():
 	if not session.get('username'):
 		return redirect(url_for('login'))
-	# elif not session.get('role') == "admin":
-	# 	return redirect(url_for('homepage'))
+	elif not session.get('role') == "admin":
+		return redirect(url_for('homepage'))
 
 	# Getting all users in the database
 	user_list = Users.query.all()
@@ -482,9 +478,17 @@ def manageSite():
 	interaction_list = Interactions.query.all()
 
 	if request.method == "POST":
-		print("before delete")
-		Database.delete_from("checkpoints", "checkpoint_id", 0, "text", "dfdsf")
-		print("after delete")
+		# Getting the user's id number
+		user_id = request.form.get("user_id")
+
+		if user_id != None:
+			# Getting the user's email address 
+			email = Database.select_where("users", "user_id", int(user_id), "email")
+
+			# Deleting the entry
+			Database.delete_from("users", "user_id", int(user_id), "email", email)
+
+			return redirect(url_for("manageSite"))
 
 	return render_template("manageSite.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
 
