@@ -45,9 +45,8 @@
 }
 
 .map{
-	width: 700px;
+	width: 50%;
 	height: 550px;
-	bottom:-10px;
 	float:right;   
 }
 
@@ -61,6 +60,7 @@
 	padding-top: 3px;
 	padding-bottom: 3px;
 	margin-left: 3px;
+	width:50%;
 }
 
 @media screen and (max-width: 600px) {
