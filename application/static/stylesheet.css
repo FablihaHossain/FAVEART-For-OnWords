@@ -34,6 +34,9 @@
 	width: 150px;
 	color:black;
 	text-align: center;
+	margin-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 .btn-primary-block:hover{
@@ -46,13 +49,12 @@
 
 .map{
 	width: 50%;
-	height: 550px;
+	height: 70%;
 	float:right;   
 }
 
 .col-sm-6 .card-header{
 	background-color:#FDEE9A;
-
 
 }
 
