@@ -458,8 +458,8 @@ def explorePath(path_id):
 	return render_template("explorePath.html", numOfCheckpoints = numOfCheckpoints, base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
 
 # Admin Route
-@app.route("/manageSite", methods = ['GET', 'POST'])
-def manageSite():
+@app.route("/manageUsers", methods = ['GET', 'POST'])
+def manageUsers():
 	if not session.get('username'):
 		return redirect(url_for('login'))
 	elif not session.get('role') == "admin":
@@ -488,9 +488,9 @@ def manageSite():
 			# Deleting the entry
 			Database.delete_from("users", "user_id", int(user_id), "email", email)
 
-			return redirect(url_for("manageSite"))
+			return redirect(url_for("manageUsers"))
 
-	return render_template("manageSite.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
+	return render_template("manageUsers.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
 
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
