@@ -4,23 +4,8 @@
 
 {% block body %}
 
-<script>
-	function myFunction(form, user_id) {
-		var check = confirm("Are You Sure You'd Like to Delete This User?\n User Id: " + user_id);
-
-		if (check == true)
-		{
-			form.submit()
-		}
-		else
-		{
-			alert("Cancelling Request")
-		}
-	}
-</script>
-
 <body class = "body-html">
-	<form method = "post">
+	 <form method = "post">
 		<table class = "table table-hover">
 			<thead class = "thead-dark">
 				<tr>
@@ -40,17 +25,34 @@
 					<th>{{user.username}}</th>
 					<th>{{user.role}}</th>
 					<th>
-						<div class ="text-center">
-							<button name = "user_id" value = {{user.user_id}} onClick="myFunction(this.form, '{{user.user_id}}');"class = "btn btn-primary btn-primary-block"
-							> Delete User </button>
-						</div>
+						<td>
+							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#userDeletion{{ user.user_id }}"> Delete User </button>
+						</td>
 					</th>
 				</tr>
+
+				<div class="modal fade" id="userDeletion{{ user.user_id }}" role="dialog">
+					<div class="modal-dialog">
+					<div class="modal-content">
+        			<div class="modal-header">
+          				<button type="button" class="close" data-dismiss="modal">&times;</button>
+          				<h4 class="modal-title">Careful! This Action Cannot be Reversed! </h4>
+        			</div>
+        			
+        			<div class="modal-body">
+          				<p>Are You Sure You Want To Remove The Following User From The Site? <br> <br>Name: {{user.firstname}} {{user.lastname}} <br> Email: {{user.email}} <br> Role: {{user.role}}</p>
+        			</div>
+        			<div class="modal-footer">
+        				<button type="button" class = "btn btn-primary btn-primary-block" data-dismiss="modal">No</button>
+        				<button type = "submit" name = "user_id" value = "{{user.user_id}}" class = "btn btn-primary btn-primary-block">Yes</button>
+			        </div>
+      			</div>
 				{% endfor %}
 			</tbody>
 		</table>
 	</form>
 </body>
+		
  
 <!-- <body class = "body-html">
 	<div class="row">
@@ -129,6 +131,14 @@
   	</div>
   </form>
 	</div>
+
+
+	document.getElementById("singleAmountForm").onsubmit = function onSubmit(form) {
+   singleAmount = document.getElementById("singleAmount").value;
+   if (confirm("Are you sure you want to submit the value of " + singleAmount + " ?"))
+      return true;
+   else
+     return false;
 </body> -->
 
 {# Javascript Lines from https://getbootstrap.com/docs/4.3/getting-started/introduction/ #}
@@ -139,3 +149,5 @@
 
 <!-- Credit to https://getbootstrap.com/docs/4.4/components/list-group/-->
 <!-- Credit to https://getbootstrap.com/docs/4.0/content/tables/-->
+<!-- Credit to https://www.chronoengine.com/forums/posts/t102669/how-to-add-a-confirm-popup-to-a-submit-button-->
+<!-- Credit to https://stackoverflow.com/questions/44606429/modal-window-in-jinja2-template-flask-->
