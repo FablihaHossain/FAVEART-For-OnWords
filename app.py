@@ -458,5 +458,5 @@ def explorePath(path_id):
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
 
 @app.route("/about", methods = ['GET', 'POST'])
-def about:
+def about():
 	return render_template("about.html")
