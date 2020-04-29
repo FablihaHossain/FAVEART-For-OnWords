@@ -8,6 +8,7 @@ from werkzeug import secure_filename
 from datetime import datetime
 from config import Config
 import psycopg2
+from sqlalchemy import asc, desc
 
 # Defining basic route
 @app.route("/")
@@ -457,7 +458,7 @@ def explorePath(path_id):
 
 	return render_template("explorePath.html", numOfCheckpoints = numOfCheckpoints, base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
 
-# Admin Route
+# Admin Route to Manage Users of Database
 @app.route("/manageUsers", methods = ['GET', 'POST'])
 def manageUsers():
 	if not session.get('username'):
@@ -467,15 +468,6 @@ def manageUsers():
 
 	# Getting all users in the database
 	user_list = Users.query.all()
-
-	# Getting all the paths in the database
-	paths_list = Paths.query.all()
-
-	#Getting all the checkpoints in the database
-	checkpoint_list = Checkpoints.query.all()
-
-	#Getting all the interactions in the database
-	interaction_list = Interactions.query.all()
 
 	if request.method == "POST":
 		# Getting the user's id number
@@ -490,7 +482,29 @@ def manageUsers():
 
 			return redirect(url_for("manageUsers"))
 
-	return render_template("manageUsers.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
+	return render_template("manageUsers.html", users = user_list)
+
+# Admin Route to Manage Paths of Database
+@app.route("/managePaths", methods = ['GET', 'POST'])
+def managePaths():
+	if not session.get('username'):
+		return redirect(url_for('login'))
+	elif not session.get('role') == "admin":
+		return redirect(url_for('homepage'))
+
+	# Getting all users in the database
+	user_list = Users.query.all()
+
+	# Getting all the paths in the database (in order by path_id)
+	paths_list = Paths.query.order_by(asc(Paths.path_id))
+
+	#Getting all the checkpoints in the database
+	checkpoint_list = Checkpoints.query.all()
+
+	#Getting all the interactions in the database
+	interaction_list = Interactions.query.all()
+
+	return render_template("managePaths.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
 
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
