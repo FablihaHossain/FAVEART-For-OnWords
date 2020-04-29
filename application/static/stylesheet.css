@@ -9,6 +9,10 @@
     overflow-x: hidden;
 }
 
+a{
+	font-color: white;
+}
+
 .navbar{
 	background-color: #FDEE9A;
 	list-style: none;
