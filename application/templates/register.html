@@ -22,12 +22,12 @@
 			<div class = "container text-center"> <h2>Please Provide the Following Information:</h2></div>
 			<form method = "post">
 				<div class = "form-group">
-					<label for = "inputFirstname"> <b>First Name</b> </label>
+					<label for = "inputFirstname"> First Name </label>
 					<input type="firstname" class = "form-control" name="firstname" value = "{{request.form.firstname}}">
 				</div>
 
 				<div class = "form-group">
-					<label for = "inputLastname"> <b>Last Name</b></label>
+					<label for = "inputLastname"> Last Name</label>
 					<input type="lastname" class = "form-control" name="lastname" value = "{{request.form.lastname}}">
 				</div>
 
@@ -46,15 +46,15 @@
 					<input type="password" class = "form-control" name="password" value = "{{request.form.password}}">
 				</div>
 
-				<div class = "container text-center"> Choose a Role: </div>
+				<div class = "container text-center"> <b>Choose a Role:</b> </div>
 				<div class = "text-center">
 					<div class="form-check form-check-inline">
 		  				<input class="form-check-input" type="radio" name="roles" id="pathmaker" value="pathmaker">
-		  				<label class="form-check-label" for="roles">Pathmaker</label>
+		  				<label class="form-check-label" for="roles"><b>Pathmaker</b></label>
 					</div>
 					<div class="form-check form-check-inline">
 		  				<input class="form-check-input" type="radio" name="roles" id="explorer" value="explorer">
-		  				<label class="form-check-label" for="roles">Explorer</label>
+		  				<label class="form-check-label" for="roles"><b>Explorer</b></label>
 					</div>
 				</div>
 				
