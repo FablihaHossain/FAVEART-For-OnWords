@@ -71,6 +71,7 @@
 }
 
 #homeLogo{
+	display: block;
 	align-content: center;
 	padding: 5px;
 }
