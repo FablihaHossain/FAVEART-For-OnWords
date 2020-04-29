@@ -77,6 +77,10 @@
 	padding: 20px;
 }
 
+.form-check-inline{
+	padding: 10px;
+}
+
 @media screen and (max-width: 600px) {
 	.jumbotron.responsive {position: relative;}
 	.map.responsive {position: relative;}
