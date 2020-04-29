@@ -504,6 +504,16 @@ def managePaths():
 	#Getting all the interactions in the database
 	interaction_list = Interactions.query.all()
 
+	if request.method == "POST":
+		if request.form.get('path_change') == 'change_submitted':
+			new_pathname = request.form.get('pathname')
+			new_pathdescription = request.form.get('description')
+
+			print("name: %s" % new_pathname)
+			print("description: %s" %new_pathdescription)
+
+			return redirect(url_for("managePaths"))
+
 	return render_template("managePaths.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
 
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers

@@ -5,7 +5,7 @@
 {% block body %}
 
 <body class = "body-html">
-	<form method = "post">
+	
 		<table class = "table table-hover table-sm">
 			<thead class = "thead-dark">
 				<tr>
@@ -106,10 +106,34 @@
 							{% endfor %}
 						</div>
 					</div>
+				</div>
+			</div>
+			<form method = "post">
+					<div class = "modal fade" id = "pathEdits{{ path.path_id }}" role="dialog">
+						<div class = "modal-dialog">
+						<div class = "modal-content">
+						<div class = "modal-header">
+								<h4 class="modal-title"> Edit Path </h4>
+								<button type = "button" class = "close" data-dismiss="modal">&times;</button>
+						</div>
+						<div class = "modal-body">
+							<label for = "inputText"> Path Name </label>
+							<input type="pathname" class = "form-control" name="pathname" value = "{{request.form.pathname}}">
+
+							<label for = "inputText"> Path Description </label>
+							<input type="description" class = "form-control" name="description" value ="{{request.form.description}}">
+						</div>
+						<div class="modal-footer">
+        					<button type="button" class = "btn btn-primary btn-primary-block" data-dismiss="modal">Cancel</button>
+        					<button type = "submit" name = "path_change" value = "change_submitted" class = "btn btn-primary btn-primary-block">Submit Change</button>
+			        </div>
+					</div>
+				</div>
+					</div>
+				</form>
 				{% endfor %}
 			</tbody>
 		</table>
-	</form>
 </body>
 {# Javascript Lines from https://getbootstrap.com/docs/4.3/getting-started/introduction/ #}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
