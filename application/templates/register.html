@@ -19,15 +19,15 @@
 
 	<body class = "body-html">
 		<div class = "jumbotron">
-			<div class = "container text-center"> Please Provide the Following Information</div>
+			<div class = "container text-center"> <h2>Please Provide the Following Information:</h2></div>
 			<form method = "post">
 				<div class = "form-group">
-					<label for = "inputFirstname"> First Name </label>
+					<label for = "inputFirstname"> <b>First Name</b> </label>
 					<input type="firstname" class = "form-control" name="firstname" value = "{{request.form.firstname}}">
 				</div>
 
 				<div class = "form-group">
-					<label for = "inputLastname"> Last Name</label>
+					<label for = "inputLastname"> <b>Last Name</b></label>
 					<input type="lastname" class = "form-control" name="lastname" value = "{{request.form.lastname}}">
 				</div>
 
@@ -63,7 +63,7 @@
 				</div>
 			</form>
 				<div class="text-center">
-				<p>Already using FAVEART?<a class = "btn btn-primary btn-primary-block" href="{{url_for('login')}}"> Login </a></p>
+				<p><b>Already using FAVEART?</b><a class = "btn btn-primary btn-primary-block" href="{{url_for('login')}}"> Login </a></p>
 			</div>
 	</div>
 		</div>
