@@ -70,6 +70,12 @@
 	width:50%;
 }
 
+#home-logo{
+	align-content: center;
+	padding: 3px;
+	
+}
+
 @media screen and (max-width: 600px) {
 	.jumbotron.responsive {position: relative;}
 	.map.responsive {position: relative;}
