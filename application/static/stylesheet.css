@@ -70,10 +70,9 @@
 	width:50%;
 }
 
-img{
+#homeLogo{
 	align-content: center;
 	padding: 5px;
-
 }
 
 @media screen and (max-width: 600px) {
