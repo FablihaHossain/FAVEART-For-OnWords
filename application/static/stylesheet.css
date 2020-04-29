@@ -70,9 +70,10 @@
 	width:50%;
 }
 
-#home-logo{
+.mainpage{
 	align-content: center;
 	padding: 5px;
+
 }
 
 @media screen and (max-width: 600px) {
