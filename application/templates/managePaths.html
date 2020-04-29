@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+
+{% block title %} <title> Manage Paths (Admin) </title> {% endblock title %}
+
+{% block body %}
+
+<body class = "body-html">
+	<form method = "post">
+		<table class = "table table-hover table-sm">
+			<thead class = "thead-dark">
+				<tr>
+					<th scope="col">Path ID</th>
+					<th scope="col">Path Name</th>
+				    <th scope="col">Description</th>
+				    <th scope="col">Base Format</th>
+				    <th scope="col">Pathmaker</th>
+				    <th scope="col">Checkpoints</th>
+				    <th scope="col">Interactions</th>
+				    <th scope="col">Edit Option</th>
+				    <th scope="col">Delete Option</th>
+				</tr>
+			</thead>
+			<tbody>
+					{% for path in paths %}
+					<tr>
+					<th scope="row">{{path.path_id}}</th>
+					<th>{{path.name}}</th>
+					<th>{{path.description}}</th>
+					<th>{{path.base_format}}</th>
+					<th>{{path.pathmaker}}</th>
+						<th>
+							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#viewCheckpoints{{ path.path_id }}"> Checkpoints </button>
+						</th>
+						<th>
+							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#viewInteractions{{ path.path_id }}"> Interactions </button>
+						</th>
+						<td>
+							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#pathEdits{{ path.path_id }}"> Edit Path </button>
+						</td>
+
+						<td>
+							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#pathDeletion{{ path.path_id }}"> Delete Path </button>
+						</td>
+					</tr>
+
+					<div class = "modal fade" id = "viewCheckpoints{{ path.path_id }}" role="dialog">
+						<div class = "modal-dialog">
+							<div class = "modal-content">
+								<div class = "modal-header">
+									<h4 class="modal-title">List of Checkpoints in Path</h4>
+									<button type = "button" class = "close" data-dismiss="modal">&times;
+									</button>
+								</div>
+								<div class = "modal-body">
+									{% for checkpoint in checkpoints %}
+									{% if checkpoint.checkpoint_id in path.checkpoints %}
+									<p>Text: {{checkpoint.text}}
+									<br>
+									Animation: {{checkpoint.animation}}
+									<br>
+									Color: {{checkpoint.color}}
+									<br>
+									Font: {{checkpoint.font}}
+									<br>
+									{% set marker = "marker" %}
+									{% if path.base_format == marker %}
+									Marker: {{checkpoint.marker}}
+									{% endif %}
+
+									{% set geolocation = "geolocation" %}
+									{% if path.base_format == geolocation %}
+									geolocation: {{checkpoint.geolocation}}
+									{% endif %}
+									</p>
+									{% endif %}
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class = "modal fade" id = "viewInteractions{{ path.path_id }}" role="dialog">
+						<div class = "modal-dialog">
+						<div class = "modal-content">
+						<div class = "modal-header">
+								<h4 class="modal-title">Path Interactions</h4>
+								<button type = "button" class = "close" data-dismiss="modal">&times;</button>
+						</div>
+						<div class = "modal-body">
+							{% for interaction in interactions %}
+								{% if interaction.path_id == path.path_id %}
+									{% for user in users %}
+										{% if user.user_id == interaction.user_id %}
+											<p>User: {{user.firstname}} {{user.lastname}}</p>
+										{% endif %}
+									{% endfor %}
+									
+									{% for checkpoint in checkpoints %}
+										{% if checkpoint.checkpoint_id == interaction.checkpoint_id %}
+											<p>Checkpoint: {{checkpoint.text}}</p>
+										{% endif %}
+									{% endfor %}
+										<p>Date and Time: {{interaction.datetime}}</p>
+									<br>
+								{% endif %}
+							{% endfor %}
+						</div>
+					</div>
+				{% endfor %}
+			</tbody>
+		</table>
+	</form>
+</body>
+{# Javascript Lines from https://getbootstrap.com/docs/4.3/getting-started/introduction/ #}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+{% endblock body %}
+
+<!-- Credit to https://getbootstrap.com/docs/4.0/components/modal/-->
+<!-- Credit to https://github.com/mozilla/nunjucks/issues/240-->
