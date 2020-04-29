@@ -72,7 +72,7 @@
 
 #homeLogo{
 	display: block;
-	align-content: center;
+	text-align: center;
 	padding: 5px;
 }
 
