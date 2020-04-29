@@ -71,11 +71,13 @@
 }
 
 #home-logo{
-	align-content: center;
+	float: center;
 	padding: 3px;
 	
+
 }
 
 @media screen and (max-width: 600px) {
 	.jumbotron.responsive {position: relative;}
 	.map.responsive {position: relative;}
+	#home-logo.responsive {position: relative;}
