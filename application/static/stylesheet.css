@@ -9,8 +9,8 @@
     overflow-x: hidden;
 }
 
-a{
-	font-color: white;
+.text{
+	padding:10px;
 }
 
 .navbar{
