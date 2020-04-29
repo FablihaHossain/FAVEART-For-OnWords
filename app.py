@@ -457,6 +457,6 @@ def explorePath(path_id):
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
 
-@app.route("/about", methods = ['GET', 'POST'])
+@app.route("/about")
 def about():
 	return render_template("about.html")
