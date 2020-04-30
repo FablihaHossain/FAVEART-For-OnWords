@@ -20,11 +20,10 @@
 	{% endwith %}
 	
 <body class = "body-html">
-	<div id="map" class = "map"></div>
 		{% set geo_format = "geolocation" %}
 		{% if session['format_chosen'] == geo_format %}
+			<div id="map" class = "map"></div>
 		{% endif %}
-	<div>
 	<!-- Displaying the Path Information-->
 	Path Name: {{ session['pathname'] }}
 	<br>
