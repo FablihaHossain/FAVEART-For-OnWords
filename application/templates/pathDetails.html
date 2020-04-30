@@ -19,6 +19,7 @@
 		<b>Total Number of Checkpoints:</b> {{session['numOfCheckpoints']}}
 		<br><br>
 		<hr>
+		<h2>Checkpoints</h2><br>
 
 		<!-- Getting the Checkpoint Information From Session -->
 		{% set count = session['numOfCheckpoints'] | int %}
@@ -40,9 +41,9 @@
 		{% endif %}
 		<!-- Displaying the Checkpoint Information-->
 		{% for x in range(0, count) %}
-			<b>Checkpoint {{x+1}}:<b>
+			<h4>Checkpoint {{x+1}}:</h4>
 			<br>
-			<b>Text:</b> {{ textList[x] }}
+			<p><b>Text:</b> {{ textList[x] }}
 			<br>
 			<b>Animation:</b> {{ animationList[x] }}
 			<br>
@@ -56,7 +57,7 @@
 					Latitude: {{ latitudeList[x] }}
 					<br>
 					Longitude: {{ longitudeList[x] }}
-			{% endif %}
+			{% endif %}</p>
 
 		{% if session['format_chosen'] == marker_format %}
 				Marker: {{  markerList[x]  }}
