@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} <title> Registration Page </title> {% endblock title %}
+{% block title %} <title> Registration Page | FAVEART for OnWords</title> {% endblock title %}
 
 {% block body %}
 
@@ -19,7 +19,7 @@
 
 	<body class = "body-html">
 		<div class = "jumbotron">
-			<div class = "container text-center"> Please Provide the Following Information</div>
+			<div class = "container text-center"> <h2>Please Provide the Following Information:</h2></div>
 			<form method = "post">
 				<div class = "form-group">
 					<label for = "inputFirstname"> First Name </label>
@@ -46,15 +46,15 @@
 					<input type="password" class = "form-control" name="password" value = "{{request.form.password}}">
 				</div>
 
-				<div class = "container text-center"> Choose a Role: </div>
-				<div class = "text-center">
+				<div class = "container text-center"> <b>Choose a Role:</b> </div>
+				<div class = "text-center" style="padding:">
 					<div class="form-check form-check-inline">
 		  				<input class="form-check-input" type="radio" name="roles" id="pathmaker" value="pathmaker">
-		  				<label class="form-check-label" for="roles">Pathmaker</label>
+		  				<label class="form-check-label" for="roles"><b>Pathmaker</b></label>
 					</div>
 					<div class="form-check form-check-inline">
 		  				<input class="form-check-input" type="radio" name="roles" id="explorer" value="explorer">
-		  				<label class="form-check-label" for="roles">Explorer</label>
+		  				<label class="form-check-label" for="roles"><b>Explorer</b></label>
 					</div>
 				</div>
 				
@@ -62,6 +62,10 @@
 					<button type = "submit" class = "btn btn-primary btn-primary-block"> Register </button>
 				</div>
 			</form>
+				<div class="text-center">
+				<p><b>Already using FAVEART?</b><a class = "btn btn-primary btn-primary-block" href="{{url_for('login')}}"> Login </a></p>
+			</div>
+	</div>
 		</div>
 	</body>
 {% endblock body %}

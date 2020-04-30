@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} <title> Create Checkpoints </title> {% endblock title %}
+{% block title %} <title> Create Checkpoints | FAVEART for OnWords</title> {% endblock title %}
 
 	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 	<script src="{{url_for('static', filename = 'leaflet/leaflet.js')}}"></script>
@@ -20,27 +20,31 @@
 	{% endwith %}
 	
 <body class = "body-html">
-	<div>
+		{% set geo_format = "geolocation" %}
+		{% if session['format_chosen'] == geo_format %}
+			<div id="map" class = "map"></div>
+		{% endif %}
 	<!-- Displaying the Path Information-->
 	Path Name: {{ session['pathname'] }}
 	<br>
 	Path Description: {{ session['description'] }}
-	<br>
-	Pathmaker: {{ session['pathmaker'] }}
+	<br><br>
+<!-- 	Pathmaker: {{ session['pathmaker'] }}
 	<br>
 	Format: {{ session['format_chosen'] }}
 	<br>
 	Number of Checkpoints: {{session['numOfCheckpoints']}}
 	<br><br>
-
+ -->
 	<!-- Button to clear markers on the map-->
 		{% set geo_format = "geolocation" %}
 		{% if session['format_chosen'] == geo_format %}
 		<button onclick = "clearMarkers()" class = "btn btn-primary btn-primary-block">Clear Markers</button>
 		{% endif %}
 	</div>
+
 	<!-- Checkpoint Form -->
-	<form method = "post">
+	<form method = "post" id="Checkpoints">
 		<div class="row">
 			<div class="col-sm-6">
       			<h5 class="card-header"> Checkpoints</h5>
@@ -67,7 +71,7 @@
 						<!-- Colors Option -->
 						<label for = "head"> Color </label>
 						<br>
-						<input type="color" id="colors" name="colors{{x+1}}" value="#e66465" style = "height: 40px; width: 670px">
+						<input type="color" id="colors" name="colors{{x+1}}" value="#e66465" style = "height: 40px;">
 						<br>
 
 						<!-- Fonts List -->
@@ -113,12 +117,13 @@
 			</div>
 		</div>
 	</form>
+		<a class = "btn btn-primary btn-primary-block logout-button" href="{{url_for('logout')}}"> Log Out</a>
 	{% set geo_format = "geolocation" %}
 	{% if session['format_chosen'] == geo_format %}
 	<!-- Map for Geolocations -->
 	<!-- Credit to Professor Stemkoski-->
-	<div id="map" class = "map"></div>
-	{% endif %}
+<!-- 	<div id="map" class = "map"></div>
+ -->	{% endif %}
 		<!-- Script to Access and Modify Leaflet Contents-->
 		<script type="text/javascript">	
 			let latitude = document.getElementById("latitude");

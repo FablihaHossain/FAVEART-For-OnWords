@@ -20,12 +20,12 @@
 		{% endblock styles %}
 
 		{# Navigation Bar #}
-		<nav class = "navbar navbar-expand-lg">
+		<nav class = "navbar navbar-expand-sm">
 			<a class="navbar-brand nav-words navbar-text" href="{{url_for('index')}}"> FAVEART For OnWords </a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<li class= "nav-item">
+					<a class="nav-link nav-words navbar-text" href="{{url_for('about')}}"> About </a>
+				</li>
 				{% if not session['username'] %}
 				<li class = "nav-item" >
 					<a class = "nav-link nav-words navbar-text" href="{{url_for('login')}}"> Log In </a>
@@ -65,11 +65,20 @@
 				</li>
 				{% endif %}
 			</div>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
 		</nav>
 </head>
 {% endblock head %}
 {% block body %}
 <body class = "body-html">
+	<img id="homeLogo" src="static/OpenBookFinal.png" alt="FAVEART for OnWords Logo">
+	<h1 style="text-align: center">Welcome!</h1>
+	<h2 style="text-align: center">If you wish to <b>create your own Path</b>, please register or login as a <b><i>Pathmaker</i></b>.<br />
+	If you only wish to <b>view previously-created Paths</b>, please register or login as an <b><i>Explorer</i></b>.</h2>
+
+
 </body>
 {% endblock body %}
 </html>

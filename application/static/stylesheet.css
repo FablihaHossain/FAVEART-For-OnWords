@@ -6,16 +6,18 @@
     margin-right: 0px;
     margin-bottom: 0px;
     align-content: center;
+    overflow-x: hidden;
 }
 
-.h1 {
-	padding-top: 1%;
-	padding-left: 2%;
+.text{
+	padding:10px;
 }
 
 .navbar{
 	background-color: #FDEE9A;
 	list-style: none;
+	margin-top:0px;
+
 }
 
 .nav-words{
@@ -35,19 +37,60 @@
 	background-color:#FDEE9A;
 	width: 150px;
 	color:black;
+	text-align: center;
+	margin-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 .btn-primary-block:hover{
 	background-color:#C7B63F;
 }
 
+.menu-btn{
+	float: right;
+}
+
 .map{
-	width: 700px;
-	height: 550px;
-	position:absolute;
-	bottom:-10px;
-	right:10px;   
+	width: 50%;
+	height: 70%;
+	float:right;
+	padding-top: 10px;   
+}
+
+.col-sm-6 .card-header{
+	background-color:#FDEE9A;
+
+}
+
+#Checkpoints{
+	padding-top: 3px;
+	padding-bottom: 3px;
+	margin-left: 3px;
+	width:50%;
+}
+
+#colors{
+	width:50%;
+}
+
+#homeLogo{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 20px;
 }
 
 @media screen and (max-width: 600px) {
 	.jumbotron.responsive {position: relative;}
+	.map.responsive {position: relative;}
+	.body-html.responsive {position: relative;}
+
+@media only screen and (max-width: 600px){
+	.logout-button{
+		display:block;
+		float: left;
+		max-width: 600px;
+
+	}
+}

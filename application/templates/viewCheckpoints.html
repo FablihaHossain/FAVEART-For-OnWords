@@ -1,16 +1,20 @@
 {% extends "layout.html" %}
 
-{% block title %} <title>{{path.name}}: Checkpoints</title> {% endblock title %}
+{% block title %} <title>{{path.name}}: Checkpoints | FAVEART for OnWords</title> {% endblock title %}
 
 {% block body %}
 <body class = "body-html">
-	<h1>{{path.name}} Checkpoint List</h1>
+	<div class="jumbotron">
+	<h1>{{path.name}} Checkpoint List</h1><br />
 	{% for checkpoint in points %}
 		{% if checkpoint.checkpoint_id in path.checkpoints %}
-			<h2>Checkpoint {{checkpoint.checkpoint_id}}</h2>
-				<a href="{{url_for('checkpointVisual', checkpointID = checkpoint.checkpoint_id)}}" class="btn btn-primary btn-primary-block">View Checkpoint Here!</a>
+		<a href="{{url_for('checkpointVisual', checkpointID = checkpoint.checkpoint_id)}}" class="btn btn-primary btn-primary-block menu-btn">View Checkpoint Here!</a>
+		<h2>Checkpoint {{checkpoint.checkpoint_id}}</h2>
+				
 			<hr>
 		{% endif %}
 	{% endfor %}
+		<a class = "btn btn-primary btn-primary-block logout-button" href="{{url_for('logout')}}"> Log Out</a>
+</div>
 </body>
 {% endblock body %}
