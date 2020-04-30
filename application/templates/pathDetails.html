@@ -8,16 +8,17 @@
 <body class = "body-html">
 	<div class = "jumbotron">
 		<h2>Path Details</h2>
-		<h3>Path Name: {{ session['pathname'] }}
+		<b>Path Name:</b> {{ session['pathname'] }}
 		<br>
-		Path Description: {{ session['description'] }}
+		<b>Path Description:</b> {{ session['description'] }}
 		<br>
-		Pathmaker: {{ session['pathmaker'] }}
+		<b>Pathmaker:</b> {{ session['pathmaker'] }}
 		<br>
-		Format: {{ session['format_chosen'] }}
+		<b>Format:</b> {{ session['format_chosen'] }}
 		<br>
-		Total Number of Checkpoints: {{session['numOfCheckpoints']}}
-		<br><br></h3>
+		<b>Total Number of Checkpoints:</b> {{session['numOfCheckpoints']}}
+		<br><br>
+		<hr>
 
 		<!-- Getting the Checkpoint Information From Session -->
 		{% set count = session['numOfCheckpoints'] | int %}
