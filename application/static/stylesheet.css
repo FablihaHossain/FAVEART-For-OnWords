@@ -85,3 +85,11 @@
 	.jumbotron.responsive {position: relative;}
 	.map.responsive {position: relative;}
 	.body-html.responsive {position: relative;}
+
+@media only screen and (max-width: 600px){
+	.logout-button{
+		display:block;
+		float: left;
+
+	}
+}
