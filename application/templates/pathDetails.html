@@ -54,13 +54,13 @@
 			{% set marker_format = "marker" %}
 			{% set geo_format = "geolocation" %}
 			{% if session['format_chosen'] == geo_format %}
-					Latitude: {{ latitudeList[x] }}
+					<b>Latitude:</b> {{ latitudeList[x] }}
 					<br>
-					Longitude: {{ longitudeList[x] }}
+					<b>Longitude:</b> {{ longitudeList[x] }}
 			{% endif %}</p>
 
 		{% if session['format_chosen'] == marker_format %}
-				Marker: {{  markerList[x]  }}
+				<b>Marker:</b> {{  markerList[x]  }}
 				{% set marker_filename = markerfile[x] %}
 				<a href="{{url_for('downloadMarkerFile', filename = marker_filename)}}" class="btn btn-primary btn-primary-block"> Download </a><hr>
 			{% endif %}
