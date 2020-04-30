@@ -224,11 +224,15 @@ class Database():
 	# Update Table in Database
 	def update_table(tablename, pkcolumn, pk, columnName, newValue):
 		try:
+			# Formating the string values for raw psycopg2
+			if columnName == "name" or columnName == "description" or columnName == "firstname" or columnName == "lastname":
+				newValue = Database.format_entry(newValue)
+
 			# Developing the query
 			query = "UPDATE %s SET %s = '%s' WHERE %s = %d" % (tablename, columnName, newValue, pkcolumn, pk)
 
 			# Executing the query
-			admincursor.execute(query)
+			cursor.execute(query)
 
 			# Commiting the change
 			conn.commit()
