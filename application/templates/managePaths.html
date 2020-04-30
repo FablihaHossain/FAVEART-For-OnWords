@@ -5,10 +5,10 @@
 {% block body %}
 
 <body class = "body-html">
-	
 		<table class = "table table-hover table-sm">
 			<thead class = "thead-dark">
 				<tr>
+					<!-- Table Columns-->
 					<th scope="col">Path ID</th>
 					<th scope="col">Path Name</th>
 				    <th scope="col">Description</th>
@@ -21,6 +21,7 @@
 				</tr>
 			</thead>
 			<tbody>
+					<!-- Rows for Each Path in Database-->
 					{% for path in paths %}
 					<tr>
 					<th scope="row">{{path.path_id}}</th>
@@ -28,6 +29,8 @@
 					<th>{{path.description}}</th>
 					<th>{{path.base_format}}</th>
 					<th>{{path.pathmaker}}</th>
+
+						<!-- Buttons for Various Actions-->
 						<th>
 							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#viewCheckpoints{{ path.path_id }}"> Checkpoints </button>
 						</th>
@@ -37,12 +40,12 @@
 						<td>
 							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#pathEdits{{ path.path_id }}"> Edit Path </button>
 						</td>
-
 						<td>
 							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#pathDeletion{{ path.path_id }}"> Delete Path </button>
 						</td>
 					</tr>
 
+					<!-- Modal for Checkpoint List in Each Path-->
 					<div class = "modal fade" id = "viewCheckpoints{{ path.path_id }}" role="dialog">
 						<div class = "modal-dialog">
 							<div class = "modal-content">
@@ -52,6 +55,7 @@
 									</button>
 								</div>
 								<div class = "modal-body">
+									<!-- Getting and Displaying All Checkpoints Associated With Path-->
 									{% for checkpoint in checkpoints %}
 									{% if checkpoint.checkpoint_id in path.checkpoints %}
 									<p>Text: {{checkpoint.text}}
@@ -62,11 +66,13 @@
 									<br>
 									Font: {{checkpoint.font}}
 									<br>
+									<!-- Marker Base Format-->
 									{% set marker = "marker" %}
 									{% if path.base_format == marker %}
 									Marker: {{checkpoint.marker}}
 									{% endif %}
 
+									<!-- Geolocation Base Format-->
 									{% set geolocation = "geolocation" %}
 									{% if path.base_format == geolocation %}
 									geolocation: {{checkpoint.geolocation}}
@@ -79,6 +85,7 @@
 						</div>
 					</div>
 
+					<!-- Modal for Interaction List in Each Path-->
 					<div class = "modal fade" id = "viewInteractions{{ path.path_id }}" role="dialog">
 						<div class = "modal-dialog">
 						<div class = "modal-content">
@@ -87,18 +94,23 @@
 								<button type = "button" class = "close" data-dismiss="modal">&times;</button>
 						</div>
 						<div class = "modal-body">
+							<!-- Getting and Displaying All Interactions Associated With Path-->
 							{% for interaction in interactions %}
 								{% if interaction.path_id == path.path_id %}
+									<!-- Getting the names of the user based on their ID from table-->
 									{% for user in users %}
 										{% if user.user_id == interaction.user_id %}
 											<p>User: {{user.firstname}} {{user.lastname}}</p>
 										{% endif %}
 									{% endfor %}
 									
+									<!-- Getting the text of the checkpoint based on their ID from table-->
 									{% for checkpoint in checkpoints %}
 										{% if checkpoint.checkpoint_id == interaction.checkpoint_id %}
 											<p>Checkpoint: {{checkpoint.text}}</p>
 										{% endif %}
+
+									<!-- Date and Time Interaction Was Logged-->
 									{% endfor %}
 										<p>Date and Time: {{interaction.datetime}}</p>
 									<br>
@@ -108,29 +120,83 @@
 					</div>
 				</div>
 			</div>
-			<form method = "post">
+
+			<!-- Form For Path Edit and Path Deletion-->
+			<form method = "post" >
+					<!-- Modal for Editing Paths-->
 					<div class = "modal fade" id = "pathEdits{{ path.path_id }}" role="dialog">
 						<div class = "modal-dialog">
 						<div class = "modal-content">
 						<div class = "modal-header">
-								<h4 class="modal-title"> Edit Path </h4>
+								<h4 class="modal-title"> Edit Path (Update Fields Below) </h4>
 								<button type = "button" class = "close" data-dismiss="modal">&times;</button>
 						</div>
 						<div class = "modal-body">
+							<!-- Path ID (Admin is Unable to Change It, thus not editable)-->
+							<label for = "inputText"> Path ID </label>
+							<input readonly="readonly" class = "form-control" name="path_id" value = "{{path.path_id}}">
+							<br>
+							<!-- Path Name Field-->
 							<label for = "inputText"> Path Name </label>
-							<input type="pathname" class = "form-control" name="pathname" value = "{{request.form.pathname}}">
+							<input type="pathname" class = "form-control" name="pathname" value = "{{path.name}}">
 
+							<!-- Path Description Field-->
 							<label for = "inputText"> Path Description </label>
-							<input type="description" class = "form-control" name="description" value ="{{request.form.description}}">
+							<input type="description" class = "form-control" name="description" value ="{{path.description}}">
+
+							<!-- Pathmaker Field-->
+							<label for = "inputText"> Pathmaker </label>
+							<select class="custom-select" name = "pathmaker">
+								<!-- Current Pathmaker is Selected-->
+								{% for user in users %}
+									{% if user.firstname in path.pathmaker and user.lastname in path.pathmaker %}
+		  						<option selected value = "{{user.user_id}}">{{path.pathmaker}}</option>
+		  							{% endif %}
+		  						{% endfor %}
+
+		  						<!-- Listing All Other Pathmakers in the Site-->
+				  				{% set pathmaker = "pathmaker" %}
+				  				{% for user in users %}
+					  				{% if user.role == pathmaker and user.firstname not in path.pathmaker and user.lastname not in path.pathmaker%}
+					  					<option value="{{user.user_id}}">{{user.firstname}} {{user.lastname}}</option>
+					  				{% endif %}
+				  				{% endfor %}
+							</select>
 						</div>
+						<!-- Form Submit and Cancel Button-->
 						<div class="modal-footer">
         					<button type="button" class = "btn btn-primary btn-primary-block" data-dismiss="modal">Cancel</button>
         					<button type = "submit" name = "path_change" value = "change_submitted" class = "btn btn-primary btn-primary-block">Submit Change</button>
-			        </div>
-					</div>
-				</div>
-					</div>
-				</form>
+			        	</div>
+						</div>
+						</div>
+						</div>
+
+						<!-- Modal for Deleting Paths-->
+						<div class = "modal fade" id = "pathDeletion{{ path.path_id }}" role="dialog">
+							<div class = "modal-dialog">
+							<div class = "modal-content">
+							<div class = "modal-header">
+								<!-- Warning Message-->
+								<h4 class="modal-title"> Careful! This Action Cannot be Reversed! </h4>
+								<button type = "button" class = "close" data-dismiss="modal">&times;</button>
+							</div>
+
+							<!-- Displaying Path Details-->
+							<div class = "modal-body">
+								<label for = "inputText" readonly="readonly" class = "form-control" name="path_id" value = "{{path.path_id}}">{{path.path_id}}</label>
+								<p>Are You Sure You Want To Remove The Following Path From The Site? <br> <br>Path Name: {{path.name}} <br> Description: {{path.description}} <br> Format: {{path.base_format}} <br> Pathmaker: {{path.pathmaker}}</p>
+							</div>
+
+							<!-- Submit and Cancel Button-->
+							<div class="modal-footer">
+        						<button type="button" class = "btn btn-primary btn-primary-block" data-dismiss="modal">No</button>
+        						<button type = "submit" name = "path_deletion" value = "deletion_activated" class = "btn btn-primary btn-primary-block">Yes</button>
+			       			</div>
+							</div>
+							</div>
+						</div>
+					</form>
 				{% endfor %}
 			</tbody>
 		</table>
@@ -143,3 +209,4 @@
 
 <!-- Credit to https://getbootstrap.com/docs/4.0/components/modal/-->
 <!-- Credit to https://github.com/mozilla/nunjucks/issues/240-->
+<!-- Credit to https://stackoverflow.com/questions/7357256/disabled-form-inputs-do-not-appear-in-the-request-->
