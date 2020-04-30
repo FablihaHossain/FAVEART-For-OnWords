@@ -14,12 +14,16 @@ DB_URL = 'postgresql+psycopg2://{user}:{pw}@{host}:{port}/{db}'.format(user=Conf
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation warning
 
+DB_URL_GENERAL = 'postgresql+psycopg2://{user}:{pw}@{host}:{port}/{db}'.format(user=Config.general_user,pw=Config.general_password, host = "localhost", port = 5432 ,db=Config.db)
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL_GENERAL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation warning
+
 # Database Object
 db = SQLAlchemy(app)
 
 # Database Connection
 try:
-	conn = psycopg2.connect(user=Config.user, password=Config.password, host = "localhost", database=Config.db, port = 5432)
+	conn = psycopg2.connect(user=Config.general_user, password=Config.general_password, host = "localhost", database=Config.db, port = 5432)
 	print("Successully Connected to Database")
 except:
 	print("Unable to Connect to Database")

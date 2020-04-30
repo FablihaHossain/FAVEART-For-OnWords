@@ -44,6 +44,21 @@
 				</li>
 				{% endif %}
 
+				<!-- Buttons for Admin Only-->
+				{% set admin = "admin" %}
+				{% if session['role'] == admin %}
+				<li class = "nav-item">
+					<a class = "nav-link nav-words navbar-text" href="{{url_for('manageUsers')}}"> Manage Users </a>
+				</li>
+				{% endif %}
+
+				{% if session['role'] == admin %}
+				<li class = "nav-item">
+					<a class = "nav-link nav-words navbar-text"
+					href="{{url_for('managePaths')}}"> Manage Paths </a>
+				</li>
+				{% endif %}
+
 				{% if session['username'] %}
 				<li class = "nav-item">
 					<a class = "nav-link nav-words navbar-text" href="{{url_for('logout')}}"> Log Out</a>
