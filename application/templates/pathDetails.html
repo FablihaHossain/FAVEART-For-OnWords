@@ -7,7 +7,8 @@
 <!-- Displaying the Path Information-->
 <body class = "body-html">
 	<div class = "jumbotron">
-		Path Name: {{ session['pathname'] }}
+		<h1>Path Details</h1>
+		<h2>Path Name: {{ session['pathname'] }}
 		<br>
 		Path Description: {{ session['description'] }}
 		<br>
@@ -16,7 +17,7 @@
 		Format: {{ session['format_chosen'] }}
 		<br>
 		Total Number of Checkpoints: {{session['numOfCheckpoints']}}
-		<br><br>
+		<br><br></h2>
 
 		<!-- Getting the Checkpoint Information From Session -->
 		{% set count = session['numOfCheckpoints'] | int %}
@@ -37,16 +38,21 @@
 			{% set markerfile = session['markerFilenames'] %}
 		{% endif %}
 		<!-- Displaying the Checkpoint Information-->
+		{% if session['format_chosen'] == marker_format %}
+				Marker: {{  markerList[x]  }}
+				{% set marker_filename = markerfile[x] %}
+				<a href="{{url_for('downloadMarkerFile', filename = marker_filename)}}" class="btn btn-primary btn-primary-block"> Download </a>
+			{% endif %}
 		{% for x in range(0, count) %}
-			Checkpoint {{x+1}}:
+			<b>Checkpoint {{x+1}}:<b>
 			<br>
-			Text: {{ textList[x] }}
+			<b>Text:</b> {{ textList[x] }}
 			<br>
-			Animation: {{ animationList[x] }}
+			<b>Animation:</b> {{ animationList[x] }}
 			<br>
-			Color: {{ colorList[x] }}
+			<b>Color:</b> {{ colorList[x] }}
 			<br>
-			Font: {{ fontList[x] }}
+			<b>Font:</b> {{ fontList[x] }}
 			<br>
 			{% set marker_format = "marker" %}
 			{% set geo_format = "geolocation" %}
@@ -57,11 +63,6 @@
 			{% endif %}
 
 			<!-- If Marker path, download buttons that lead to the pdf versions of the markers-->
-			{% if session['format_chosen'] == marker_format %}
-				Marker: {{  markerList[x]  }}
-				{% set marker_filename = markerfile[x] %}
-				<a href="{{url_for('downloadMarkerFile', filename = marker_filename)}}" class="btn btn-primary btn-primary-block"> Download </a>
-			{% endif %}
 			<br><br>
 		{% endfor %}
 
