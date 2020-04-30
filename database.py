@@ -224,6 +224,10 @@ class Database():
 	# Update Table in Database
 	def update_table(tablename, pkcolumn, pk, columnName, newValue):
 		try:
+			# Formating the string values for raw psycopg2
+			if columnName == "name" or columnName == "description" or columnName == "firstname" or columnName == "lastname":
+				newValue = Database.format_entry(newValue)
+
 			# Developing the query
 			query = "UPDATE %s SET %s = '%s' WHERE %s = %d" % (tablename, columnName, newValue, pkcolumn, pk)
 
@@ -238,17 +242,19 @@ class Database():
 	# Delete From Table in Database 
 	# Really needs some work, especially with different types of input
 	def delete_from(tablename, pkcolumn, pk, columnName, columnValue):
-		try:
-			# Developing the query
-			query = "DELETE FROM %s WHERE %s = '%s' AND %s = %d" % (tablename, columnName, columnValue, pkcolumn, pk)
+		with psycopg2.connect(user=Config.user, password=Config.password, host = "localhost", database=Config.db, port = 5432) as adminconn:
+			admincursor = adminconn.cursor()
+			try:
+				# Developing the query
+				query = "DELETE FROM %s WHERE %s = '%s' AND %s = %d" % (tablename, columnName, columnValue, pkcolumn, pk)
 
-			# Executing the query
-			cursor.execute(query)
+				# Executing the query
+				admincursor.execute(query)
 
-			# Commiting the change
-			conn.commit()
-		except Exception as error:
-			print("Error! %s" % error)
+				# Commiting the change
+				adminconn.commit()
+			except Exception as error:
+				print("Error! %s" % error)
 
 	# Validate Login
 	def validate_login(username, password):

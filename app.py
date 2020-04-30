@@ -1,11 +1,14 @@
 import os
-from application import app, db
+from application import app, db, conn
 from flask import render_template, request, url_for, session, flash, redirect, send_from_directory
 from models import Users, Paths, Checkpoints, Interactions
 from database import Database
 from datetime import *
 from werkzeug import secure_filename
 from datetime import datetime
+from config import Config
+import psycopg2
+from sqlalchemy import asc, desc
 
 # Defining basic route
 @app.route("/")
@@ -454,5 +457,126 @@ def explorePath(path_id):
 			listOfLongitudes.append(longitude)
 
 	return render_template("explorePath.html", numOfCheckpoints = numOfCheckpoints, base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
+
+# Admin Route to Manage Users of Database
+@app.route("/manageUsers", methods = ['GET', 'POST'])
+def manageUsers():
+	if not session.get('username'):
+		return redirect(url_for('login'))
+	elif not session.get('role') == "admin":
+		return redirect(url_for('homepage'))
+
+	# Getting all users in the database
+	user_list = Users.query.order_by(asc(Users.user_id))
+
+	if request.method == "POST":
+		# User Deletion
+		if request.form.get('user_deletion') == 'deleted_user':
+			# Getting the user's id number
+			user_id = request.form.get('user_id')
+
+			if user_id != None:
+				# Getting the user's email address 
+				email = Database.select_where("users", "user_id", int(user_id), "email")
+
+				# Deleting the entry
+				Database.delete_from("users", "user_id", int(user_id), "email", email)
+				return redirect(url_for("manageUsers"))
+
+		# User Information Edits
+		if request.form.get('user_change') == 'change_submitted':
+			# Getting the current user_id
+			user_id = request.form.get('user_id')
+
+			# Getting all current user information
+			currentFirstname = Database.select_where("users", "user_id", int(user_id), "firstname")
+			currentLastname = Database.select_where("users", "user_id", int(user_id), "lastname")
+			currentEmail = Database.select_where("users", "user_id", int(user_id), "email")
+			currentRole = Database.select_where("users", "user_id", int(user_id), "role")
+
+			# Getting all new information
+			new_firstname = request.form.get('firstname')
+			new_lastname = request.form.get('lastname')
+			new_email = request.form.get('email')
+			new_role = request.form.get('role')
+
+			# Updating If New Information is Given
+			if new_firstname != currentFirstname:
+				Database.update_table("users", "user_id", int(user_id), "firstname", new_firstname)
+			if new_lastname != currentLastname:
+				Database.update_table("users", "user_id", int(user_id), "lastname", new_lastname)
+			if new_email != currentEmail:
+				Database.update_table("users", "user_id", int(user_id), "email", new_email)
+			if new_role != currentRole:
+				Database.update_table("users", "user_id", int(user_id), "role", new_role)
+
+			return redirect(url_for("manageUsers"))
+	return render_template("manageUsers.html", users = user_list)
+
+# Admin Route to Manage Paths of Database
+@app.route("/managePaths", methods = ['GET', 'POST'])
+def managePaths():
+	if not session.get('username'):
+		return redirect(url_for('login'))
+	elif not session.get('role') == "admin":
+		return redirect(url_for('homepage'))
+
+	# Getting all users in the database
+	user_list = Users.query.all()
+
+	# Getting all the paths in the database (in order by path_id)
+	paths_list = Paths.query.order_by(asc(Paths.path_id))
+
+	#Getting all the checkpoints in the database
+	checkpoint_list = Checkpoints.query.all()
+
+	#Getting all the interactions in the database
+	interaction_list = Interactions.query.all()
+
+	if request.method == "POST":
+		if request.form.get('path_change') == 'change_submitted':
+			# Getting the ID of the path intended to change
+			path_id = request.form.get('path_id')
+
+			# Getting the current path data from the db
+			currentName = Database.select_where("paths", "path_id", int(path_id), "name")
+			currentDescription = Database.select_where("paths", "path_id", int(path_id), "description")
+			currentPathmaker = Database.select_where("paths", "path_id", int(path_id), "pathmaker")
+
+			# Getting the new pathname and description from the fields
+			new_pathname = request.form.get('pathname')
+			new_pathdescription = request.form.get('description')
+
+			# Getting the id of the pathmaker chosen
+			pathmaker_id = request.form.get('pathmaker')
+			pathmakerFirstName = Database.select_where("users", "user_id", int(pathmaker_id), "firstname")
+			pathmakerLastName = Database.select_where("users", "user_id", int(pathmaker_id), "lastname")
+			newPathmaker = pathmakerFirstName + " " + pathmakerLastName
+			
+			# Checking to see if there are any changes
+			# Updating accordingly
+			if new_pathname != currentName:
+				Database.update_table("paths", "path_id", int(path_id), "name", new_pathname)
+			if new_pathdescription != currentDescription:
+				Database.update_table("paths", "path_id", int(path_id), "description", new_pathdescription)
+			if newPathmaker != currentPathmaker:
+				Database.update_table("paths", "path_id", int(path_id), "pathmaker", newPathmaker)
+
+			# Refreshing the page
+			return redirect(url_for("managePaths"))
+		if request.form.get('path_deletion') == 'deletion_activated':
+			# Getting the Path ID of the Soon to Be Deleted Path
+			path_id = request.form.get('path_id')
+			if path_id != None:
+				# Getting the pathmaker of the path
+				pathmaker = Database.select_where("paths", "path_id", int(path_id), "pathmaker")
+
+				# Deleting the Path from Database
+				Database.delete_from("paths", "path_id", int(path_id), "pathmaker", pathmaker)
+
+				# Refreshing the page
+				return redirect(url_for("managePaths"))
+	return render_template("managePaths.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
+
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
