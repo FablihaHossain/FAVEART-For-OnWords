@@ -5,18 +5,21 @@
 {% block body %}
 
 <body class = "body-html">
-	 <form method = "post">
 		<table class = "table table-hover table-sm">
 			<thead class = "thead-dark">
 				<tr>
+					<!-- Table Columns-->
 					<th scope="col">User ID</th>
 				    <th scope="col">Name</th>
 				    <th scope="col">Email</th>
 				    <th scope="col">Username</th>
 				    <th scope="col">Role</th>
+				    <th scope="col">Edit Option</th>
+				    <th scope="col">Delete Option</th>
 				</tr>
 			</thead>
 			<tbody>
+				<!-- Rows for Each User in Database-->
 				{% for user in users %}
 				<tr>
 					<th scope="row">{{user.user_id}}</th>
@@ -24,33 +27,101 @@
 					<th>{{user.email}}</th>
 					<th>{{user.username}}</th>
 					<th>{{user.role}}</th>
-					<th>
+						<!-- Button for Editing User Data-->
+						<td>
+							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#userEdit{{ user.user_id }}"> Edit User </button>
+						</td>
+
+						<!-- Button for Deleting User-->
 						<td>
 							<button type="button" class = "btn btn-primary btn-primary-block" data-toggle="modal" data-target="#userDeletion{{ user.user_id }}"> Delete User </button>
 						</td>
-					</th>
 				</tr>
+			<!-- Form For User Edit and User Deletion-->
+			<form method = "post">
+				<!-- Modal for Editing User Information-->
+				<div class = "modal fade" id = "userEdit{{ user.user_id }}" role="dialog">
+					<div class = "modal-dialog">
+					<div class = "modal-content">
+					<div class = "modal-header">
+						<h4 class="modal-title"> Edit User (Update Fields Below) </h4>
+						<button type = "button" class = "close" data-dismiss="modal">&times;</button>
+					</div>
 
+					<div class = "modal-body">
+						<!-- User ID (Admin is Unable to Change It, thus not editable)-->
+						<label for = "inputText"> User ID </label>
+						<input readonly="readonly" class = "form-control" name="user_id" value = "{{user.user_id}}">
+						<br>
+
+						<!-- First Name Field-->
+						<label for = "inputText"> First Name </label>
+						<input type="firstname" class = "form-control" name="firstname" value = "{{user.firstname}}">
+
+						<!-- Last Name Field-->
+						<label for = "inputText"> Last Name </label>
+						<input type="lastname" class = "form-control" name="lastname" value ="{{user.lastname}}">
+
+						<!-- Email Field-->
+						<label for = "inputText"> Email Address</label>
+						<input type="email" class = "form-control" name="email" value ="{{user.email}}">
+
+						<!-- Role Options-->
+						<label for = "inputText"> Role </label>
+						<select class="custom-select" name = "role">
+							<option selected value = "{{user.role}}">{{user.role}}</option>
+							{% if user.role != "pathmaker" %}
+							<option value = "pathmaker">pathmaker</option>
+							{% endif %}
+
+							{% if user.role != "explorer" %}
+							<option value = "explorer">explorer</option>
+							{% endif %}
+
+							{% if user.role != "admin" %}
+							<option value = "admin">admin</option>
+							{% endif %}
+						</select>
+					</div>
+					<!-- Form Submit and Cancel Button-->
+					<div class = "modal-footer">
+						<button type="button" class = "btn btn-primary btn-primary-block" data-dismiss="modal">Cancel</button>
+        				<button type = "submit" name = "user_change" value = "change_submitted" class = "btn btn-primary btn-primary-block">Submit Change</button>
+					</div>
+					</div>
+				</div>
+			</div>
+			
+				<!-- Modal for Deleting Users-->
 				<div class="modal fade" id="userDeletion{{ user.user_id }}" role="dialog">
 					<div class="modal-dialog">
 					<div class="modal-content">
         			<div class="modal-header">
+        				<!-- Warning Message-->
         				<h4 class="modal-title">Careful! This Action Cannot be Reversed! </h4>
           				<button type="button" class="close" data-dismiss="modal">&times;</button>
         			</div>
-        			
+
+        			<!-- Displaying User Details-->
         			<div class="modal-body">
-          				<p>Are You Sure You Want To Remove The Following User From The Site? <br> <br>Name: {{user.firstname}} {{user.lastname}} <br> Email: {{user.email}} <br> Role: {{user.role}}</p>
+        				<label for = "inputText">User Id</label>
+        				<input readonly="readonly" class = "form-control" name="user_id" value = "{{user.user_id}}">
+						<br>
+        				<p>Are You Sure You Want To Remove The Following User From The Site? <br> <br>Name: {{user.firstname}} {{user.lastname}} <br> Email: {{user.email}} <br> Role: {{user.role}}</p>
         			</div>
-        			<div class="modal-footer">
+
+        			<!-- Submit and Cancel Button-->
+        			<div class = "modal-footer">
         				<button type="button" class = "btn btn-primary btn-primary-block" data-dismiss="modal">No</button>
-        				<button type = "submit" name = "user_id" value = "{{user.user_id}}" class = "btn btn-primary btn-primary-block">Yes</button>
-			        </div>
-      			</div>
+        				<button type = "submit" name = "user_deletion" value = "deleted_user" class = "btn btn-primary btn-primary-block">Yes</button>
+        			</div>
+        			</div>
+        			</div>
+        		</div>
+			</form>
 				{% endfor %}
 			</tbody>
 		</table>
-	</form>
 </body>
 
 {# Javascript Lines from https://getbootstrap.com/docs/4.3/getting-started/introduction/ #}
