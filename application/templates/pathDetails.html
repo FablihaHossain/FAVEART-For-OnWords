@@ -7,8 +7,8 @@
 <!-- Displaying the Path Information-->
 <body class = "body-html">
 	<div class = "jumbotron">
-		<h1>Path Details</h1>
-		<h2>Path Name: {{ session['pathname'] }}
+		<h2>Path Details</h2>
+		<h3>Path Name: {{ session['pathname'] }}
 		<br>
 		Path Description: {{ session['description'] }}
 		<br>
@@ -17,7 +17,7 @@
 		Format: {{ session['format_chosen'] }}
 		<br>
 		Total Number of Checkpoints: {{session['numOfCheckpoints']}}
-		<br><br></h2>
+		<br><br></h3>
 
 		<!-- Getting the Checkpoint Information From Session -->
 		{% set count = session['numOfCheckpoints'] | int %}
