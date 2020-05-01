@@ -81,13 +81,6 @@
 	padding: 20px;
 }
 
-.photo1{
-	align-content: center;
-	height: 300px;
-	width: 250px;
-	padding:5px;
-}
-
 @media screen and (max-width: 600px) {
 	.jumbotron.responsive {position: relative;}
 	.map.responsive {position: relative;}
