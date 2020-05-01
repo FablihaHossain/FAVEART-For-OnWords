@@ -89,6 +89,7 @@
 	width:20%;
 	height:55%;
 	text-align:center;
+	max-height: 300px;
 }
 
 @media screen and (max-width: 600px) {
