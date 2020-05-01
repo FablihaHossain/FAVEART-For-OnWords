@@ -82,7 +82,10 @@
 }
 
 #mainpic{
-	float: center;
+	display: block;
+	margin-left:auto;
+	margin-right: auto;
+	padding:20px;
 }
 
 @media screen and (max-width: 600px) {
