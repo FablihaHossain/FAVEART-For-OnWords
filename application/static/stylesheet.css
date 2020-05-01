@@ -81,6 +81,10 @@
 	padding: 20px;
 }
 
+#mainpic{
+	float: center;
+}
+
 @media screen and (max-width: 600px) {
 	.jumbotron.responsive {position: relative;}
 	.map.responsive {position: relative;}
