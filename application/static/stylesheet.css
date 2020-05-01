@@ -82,8 +82,8 @@
 }
 
 .photo1{
-	display:block;
 	float:center;
+	height: 45%;
 	width:33.33%;
 	padding:5px;
 }
