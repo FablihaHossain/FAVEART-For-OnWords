@@ -82,6 +82,7 @@
 }
 
 .column1{
+	display:block;
 	float:center;
 	width:33.33%;
 	padding:5px;
