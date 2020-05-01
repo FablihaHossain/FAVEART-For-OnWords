@@ -82,15 +82,9 @@
 }
 
 .column1{
-	float:left;
+	float:center;
 	width:33.33%;
 	padding:5px;
-}
-
-.image-row::after{
-	content: "";
-	clear: both;
-	display: table;
 }
 
 @media screen and (max-width: 600px) {
