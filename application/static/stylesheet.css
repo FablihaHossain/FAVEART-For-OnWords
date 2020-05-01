@@ -89,14 +89,13 @@
 	width:20%;
 	height:55%;
 	text-align:center;
-	max-height: 300px;
-	min-width: 300px;
 }
 
 @media screen and (max-width: 600px) {
 	.jumbotron.responsive {position: relative;}
 	.map.responsive {position: relative;}
 	.body-html.responsive {position: relative;}
+	#mainpic.responsive {size: relative;}
 
 @media only screen and (max-width: 600px){
 	.logout-button{
