@@ -82,7 +82,7 @@
 }
 
 .photo1{
-	float:center;
+	align-content: center;
 	height: 300px;
 	width: 250px;
 	padding:5px;
