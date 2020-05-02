@@ -5,10 +5,11 @@ from models import Users, Paths, Checkpoints, Interactions
 from config import Config
 
 # Getting a cursor object from database connection
+# It will be used to execute PSQL queries
 cursor = conn.cursor()
 
 class Database():
-	# Checking for duplicate values
+	# Checking for duplicate values in a table
 	def check_duplicate(tablename, columnName, value):
 		# Developing the query to get from the table 
 		query = "SELECT * FROM %s WHERE %s = '%s'" % (tablename, columnName, value)
@@ -43,24 +44,6 @@ class Database():
 		except Exception as error:
 			print ("Error! %s" % error)
 
-	# Function to get checkpoint id
-	def getCheckpointID(text, animation, color, font):
-		try:
-			# Developing the query
-			query = "SELECT * FROM checkpoints WHERE text = '%s' AND animation = '%s' AND color = '%s' AND font = '%s'" % (text, animation, color, font)
-
-			# Executing the query
-			cursor.execute(query)
-
-			# Getting the user info from cursor, then user_id
-			checkpoint = cursor.fetchall()
-			checkpoint_id = checkpoint[0][0]
-
-			# Returning the user_id
-			return checkpoint_id
-		except Exception as error:
-			print ("Error! %s" % error)
-
 	# Function to count the number of rows at a given table
 	def row_count(tablename):
 		try:
@@ -78,7 +61,7 @@ class Database():
 		except:
 			print("Error! Wrong table name given")
 
-	# Get Next ID
+	# Function to get next potential id number for table
 	def next_id(tablename):
 		try:
 			# The last id will be found, depending on the table
@@ -99,7 +82,7 @@ class Database():
 		except:
 			print("Error! Incorrect table name given")
 
-	# Insert User Into Database 
+	# Insert User Into Database Function
 	# Note: No two users can have the same username and/or the same email
 	def insert_user(firstname, lastname, email, username, password, role):
 		# Checking if the user already exists in the database 
@@ -128,7 +111,7 @@ class Database():
 				# Commiting the change
 				db.session.commit()
 
-	# Insert Path into Database
+	# Insert Path into Database Function
 	# Pathmaker cannot have two paths with the same name AND description
 	def insert_path(pathname, path_description, checkpoint_ids, interaction_ids, pathmaker, status, base_format):
 		try:
@@ -165,7 +148,7 @@ class Database():
 		except Exception as error:
 				print ("Error! %s" % error)
 
-	# Insert Checkpoint into Database
+	# Insert Checkpoint into Database Function
 	def insert_checkpoint(text, animation, color, geolocation, font, markerName, path_id):
 		# Getting the next ID
 		nextId = Database.next_id("Checkpoints")
@@ -183,7 +166,7 @@ class Database():
 		# Commiting the change to the database
 		db.session.commit()
 	
-	# Insert Interaction into Database 
+	# Insert Interaction into Database Function
 	def insert_interaction(path_id, checkpoint_id, user_id, currentDatetime):
 		# Getting the next ID
 		nextId = Database.next_id("Interactions")
@@ -240,8 +223,8 @@ class Database():
 			print("Error! %s" % error)
 
 	# Delete From Table in Database 
-	# Really needs some work, especially with different types of input
 	def delete_from(tablename, pkcolumn, pk, columnName, columnValue):
+		# Only admin db users are allowed to delete data from the table
 		with psycopg2.connect(user=Config.user, password=Config.password, host = "localhost", database=Config.db, port = 5432) as adminconn:
 			admincursor = adminconn.cursor()
 			try:
@@ -256,7 +239,7 @@ class Database():
 			except Exception as error:
 				print("Error! %s" % error)
 
-	# Validate Login
+	# Function to Validate Login of User
 	def validate_login(username, password):
 		# Initially the validation will be false
 		validated = False
@@ -308,7 +291,7 @@ class Database():
 		except Exception as error:
 			print("Error! %s" % error)
 
-	# A String formating function for text entries with '
+	# A String formating function for text entries with apostrophes
 	# Helper function for insert_user and insert_path 
 	def format_entry(text):
 		# Declaring a variable to keep count
@@ -335,8 +318,9 @@ class Database():
 		else:
 			return True
 
-	# A function to check if given user_id, checkpoint_id, and path_id are in the database
-	# A helper function to avoid duplicate interaction inputs (i.e. A user cannot log in the same checkpoint in the same path twice)
+	# A function to check if given user_id, checkpoint_id, and path_id are in the database already
+	# A helper function to avoid duplicate interaction inputs 
+	# (i.e. A user cannot log in the same checkpoint in the same path twice)
 	def interaction_check(path_id, checkpoint_id, user_id):
 		# Developing the query 
 		query = "SELECT * FROM interactions WHERE path_id = %d AND checkpoint_id = %d AND user_id = %d" % (path_id, checkpoint_id, user_id)
@@ -351,6 +335,45 @@ class Database():
 			return exists
 		except Exception as error:
 			return "Error! %s" % error
+
+
+	# Function to get checkpoint id of given data
+	# For path creation
+	def getCheckpointID(text, animation, color, font):
+		try:
+			# Developing the query
+			query = "SELECT * FROM checkpoints WHERE text = '%s' AND animation = '%s' AND color = '%s' AND font = '%s'" % (text, animation, color, font)
+
+			# Executing the query
+			cursor.execute(query)
+
+			# Getting the user info from cursor, then user_id
+			checkpoint = cursor.fetchall()
+			checkpoint_id = checkpoint[0][0]
+
+			# Returning the user_id
+			return checkpoint_id
+		except Exception as error:
+			print ("Error! %s" % error)
+
+	# Function to get interaction id of given data
+	# For interaction logging
+	def getInteractionID(path_id, checkpoint_id, user_id):
+		try:
+			# Developing the query
+			query = "SELECT * FROM interactions WHERE path_id = %d AND checkpoint_id = %d AND user_id = %d" % (path_id, checkpoint_id, user_id)
+
+			# Executing the query
+			cursor.execute(query)
+
+			# Getting the user info from cursor, then user_id
+			interaction = cursor.fetchall()
+			interaction_id = interaction[0][0]
+
+			# Returning the user_id
+			return interaction_id
+		except Exception as error:
+			print ("Error! %s" % error)
 	# Credit to https://stackoverflow.com/questions/8551952/how-to-get-last-record
 	# Credit to https://docs.sqlalchemy.org/en/13/core/connections.html
 	# Credit to https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
