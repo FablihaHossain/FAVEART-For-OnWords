@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %} <title> Login Page </title> {% endblock title %}
+{% block title %} <title> Login Page | FAVEART for OnWords</title> {% endblock title %}
 
 {% block body %}
 
@@ -18,8 +18,9 @@
 
 <body class = "body-html">
 	<div class = "jumbotron">
-		<div class = "container text-center"> Please Log Into Your Account </div>
-		<form method = post>
+		<div class = "container text-center"> 
+			<h2>Log Into Your FAVEART Account</h2></div>
+		<form class="px-4 py-3" method = post>
 			<!-- Username Field-->
 			<div class = "form-group">
 				<label for = "inputUsername"> Username </label>
@@ -35,6 +36,9 @@
 				<button type = "submit" class = "btn btn-primary btn-primary-block"> Login </button>
 			</div>
 		</form>
+		<div class="text-center">
+				<p><b>New to FAVEART?</b></p> <a class="btn btn-primary btn-primary-block" href="{{url_for('register')}}">Sign up</a></p>
+			</div>
 	</div>
 </body>
 {% endblock body %}
