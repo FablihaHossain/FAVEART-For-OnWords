@@ -4,6 +4,7 @@
 
 {% block body %}
 
+	<!-- Flash Messages-->
 	{% with messages = get_flashed_messages() %}
 		{% if messages %}
 			<ul class = flashes>
@@ -16,9 +17,9 @@
 		{% endif %}
 	{% endwith %}
 
-
 	<body class = "body-html">
 		<div class = "jumbotron">
+			<!-- Registration Form-->
 			<div class = "container text-center"> <h2>Please Provide the Following Information:</h2></div>
 			<form method = "post">
 				<div class = "form-group">
@@ -57,12 +58,15 @@
 		  				<label class="form-check-label" for="roles"><b>Explorer</b></label>
 					</div>
 				</div>
-				
+
+				<!-- Submit Button-->
 				<div class ="text-center">
 					<button type = "submit" class = "btn btn-primary btn-primary-block"> Register </button>
 				</div>
 			</form>
-				<div class="text-center">
+
+			<!-- Route to Login Page-->
+			<div class="text-center">
 				<p><b>Already using FAVEART?</b><a class = "btn btn-primary btn-primary-block" href="{{url_for('login')}}"> Login </a></p>
 			</div>
 	</div>
