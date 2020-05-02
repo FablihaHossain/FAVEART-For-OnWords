@@ -4,9 +4,9 @@
    
 {% block body %}
 
-<!-- Displaying the Path Information-->
 <body class = "body-html">
 	<div class = "jumbotron">
+		<!-- Displaying the Path Information-->
 		<h2>Path Details</h2>
 		<b>Path Name:</b> {{ session['pathname'] }}
 		<br>
@@ -28,17 +28,20 @@
 		{% set colorList = session['checkpointColors'] %}
 		{% set fontList = session['checkpointFonts'] %}
 
-		{% set marker_format = "marker" %}
+		<!-- Geolocation Based Path Details-->
 		{% set geo_format = "geolocation" %}
 		{% if session['format_chosen'] == geo_format %}
 			{% set latitudeList = session['checkpointLatitudes'] %}
 			{% set longitudeList = session['checkpointLongitudes'] %}
 		{% endif %}
 
+		<!-- Marker Based Path Details-->
+		{% set marker_format = "marker" %}
 		{% if session['format_chosen'] == marker_format %}
 			{% set markerList = session['markerNames']%}
 			{% set markerfile = session['markerFilenames'] %}
 		{% endif %}
+
 		<!-- Displaying the Checkpoint Information-->
 		{% for x in range(0, count) %}
 			<h4>Checkpoint {{x+1}}:</h4>
@@ -51,7 +54,8 @@
 			<br>
 			<b>Font:</b> {{ fontList[x] }}
 			<br>
-			{% set marker_format = "marker" %}
+
+			<!-- Geolocation Based Path Details-->
 			{% set geo_format = "geolocation" %}
 			{% if session['format_chosen'] == geo_format %}
 					<b>Latitude:</b> {{ latitudeList[x] }}
@@ -59,10 +63,12 @@
 					<b>Longitude:</b> {{ longitudeList[x] }}
 			{% endif %}</p>
 
-		{% if session['format_chosen'] == marker_format %}
-				<b>Marker:</b> {{  markerList[x]  }}
-				{% set marker_filename = markerfile[x] %}
-				<a href="{{url_for('downloadMarkerFile', filename = marker_filename)}}" class="btn btn-primary btn-primary-block"> Download </a><hr>
+		<!-- Marker Based Path Details-->
+			{% set marker_format = "marker" %}
+			{% if session['format_chosen'] == marker_format %}
+					<b>Marker:</b> {{  markerList[x]  }}
+					{% set marker_filename = markerfile[x] %}
+					<a href="{{url_for('downloadMarkerFile', filename = marker_filename)}}" class="btn btn-primary btn-primary-block"> Download </a><hr>
 			{% endif %}
 			<!-- If Marker path, download buttons that lead to the pdf versions of the markers-->
 			<br><br>
@@ -70,16 +76,21 @@
 
 		<!-- Asking the Pathmaker if they'd like to create the path or delete progress--> 
 		<form method = "post">
-			<div class ="text-left">
+			<div class ="text-center">
 				<button type = "submit" name = "pathCreation" value = "createPath" class = "btn btn-primary btn-primary-block"> Create Path! </button>
 			</div>
 			<br>
-			<div class ="text-left">
+			<div class ="text-center">
 				<button type = "submit" name = "pathCreation" value = "cancelPath" class = "btn btn-primary btn-primary-block"> Cancel Path </button>
 			</div>
 		</form>
-			<a class = "btn btn-primary btn-primary-block logout-button" href="{{url_for('logout')}}"> Log Out</a>
-	</div>
+
+		<!-- Log Out Button-->
+		<hr>
+			<div class="text-center">
+				<p><b>Exit FAVEART</b></p> <a class="btn btn-primary btn-primary-block" href="{{url_for('logout')}}">Log Out</a></p>
+			</div>
+		</div>
 </body>
 {% endblock body %}
 

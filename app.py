@@ -1,31 +1,23 @@
 import os
+import psycopg2
+from config import Config
 from application import app, db, conn
 from flask import render_template, request, url_for, session, flash, redirect, send_from_directory
 from models import Users, Paths, Checkpoints, Interactions
 from database import Database
-from datetime import *
 from werkzeug import secure_filename
 from datetime import datetime
-from config import Config
-import psycopg2
 from sqlalchemy import asc, desc
 
-# Defining basic route
+# Defining basic route (homepage of the site)
 @app.route("/")
 def index():
-	# Getting all users in the database
-	user_list = Users.query.all()
+	return render_template("layout.html")
 
-	# Getting all the paths in the database
-	paths_list = Paths.query.all()
-
-	#Getting all the checkpoints in the database
-	checkpoint_list = Checkpoints.query.all()
-
-	#Getting all the interactions in the database
-	interaction_list = Interactions.query.all()
-
-	return render_template("layout.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
+# About This Site Page
+@app.route("/about")
+def about():
+	return render_template("about.html")
 
 # Login Page
 @app.route("/login", methods = ['GET', 'POST'])
@@ -39,7 +31,7 @@ def login():
 			username = request.form['username']
 			password = request.form['password']
 
-			# Validating login
+			# Validating login credentials
 			valid = Database.validate_login(username, password)
 
 			#If valid, creates a flash session with username and user_id
@@ -50,7 +42,7 @@ def login():
 				# Getting the role of current user
 				role = Database.select_where("users", "user_id", user_id, "role")
 
-				# Creating a session with the user
+				# Creating a session with the user data
 				session['username'] = username
 				session['user_id'] = user_id 
 				session['role'] = role
@@ -65,9 +57,9 @@ def login():
 # Register Page
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
-	# Getting the information from all the fields
 	if request.method == "POST":
 		try:
+			# Getting the information from all the fields
 			firstname = request.form['firstname']
 			lastname = request.form['lastname']
 			email = request.form['email']
@@ -75,7 +67,7 @@ def register():
 			password = request.form['password']
 			role = request.form['roles']
 
-		# None of the fields can be empty
+			# None of the fields can be empty
 			if "" in [firstname, lastname, email, username, password, role]:
 				flash("Error! Fields Cannot be Empty!")
 			else:
@@ -94,6 +86,8 @@ def register():
 					# Adding the user to the database
 					Database.insert_user(firstname, lastname, email, username, password, role)
 					flash("Congratulations! You've been registers to FAVEART For OnWords Successfully!")
+
+					# Redirecting the user to login page in order to access site
 					return redirect(url_for('login'))
 		except Exception as error: # Exception Handling to avoid program crashing when a role is choosen 
 			flash("Please Choose a Role!")
@@ -105,11 +99,14 @@ def homepage():
 	if not session.get('username'):
 		return redirect(url_for('login'))
 
-	# Getting all the paths from the database
+	# Getting all the paths in the database
 	paths_list = Paths.query.all()
+
+	# Passing all the paths from the db to the homepage
 	return render_template("homepage.html", paths = paths_list)
 
 # Create Paths Page
+# Pathmakers Only
 @app.route("/createPaths",  methods = ['GET', 'POST'])
 def createPath():
 	if not session.get('username') and not session.get('user_id'):
@@ -117,9 +114,9 @@ def createPath():
 	elif not session.get('role') == "pathmaker":
 		return redirect(url_for('homepage'))
 	else:
-		# Getting all information in the form
 		if request.method == "POST":
 			try:
+				# Getting all information in the form and storinbg them into sessions
 				pathname = request.form['pathname']
 				session['pathname'] = pathname
 				description = request.form['description']
@@ -128,6 +125,7 @@ def createPath():
 				session['format_chosen'] = format_chosen
 				numOfCheckpoints = request.form.get("checkpointNum")
 				session['numOfCheckpoints'] = str(numOfCheckpoints)
+
 				# Invalid Input Checking
 				if "" in [pathname, description] or numOfCheckpoints == "Choose Number of Checkpoints Here...":
 					flash("Error! Fields Cannot be Empty!")
@@ -166,6 +164,7 @@ for marker in marker_pathfile:
 	markers_list.append(marker.strip())
 
 # Create Checkpoints
+# Pathmakers Only
 @app.route("/createCheckpoint", methods = ['GET', 'POST'])
 def createCheckpoint():
 	if not session.get('username') and not session.get('user_id'):
@@ -175,7 +174,7 @@ def createCheckpoint():
 	elif not session.get('pathname') or not session.get('numOfCheckpoints'):
 		return redirect(url_for('createPath'))
 	else:
-		# Getting the number of checkpoints the user chose for 
+		# Getting the number of checkpoints the user chose for path
 		numOfCheckpoints = session.get('numOfCheckpoints')
 
 		# Creating lists to store the checkpoint information
@@ -226,11 +225,12 @@ def createCheckpoint():
 
 				# Marker Path
 				if session.get('format_chosen') == "marker":
+					# Getting the marker of the current checkpoint and adding to the list
 					markerNum = "markers" + str(x)
 					marker = request.form.get(markerNum)
 					markerNames.append(marker)
+					# Marker list for pdk files
 					marker_filename = marker + ".pdf"
-					print(marker_filename)
 					markerFilenames.append(marker_filename)
 
 			# Ensuring that none of the data is NoneType or not filled properly
@@ -256,22 +256,24 @@ def createCheckpoint():
 
 				# Redirecting the path detail page
 				return redirect(url_for('pathDetails'))
-
 		return render_template("createCheckpoint.html", animations_list = animations_list, fonts_list = fonts_list, markers_list = markers_list)
 
 # Finalize Path Details before creating
+# Pathmakers only 
 @app.route("/pathDetails", methods = ['GET', 'POST'])
 def pathDetails():
 	if not session.get('username'):
 		return redirect(url_for('login'))
 	if not session.get('role') == "pathmaker":
 		return redirect(url_for('homepage'))
+	# Redirects to form if no path or checkpoint information stored in session
 	if not session.get('pathname') or not session.get('checkpointTexts'):
 		return redirect(url_for('createPath'))
 
+	# Path Creation
 	if request.method == "POST":
 		if request.form.get('pathCreation') == 'createPath':
-			# Getting all the data for checkpoints and path
+			# Getting all the data for checkpoints and path from session
 			pathname = session.get('pathname')
 			description = session.get('description')
 			pathmaker = session.get('pathmaker')
@@ -293,7 +295,9 @@ def pathDetails():
 			# Creating a new list to store checkpoint ids
 			checkpointIDs = []
 
+			# Adding each checkpoint in the db
 			for y in range(1, (int(numOfCheckpoints)+1)):
+				# Current Geolocation for checkpoint
 				if format_chosen == "geolocation":
 					# Developing the geolocation
 					currentLatitude = float(checkpointLatitudes[y-1])
@@ -301,6 +305,7 @@ def pathDetails():
 					geolocation = {currentLatitude, currentLongitude}
 					marker = "no_marker"
 
+				# Current marker for checkpoint
 				if format_chosen == "marker":
 					marker = markerNames[y-1]
 					geolocation = []
@@ -323,9 +328,12 @@ def pathDetails():
 			# Creating the path and adding it to the database
 			Database.insert_path(pathname, description, checkpointIDs, interactions, pathmaker, "public", format_chosen)
 		
+
+			# After path insertion, pathmaker is redirected to the homepage
 			flash("New Path Created!")
 			return redirect(url_for('homepage'))
 
+		# Path Cancellation
 		if request.form.get('pathCreation') == 'cancelPath':
 			# Clearing the session data
 			session.pop('pathname', None)
@@ -353,19 +361,8 @@ def downloadMarkerFile(filename):
 	marker_file = os.path.join(app.config['MARKER_FOLDER'], filename)
 	return send_from_directory(directory = marker_file, filename = filename)
 
-# Logging Out redirects to login page
-@app.route("/logout")
-def logout():
-	# Clearing the session data
-	session.pop('username', None)
-	session.pop('user_id', None)
-	session.clear()
-
-	# Log Out Messages
-	flash("You have logged out sucessfully")
-	return redirect(url_for('login'))
-
 # Viewing the list of checkpoints in a given path
+# Pathmaker's can view their path checkpoints
 @app.route("/viewCheckpoints/<int:pathID>", methods = ['GET', 'POST'])
 def viewCheckpoints(pathID):
 	if not session.get('username'):
@@ -374,9 +371,10 @@ def viewCheckpoints(pathID):
 	# Getting the current path, given the path id
 	current_path = Paths.query.filter_by(path_id = pathID).first()
 
-	# Getting the list of all checkpoints in the database
+	#Getting all the checkpoints in the database
 	checkpoint_list = Checkpoints.query.all()
 
+	# Passing path data and all potential checkpoints in the db
 	return render_template("viewCheckpoints.html", path = current_path, points = checkpoint_list)
 
 # The route that allows pathmakers to visualize specific checkpoints 
@@ -387,6 +385,7 @@ def checkpointVisual(checkpointID):
 
 	# Getting the details for the checkpoint given the ID
 	current_checkpoint = Checkpoints.query.filter_by(checkpoint_id = checkpointID).first() 
+
 	return render_template("checkpointVisual.html", checkpoint = current_checkpoint, fonts_list = fonts_list)
 
 # Route allowing explorers to visualize the entire path with all checkpoints
@@ -427,7 +426,6 @@ def explorePath(path_id):
 					print("Logged Interaction")
 				else:
 					print("Interaction Already Logged")
-
 	# Getting the base format of the path
 	base_format = Database.select_where("paths", "path_id", path_id, "base_format")
 
@@ -466,7 +464,7 @@ def manageUsers():
 	elif not session.get('role') == "admin":
 		return redirect(url_for('homepage'))
 
-	# Getting all users in the database
+	# Getting all users in the database (in order by user_id)
 	user_list = Users.query.order_by(asc(Users.user_id))
 
 	if request.method == "POST":
@@ -521,11 +519,11 @@ def managePaths():
 	elif not session.get('role') == "admin":
 		return redirect(url_for('homepage'))
 
-	# Getting all users in the database
-	user_list = Users.query.all()
-
 	# Getting all the paths in the database (in order by path_id)
 	paths_list = Paths.query.order_by(asc(Paths.path_id))
+
+	# Getting all users in the database
+	user_list = Users.query.all()
 
 	#Getting all the checkpoints in the database
 	checkpoint_list = Checkpoints.query.all()
@@ -578,9 +576,16 @@ def managePaths():
 				return redirect(url_for("managePaths"))
 	return render_template("managePaths.html", users = user_list, paths = paths_list, checkpoints = checkpoint_list, interactions = interaction_list)
 
+# Logging Out redirects to login page
+@app.route("/logout")
+def logout():
+	# Clearing the session data
+	session.pop('username', None)
+	session.pop('user_id', None)
+	session.clear()
+
+	# Log Out Messages
+	flash("You have logged out sucessfully")
+	return redirect(url_for('login'))
 # Credit to https://stackoverflow.com/questions/5306079/python-how-do-i-convert-an-array-of-strings-to-an-array-of-numbers
 # Credit to https://stackoverflow.com/questions/24577349/flask-download-a-file
-
-@app.route("/about")
-def about():
-	return render_template("about.html")

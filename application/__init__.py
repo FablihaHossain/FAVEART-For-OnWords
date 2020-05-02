@@ -9,11 +9,12 @@ from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
 
-# Database Connection
+# Database Connection (Admin User)
 DB_URL = 'postgresql+psycopg2://{user}:{pw}@{host}:{port}/{db}'.format(user=Config.user,pw=Config.password, host = "localhost", port = 5432 ,db=Config.db)
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation warning
 
+# Database Connection (General User)
 DB_URL_GENERAL = 'postgresql+psycopg2://{user}:{pw}@{host}:{port}/{db}'.format(user=Config.general_user,pw=Config.general_password, host = "localhost", port = 5432 ,db=Config.db)
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL_GENERAL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation warning
@@ -21,7 +22,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation w
 # Database Object
 db = SQLAlchemy(app)
 
-# Database Connection
+# Database Connection with general user credentials
 try:
 	conn = psycopg2.connect(user=Config.general_user, password=Config.general_password, host = "localhost", database=Config.db, port = 5432)
 	print("Successully Connected to Database")

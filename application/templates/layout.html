@@ -73,12 +73,20 @@
 {% endblock head %}
 {% block body %}
 <body class = "body-html">
+	<!-- FAVEART Logo-->
 	<img id="homeLogo" src="static/OpenBookFinal.png" alt="FAVEART for OnWords Logo">
+
+	<!-- Welcome Message-->
 	<h1 style="text-align: center">Welcome!</h1>
 	<h2 style="text-align: center">If you wish to <b>create your own Path</b>, please register or login as a <b><i>Pathmaker</i></b>.<br />
 	If you only wish to <b>view previously-created Paths</b>, please register or login as an <b><i>Explorer</i></b>.</h2>
 
-	<a style="text-align: center;"class = "btn btn-primary btn-primary-block logout-button" href="{{url_for('login')}}"> Log In</a>
+	<!-- Log in Button-->
+	<div class = "jumbotron"> 
+		<div class="text-center">
+			<p><b>Sign in and Explore!</b></p> <a class="btn btn-primary btn-primary-block" href="{{url_for('register')}}">Log In</a></p>
+		</div>
+	</div>
 </body>
 {% endblock body %}
 </html>

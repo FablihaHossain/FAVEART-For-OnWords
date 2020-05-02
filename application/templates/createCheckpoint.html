@@ -7,6 +7,7 @@
 	<script src="{{url_for('static', filename = 'leaflet/Control.OSMGeocoder.js')}}"></script> 
 {% block body %}
 
+	<!-- Flash Messages-->
 	{% with messages = get_flashed_messages() %}
 		{% if messages %}
 			<ul class = flashes>
@@ -20,22 +21,26 @@
 	{% endwith %}
 	
 <body class = "body-html">
-		{% set geo_format = "geolocation" %}
-		{% if session['format_chosen'] == geo_format %}
-			<div id="map" class = "map"></div>
-		{% endif %}
 	<!-- Displaying the Path Information-->
-	Path Name: {{ session['pathname'] }}
+	<b> Path Name:</b> {{ session['pathname'] }}
 	<br>
-	Path Description: {{ session['description'] }}
+	<b>Path Description:</b> {{ session['description'] }}
 	<br><br>
-<!-- 	Pathmaker: {{ session['pathmaker'] }}
-	<br>
-	Format: {{ session['format_chosen'] }}
-	<br>
-	Number of Checkpoints: {{session['numOfCheckpoints']}}
-	<br><br>
- -->
+
+	<!-- Map for Path with Geolocation format-->
+	{% set geo_format = "geolocation" %}
+	{% if session['format_chosen'] == geo_format %}
+		<div id="map" class = "map"></div>
+	{% endif %}
+
+	<!-- Marker Image for Path with Marker format-->
+	{% set marker = "marker" %}
+	{% if session['format_chosen'] == marker %}
+		<div class = "map">
+		<img id="markerPreview" src="static/images/MarkerPreviews.png"alt="All Markers To Choose From">
+		</div>
+	{% endif %}
+
 	<!-- Button to clear markers on the map-->
 		{% set geo_format = "geolocation" %}
 		{% if session['format_chosen'] == geo_format %}
@@ -117,13 +122,6 @@
 			</div>
 		</div>
 	</form>
-		<a class = "btn btn-primary btn-primary-block logout-button" href="{{url_for('logout')}}"> Log Out</a>
-	{% set geo_format = "geolocation" %}
-	{% if session['format_chosen'] == geo_format %}
-	<!-- Map for Geolocations -->
-	<!-- Credit to Professor Stemkoski-->
-<!-- 	<div id="map" class = "map"></div>
- -->	{% endif %}
 		<!-- Script to Access and Modify Leaflet Contents-->
 		<script type="text/javascript">	
 			let latitude = document.getElementById("latitude");
@@ -141,84 +139,84 @@
 			//Adding new control to the map and displaying the entered address on the map
 			map.addControl(osmGeocoder).addLayer(osm);
 
-	      // add the OpenStreetMap tiles
-	      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	        maxZoom: 19,
-	        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-	      }).addTo(map);
+			// add the OpenStreetMap tiles
+			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+			}).addTo(map);
 
-	      // show the scale bar on the lower left corner
-	      L.control.scale().addTo(map);
+			// show the scale bar on the lower left corner
+			L.control.scale().addTo(map);
 
-	      // Marker pinned at user's current location
-	      var us = L.marker({lon: longitude, lat: latitude})
-	                     .bindPopup( "This is you." )
-	                     .addTo( map );
+			// Marker pinned at user's current location
+			var us = L.marker({lon: longitude, lat: latitude})
+			             .bindPopup( "This is you." )
+			             .addTo( map );
 
-		//Allowing the user to pin markers by clicking on maximum 5 points on the map
-		var markerCount = 0;
-		var totalMarkers = '{{session['numOfCheckpoints']}}';
-		//Creating a layergroup to store all markers
-		var layerGroup = L.layerGroup().addTo(map);
+			//Allowing the user to pin markers by clicking on maximum 5 points on the map
+			var markerCount = 0;
+			var totalMarkers = '{{session['numOfCheckpoints']}}';
+			//Creating a layergroup to store all markers
+			var layerGroup = L.layerGroup().addTo(map);
 
-		// Function to allow user to pin markers at various points on the map
-		function onClick(e) {
-			if (markerCount < totalMarkers)
-			{
-				// Getting the coordinates of the marker's pinned location
-				var latlng = map.mouseEventToLatLng(e.originalEvent);
-
-				// Storing the detailed information 
-				let info = "Checkpoint Number " + (markerCount+1) + ":<br>" + "Latitude: " + latlng.lat + "<br>" +"Longitude: " + latlng.lng;
-
-				// Creating the marker and adding it to the map
-				let mark = new L.marker({lon: latlng.lng, lat: latlng.lat}, {draggable: true}).bindPopup(info).addTo(map);
-				// Adding the marker to the layer group
-				mark.addTo(layerGroup)
-
-				// Users can drag the marker to another point in the map
-				mark.on('dragend', function(g)
+			// Function to allow user to pin markers at various points on the map
+			function onClick(e) {
+				if (markerCount < totalMarkers)
 				{
-					// Getting the new location of the marker and displaying in the pop up
-					mark.bindPopup("Latitude: " + mark.getLatLng().lat + '<br>' + "Longitude: " + mark.getLatLng().lng);
-				});
+					// Getting the coordinates of the marker's pinned location
+					var latlng = map.mouseEventToLatLng(e.originalEvent);
 
-				// Incrementing marker count
-				markerCount = markerCount + 1;
+					// Storing the detailed information 
+					let info = "Checkpoint Number " + (markerCount+1) + ":<br>" + "Latitude: " + latlng.lat + "<br>" +"Longitude: " + latlng.lng;
+
+					// Creating the marker and adding it to the map
+					let mark = new L.marker({lon: latlng.lng, lat: latlng.lat}, {draggable: true}).bindPopup(info).addTo(map);
+					// Adding the marker to the layer group
+					mark.addTo(layerGroup)
+
+					// Users can drag the marker to another point in the map
+					mark.on('dragend', function(g)
+					{
+						// Getting the new location of the marker and displaying in the pop up
+						mark.bindPopup("Latitude: " + mark.getLatLng().lat + '<br>' + "Longitude: " + mark.getLatLng().lng);
+					});
+
+					// Incrementing marker count
+					markerCount = markerCount + 1;
+				}
+			};
+		
+			// Allowing function to work on map
+			map.on('click', onClick);
+
+			// Function to clear all markers from the map
+			function clearMarkers()
+			{
+				map.removeLayer(layerGroup);
+				markerCount = 0;
+				layerGroup = L.layerGroup().addTo(map);
 			}
-		};
-	
-		// Allowing function to work on map
-		map.on('click', onClick);
 
-		// Function to clear all markers from the map
-		function clearMarkers()
-		{
-			map.removeLayer(layerGroup);
-			markerCount = 0;
-			layerGroup = L.layerGroup().addTo(map);
-		}
+		   	// Finding the current location of the user and placing the map's display there with a marker
+			navigator.geolocation.getCurrentPosition(function(position)
+			{
+				// Getting the current position of the user
+				let lat = position.coords.latitude;
+				let long = position.coords.longitude;
 
-	   	// Finding the current location of the user and placing the map's display there with a marker
-		navigator.geolocation.getCurrentPosition(function(position)
-		{
-			// Getting the current position of the user
-			let lat = position.coords.latitude;
-			let long = position.coords.longitude;
+				latitude  = lat;
+				longitude = long;
 
-			latitude  = lat;
-			longitude = long;
-
-			//Updating Map Center Display
-			map.setView({lon: long, lat: lat}, 19);
-			let newLatLng = new L.LatLng(lat, long);
-    		
-    		//Updating Marker position
-    		us.setLatLng(newLatLng);
-			});
-
+				//Updating Map Center Display
+				map.setView({lon: long, lat: lat}, 19);
+				let newLatLng = new L.LatLng(lat, long);
+	    		
+	    		//Updating Marker position
+	    		us.setLatLng(newLatLng);
+				});
 		</script>
 </body>
+
 {# Javascript Lines from https://getbootstrap.com/docs/4.3/getting-started/introduction/ #}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

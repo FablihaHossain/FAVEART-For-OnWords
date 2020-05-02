@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-        <script src="../static/animations/js/aframe.min.js"></script>
-        <script src="../static/animations/js/aframe-ar.js"></script>
-        <!-- support 3D text -->
-        <script src="../static/animations/js/aframe-text-geometry-component.min.js"></script>    
-        <script src="../static/animations/js/animations.js"></script>
+      <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+      <script src="../static/animations/js/aframe.min.js"></script>
+      <script src="../static/animations/js/aframe-ar.js"></script>
+      <!-- support 3D text -->
+      <script src="../static/animations/js/aframe-text-geometry-component.min.js"></script>    
+      <script src="../static/animations/js/animations.js"></script>
  </head>
-  <script>
+    <script>
+      AFRAME.registerComponent("customize", {
+              tick: function()
+              {
+                  let words = document.querySelector("#words");
+                  let style = words.getAttribute("animationStyle");
+                  let myColor = words.getAttribute("material");
+                  let myFont = words.getAttribute("text-geometry");
 
-    AFRAME.registerComponent("customize", {
-            tick: function()
-            {
-                let words = document.querySelector("#words");
-                let style = words.getAttribute("animationStyle");
-                let myColor = words.getAttribute("material");
-                let myFont = words.getAttribute("text-geometry");
-
-                choice(style, words, myColor.color, myFont.font);
-          }
-    });
- </script>
+                  choice(style, words, myColor.color, myFont.font);
+            }
+      });
+   </script>
  <body>
  	<div>
-        <!-- <img src="../static/markers/MarkYourVisit.png" style="position: absolute; right: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="visit" type = "submit" name = "logInteraction" value = "interaction"/> -->
-        <form method = "post">
+      <form method = "post">
+        <!-- Dropdown Menu for Checkpoints-->
 				<select style="position: absolute; right: 10px; top: 10px; width:200px; height:80px; z-index: 999;" class="custom-select" name = "checkpointNumber">
 	  				<option selected> Checkpoint Number</option>
 	  				{% for x in range (0, numOfCheckpoints) %}
 	  				<option value="{{x+1}}">{{x+1}}</option>
 	  				{% endfor %}
 				</select>
-        	<button style="position: absolute; right: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="visit" type = "submit" name = "logInteraction" value = "interaction" class = "btn btn-primary btn-primary-block"><img src="../static/markers/MarkYourVisit.png"></button>
+        
+        <!-- Log Interaction Button-->
+        <button style="position: absolute; right: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="visit" type = "submit" name = "logInteraction" value = "interaction" class = "btn btn-primary btn-primary-block"><img src="../static/markers/MarkYourVisit.png"></button>
     	</form>
+
+      <!-- Return to Homepage Button-->
         <img src="../static/markers/ReturnToPath.png" style="position: absolute; left: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="back" onclick="window.location.href='{{url_for('homepage')}}'"/>
     </div>
+
+  <!-- A Scene to Displau the Checkpoints based on base_format-->
  	<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
  		<!-- Marker Based Path-->
  		{% if base_format == "marker" %}
