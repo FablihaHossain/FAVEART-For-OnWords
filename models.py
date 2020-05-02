@@ -9,8 +9,7 @@ class Users(db.Model):
 	email = db.Column(db.String(200), unique = True, nullable = False)
 	username = db.Column(db.String(100), unique = True, nullable = False)
 	password = db.Column(db.String(100), nullable = False)
-	# Roles can either be pathmaker, explorer, administrator
-	role = db.Column(db.String(30))
+	role = db.Column(db.String(30)) # Roles can either be pathmaker, explorer, administrator
 
 # Path Table
 class Paths(db.Model):
@@ -18,10 +17,8 @@ class Paths(db.Model):
 	path_id = db.Column(db.Integer, primary_key = True, unique = True)
 	name = db.Column(db.String(100), nullable = True)
 	description = db.Column(db.String(1000000), nullable = False)
-	# Array of checkpoint id values within Path 
-	checkpoints = db.Column(db.ARRAY(db.Integer))
-	# Array of interaction id values within Path
-	interactions = db.Column(db.ARRAY(db.Integer))
+	checkpoints = db.Column(db.ARRAY(db.Integer)) # Array of checkpoint id values within Path 
+	interactions = db.Column(db.ARRAY(db.Integer)) # Array of interaction id values within Path
 	pathmaker = db.Column(db.String(100), nullable = False)
 	status = db.Column(db.String(50), nullable = False)
 	base_format = db.Column(db.String(20), nullable = False)
