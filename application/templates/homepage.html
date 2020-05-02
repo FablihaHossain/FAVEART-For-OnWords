@@ -4,38 +4,23 @@
 
 {% block body %}
 
-	{% with messages = get_flashed_messages() %}
-		{% if messages %}
-			<ul class = flashes>
-			{% for message in messages %}
-				<div class = "alert">
-					<p> {{message}}</p>
-				</div>
-			{% endfor %}
-			</ul>
-		{% endif %}
-	{% endwith %}
+<!-- Flash Messages-->
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<ul class = flashes>
+		{% for message in messages %}
+			<div class = "alert">
+				<p> {{message}}</p>
+			</div>
+		{% endfor %}
+		</ul>
+	{% endif %}
+{% endwith %}
 	
 <body class = "body-html">
-	<h1>All Paths</h1>
 	<div class="jumbotron">
-	{% for path in paths %}
-		{% set pathmaker = "pathmaker" %}
-			{% if session['role'] == pathmaker %}
-				    <a href="{{url_for('viewCheckpoints', pathID = path.path_id)}}" class="btn btn-primary btn-primary-block menu-btn">View Checkpoints</a>
-			 {% endif %}
-
-		{% set explorer = "explorer" %}
-			{% if session['role'] == explorer %}
-				    <a href="{{url_for('explorePath', path_id = path.path_id)}}" class="btn btn-primary btn-primary-block menu-btn">Explore Path</a>
-			  {% endif %}
-			<h2>{{path.name}}</h2>
-			<h3>Creator: {{path.pathmaker}}</h3>
-			<p>{{path.description}}</p>
-
-			<hr>
-	{% endfor %}
-	</div>
+	<!-- Displaying all paths in the database-->
+	<h1>All Paths</h1>
 
 	<!-- Button for Pathmakers only-->
 	{% set pathmaker = "pathmaker" %}
@@ -43,12 +28,28 @@
 	<a href="{{url_for('createPath')}}" class="btn btn-primary btn-primary-block">Create Path</a>
 	{% endif %}
 
-	<!-- Button for Admin Only-->
-	{% set admin = "admin" %}
-	{% if session['role'] == admin %}
-	<a href="{{url_for('manageUsers')}}" class="btn btn-primary btn-primary-block"> Manage Users</a>
-	{% endif %}
+	{% for path in paths %}
+		<!-- Route for Pathmaker to view each checkpoint in path-->
+		{% set pathmaker = "pathmaker" %}
+			{% if session['role'] == pathmaker %}
+				    <a href="{{url_for('viewCheckpoints', pathID = path.path_id)}}" class="btn btn-primary btn-primary-block menu-btn">View Checkpoints</a>
+			 {% endif %}
 
-	<a class = "btn btn-primary btn-primary-block logout-button" href="{{url_for('logout')}}"> Log Out</a>
+		<!-- Route for Explorer to view all checkpoints in entire path-->
+		{% set explorer = "explorer" %}
+			{% if session['role'] == explorer %}
+				    <a href="{{url_for('explorePath', path_id = path.path_id)}}" class="btn btn-primary btn-primary-block menu-btn">Explore Path</a>
+			  {% endif %}
+			<h2>{{path.name}}</h2>
+			<h3>Creator: {{path.pathmaker}}</h3>
+			<p>{{path.description}}</p>
+			<hr>
+	{% endfor %}
+	</div>
+
+	<!-- Log Out Button-->
+	<div class="text-center">
+		<p><b>Exit FAVEART</b></p> <a class="btn btn-primary btn-primary-block" href="{{url_for('logout')}}">Log Out</a></p>
+	</div>
 </body>
 {% endblock body %}
