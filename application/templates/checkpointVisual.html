@@ -23,10 +23,12 @@
     });
  </script>
  <body>
+    <!-- Buttons to go back to homepage-->
     <div>
-        <img src="../static/markers/MarkYourVisit.png" style="position: absolute; right: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="visit" />
         <img src="../static/markers/ReturnToPath.png" style="position: absolute; left: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="back" onclick="window.location.href='{{url_for('homepage')}}'"/>
     </div>
+
+    <!-- A scene with current checkpoint (and default marker)-->
     <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
         <a-assets>
             <a-asset-item id="{{checkpoint.font}}" src="../static/animations/fonts/{{checkpoint.font}}.json"></a-asset-item>
