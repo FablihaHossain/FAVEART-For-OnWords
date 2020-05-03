@@ -54,6 +54,7 @@
 		            <a-entity id="words{{checkpoint.checkpoint_id}}" text-geometry="value: {{checkpoint.text}} ; font: #{{checkpoint.font}};" material="color: {{checkpoint.color}};" animationStyle="{{checkpoint.animation}}" customize></a-entity>
 		       </a-marker>
 	       {% endfor %}
+          <a-entity camera></a-entity>
        {% endif %}
 
        <!-- Location-Based Path-->
@@ -67,7 +68,9 @@
 		        gps-entity-place = "latitude: {{latitudeList[loop.index-1]}}; longitude:{{longitudeList[loop.index-1]}};"
 		        ></a-entity>
 	       {% endfor %}
+          <!-- Geolocation Camera-->
+          <a-camera gps-camera rotation-reader></a-camera>
        {% endif %}
-       <a-entity camera></a-entity>
+      
     </a-scene>
  </body>
