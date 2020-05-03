@@ -26,17 +26,6 @@
                   let myFont = words.getAttribute("text-geometry");
                   choice(style, words, myColor.color, myFont.font);
               }
-
-
-                // let checkpointID = c.checkpoint_id;
-                // console.log("c is " + checkpointID);
-                // let w = "#words" + checkpointID;
-                // console.log("w is " + w);                
-                // let words = document.querySelector("w");
-                // let style = words.getAttribute("animationStyle");
-                // let myColor = words.getAttribute("material");
-                // let myFont = words.getAttribute("text-geometry");
-                // choice(style, words, myColor.color, myFont.font);
           }
     });
  </script>
@@ -74,7 +63,7 @@
 		        	<a-asset-item id="{{checkpoint.font}}" src="../static/animations/fonts/{{checkpoint.font}}.json"></a-asset-item>
 		        </a-assets>
 
-		        <a-entity id="words" text-geometry="value: {{checkpoint.text}}; font: #{{checkpoint.font}};" material="color: {{checkpoint.color}};" customize animationStyle="{{checkpoint.animation}}"
+		        <a-entity id="words{{checkpoint.checkpoint_id}}" text-geometry="value: {{checkpoint.text}}; font: #{{checkpoint.font}};" material="color: {{checkpoint.color}};" customize animationStyle="{{checkpoint.animation}}"
 		        gps-entity-place = "latitude: {{latitudeList[loop.index-1]}}; longitude:{{longitudeList[loop.index-1]}};"
 		        ></a-entity>
 	       {% endfor %}
