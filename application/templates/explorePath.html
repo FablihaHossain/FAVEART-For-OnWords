@@ -13,20 +13,30 @@
      AFRAME.registerComponent("customize", {
             tick: function()
             {
-              this.markerVisible - false;
-            this.marker = this.el;            
-            let self = this;
+              const arr = {{checkpointIdList}};
+              for (i = 0; i < arr.length; i++) { 
+                  console.log(arr[i]);
+                  var hi = "#words" + arr[i];
+                  console.log(hi);
 
-            this.marker.addEventListener('markerFound', function() {
-              self.markerVisible = true;
-              console.log("marker found")
-            });
+                  var words = document.querySelector(hi);
+                  let style = words.getAttribute("animationStyle");
+                  console.log("style is " + style)
+                  let myColor = words.getAttribute("material");
+                  let myFont = words.getAttribute("text-geometry");
+                  choice(style, words, myColor.color, myFont.font);
+              }
 
-                let words = document.querySelector("#words");
-                let style = words.getAttribute("animationStyle");
-                let myColor = words.getAttribute("material");
-                let myFont = words.getAttribute("text-geometry");
-                choice(style, words, myColor.color, myFont.font);
+
+                // let checkpointID = c.checkpoint_id;
+                // console.log("c is " + checkpointID);
+                // let w = "#words" + checkpointID;
+                // console.log("w is " + w);                
+                // let words = document.querySelector("w");
+                // let style = words.getAttribute("animationStyle");
+                // let myColor = words.getAttribute("material");
+                // let myFont = words.getAttribute("text-geometry");
+                // choice(style, words, myColor.color, myFont.font);
           }
     });
  </script>
@@ -52,7 +62,7 @@
 		        </a-assets>
 
 		       <a-marker type = "pattern" url = "../static/markers/{{checkpoint.marker}}.patt" id = "{{checkpoint.marker}}">
-		            <a-entity id="words" text-geometry="value: {{checkpoint.text}} ; font: #{{checkpoint.font}};" material="color: {{checkpoint.color}};" animationStyle="{{checkpoint.animation}}" customize></a-entity>
+		            <a-entity id="words{{checkpoint.checkpoint_id}}" text-geometry="value: {{checkpoint.text}} ; font: #{{checkpoint.font}};" material="color: {{checkpoint.color}};" animationStyle="{{checkpoint.animation}}" customize></a-entity>
 		       </a-marker>
 	       {% endfor %}
        {% endif %}

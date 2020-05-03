@@ -454,7 +454,7 @@ def explorePath(path_id):
 			longitude = geo_coordinates[1]
 			listOfLongitudes.append(longitude)
 
-	return render_template("explorePath.html", numOfCheckpoints = numOfCheckpoints, base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes)
+	return render_template("explorePath.html", numOfCheckpoints = numOfCheckpoints, base_format = base_format, checkpointList = listOfCheckpoints, latitudeList = listOfLatitudes, longitudeList = listOfLongitudes, checkpointIdList = checkpointIdList)
 
 # Admin Route to Manage Users of Database
 @app.route("/manageUsers", methods = ['GET', 'POST'])
