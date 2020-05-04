@@ -6,7 +6,7 @@
 
 *Project URL:* https://faveart.profleune.net:5000/ 
 
-##### A User can register in the site with one of the following two roles: 
+#### A User can register in the site with one of the following two roles: 
 * **Pathmaker:** These are the users that can create a Path and its associating checkpoints. Each checkpoint contains a piece of text, a color, a font, and an animation. There are two types of Paths that can be created: Marker-Based and Geolocation. Based on the format chosen, there will be customizable fields to allow the Pathmaker to decide which marker or geoloation coordinates will be associated with each checkpoint in their path. Once the path is created, they can view those checkpoints with a default AR marker to get a display of how the text will appear for the explorers.
 
 ***We recommend that users who wish to create Paths use a laptop device in order to easily customize their checkpoints.***
