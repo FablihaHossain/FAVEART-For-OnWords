@@ -2,11 +2,11 @@
 ## Spring 2020 Senior Seminar Project
 ### Fabliha and Victoria Explore Augmented Reality Technology for OnWords
 
-**Project Objective:** An Augmented Reality Web Application that allows educators, students, and creators to visualize text in the real world with any device that contains a rear-facing camera. With various cutomizable options, a user can create a Path of text for others to explore with AR Markers or Geolocation functionality.
+**Project Objective:** The focus of this project is the showcase the importance of literature and history through animated text. We developed an Augmented Reality Web Application that allows educators, students, and creators to visualize text in the real world with any device that contains a rear-facing camera. With various cutomizable options, a user can create or explore a Path of text with AR Markers or Geographical Coordinates.
 
 *Project URL:* https://faveart.profleune.net:5000/ 
 
-#### A User can register in the site with one of the following two roles: 
+#### A New User can register in the site with one of the following two roles: 
 * **Pathmaker:** These are the users that can create a Path and its associating checkpoints. Each checkpoint contains a piece of text, a color, a font, and an animation. There are two types of Paths that can be created: Marker-Based and Geolocation. Based on the format chosen, there will be customizable fields to allow the Pathmaker to decide which marker or geoloation coordinates will be associated with each checkpoint in their path. Once the path is created, they can view those checkpoints with a default AR marker to get a display of how the text will appear for the explorers.
 
 ***We recommend that users who wish to create Paths use a laptop device in order to easily customize their checkpoints.***
@@ -28,4 +28,3 @@
 * Google Cloud Console
 
 **Special Thanks** to Shoshanah Tarkow and Professor Lee Stemkoski for bringing us the opportunity to develop this idea and for their support all throughout this semester.
-
