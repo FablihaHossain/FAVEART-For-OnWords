@@ -9,21 +9,31 @@
         <script src="../static/animations/js/animations.js"></script>
  </head>
   <script>
-   
+    // Function to Parse all checkpoint data-->
      AFRAME.registerComponent("customize", {
             tick: function()
             {
+              // Getting the list of checkpoint ids in the Path
               const arr = {{checkpointIdList}};
-              for (i = 0; i < arr.length; i++) { 
-                  console.log(arr[i]);
-                  var hi = "#words" + arr[i];
-                  console.log(hi);
 
-                  var words = document.querySelector(hi);
+              // Going through the list of checkpoints
+              for (i = 0; i < arr.length; i++) { 
+                  // Getting the current checkpoint ID
+                  var check = "#words" + arr[i];
+
+                  // Getting the text of checkpoint
+                  var words = document.querySelector(check);
+
+                  // Getting the animation attribute of checkpoint
                   let style = words.getAttribute("animationStyle");
-                  console.log("style is " + style)
+
+                  // Getting the color attribute of checkpoint
                   let myColor = words.getAttribute("material");
+
+                  // Getting the font attribute of checkpoint
                   let myFont = words.getAttribute("text-geometry");
+
+                  // Creating the visual component of the checkpoint
                   choice(style, words, myColor.color, myFont.font);
               }
           }
@@ -32,17 +42,25 @@
  <body>
  	<div>
       <form method = "post">
+        <!-- Dropdown Menu for Checkpoints in Path-->
 				<select style="position: absolute; right: 10px; top: 10px; width:200px; height:80px; z-index: 999;" class="custom-select" name = "checkpointNumber">
 	  				<option selected> Checkpoint Number</option>
 	  				{% for x in range (0, numOfCheckpoints) %}
 	  				<option value="{{x+1}}">{{x+1}}</option>
 	  				{% endfor %}
 				</select>
+
+        <!-- Button to Log an Interaction-->
         	<button style="position: absolute; right: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="visit" type = "submit" name = "logInteraction" value = "interaction" class = "btn btn-primary btn-primary-block"><img src="../static/markers/MarkYourVisit.png"></button>
     	</form>
+
+      <!-- Button to Return to Homepage-->
         <img src="../static/markers/ReturnToPath.png" style="position: absolute; left: 10px; bottom: 10px; width:200px; height:80px; z-index: 999;" id="back" onclick="window.location.href='{{url_for('homepage')}}'"/>
     </div>
+
+    <!-- AFRAME Scene for Marker-Based or Geolocation-Based Paths-->
  	<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+
  		<!-- Marker Based Path-->
  		{% if base_format == "marker" %}
 	 		{% for checkpoint in checkpointList %}
@@ -71,6 +89,6 @@
           <!-- Geolocation Camera-->
           <a-camera gps-camera rotation-reader></a-camera>
        {% endif %}
-      
+  
     </a-scene>
  </body>
