@@ -26,5 +26,5 @@ If one wishes to run the application on their local machines, after cloing the r
 * HTML 
 * Google Cloud Console
 
-
+**Special Thanks** to Shoshanah Tarkow and Professor Lee Stemkoski for bringing us the opportunity to develop this idea. 
 
