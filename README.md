@@ -32,3 +32,5 @@
 * Google Cloud Console
 
 **Special Thanks** to Shoshanah Tarkow and Professor Lee Stemkoski for bringing us the opportunity to develop this idea and for their support all throughout this semester.
+
+**License Info:** This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. 
