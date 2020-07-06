@@ -4,7 +4,7 @@
 
 **Project Objective:** The focus of this project is the showcase the importance of literature and history through animated text. We developed an Augmented Reality Web Application that allows educators, students, and creators to visualize text in the real world with any device that contains a rear-facing camera. With various cutomizable options, a user can create or explore a Path of text with AR Markers or Geographical Coordinates.
 
-*Project URL:* https://faveart.profleune.net:5000/ 
+*Project URL (During Development):* https://faveart.profleune.net:5000/ 
 
 ![Scheme](application/static/images/initial_page.png)
 
@@ -33,4 +33,5 @@
 
 **Special Thanks** to Shoshanah Tarkow and Professor Lee Stemkoski for bringing us the opportunity to develop this idea and for their support all throughout this semester.
 
-**License Info:** This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. 
+**License Info:** This work is licensed under a *Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License*
+https://creativecommons.org/licenses/by-nc-nd/4.0/
