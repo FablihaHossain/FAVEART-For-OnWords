@@ -12,3 +12,7 @@ initial_values.txt
 # Certificate Files
 cert.pem
 privkey.pem
+
+# Extra Things to Ignore
+.DS_Store
+application/.DS_Store
