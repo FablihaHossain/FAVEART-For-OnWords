@@ -4,7 +4,9 @@
 
 **Project Objective:** The focus of this project is the showcase the importance of literature and history through animated text. We developed an Augmented Reality Web Application that allows educators, students, and creators to visualize text in the real world with any device that contains a rear-facing camera. With various cutomizable options, a user can create or explore a Path of text with AR Markers or Geographical Coordinates.
 
-*Project URL (During Development):* https://faveart.profleune.net:5000/ 
+### [Presentation and Demo](https://prezi.com/view/WU3uwk7cBbKPvbdJz3zA/)
+
+*Project URL (**Currently Inactive**):* https://faveart.profleune.net:5000/ 
 
 ![Scheme](application/static/images/initial_page.png)
 
